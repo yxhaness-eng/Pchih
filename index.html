@@ -57,16 +57,33 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-canvas);
+      height: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body {
       margin: 0;
       padding: 0;
       background-color: var(--bg-canvas);
       color: #F4F5F7;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      overscroll-behavior-y: none;
-      overflow-x: hidden;
+      overflow-x: clip;
       min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .modal-scroll {
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Dynamic Ambient Backdrop (mirrors current movie poster color) */
@@ -213,14 +230,18 @@
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             Live
           </span>
+          <div id="header-other-partner" class="hidden items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-white/6 border border-white/10">
+            <span id="header-other-avatar" class="w-4 h-4 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-[10px]"></span>
+            <span id="header-other-name" class="text-[10px] font-semibold text-zinc-200 max-w-[68px] truncate"></span>
+          </div>
         </div>
       </div>
 
-      <!-- Segmented Partner Switcher -->
-      <button id="partner-switcher-btn" class="surface-card rounded-full pl-1.5 pr-3 py-1 flex items-center gap-2 active:scale-95 transition" title="Сменить активного партнёра">
-        <span id="header-partner-avatar" class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs">😎</span>
-        <span id="header-partner-name" class="text-xs font-semibold text-white">Он</span>
-        <svg class="w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Active User Profile Pill -->
+      <button id="partner-switcher-btn" class="surface-card rounded-full pl-1.5 pr-3 py-1 flex items-center gap-2 active:scale-95 transition" title="Сменить слот партнёра">
+        <span id="header-partner-avatar" class="w-6 h-6 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-xs shrink-0">😎</span>
+        <span id="header-partner-name" class="text-xs font-semibold text-white max-w-[84px] truncate">Он</span>
+        <svg class="w-3.5 h-3.5 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/>
         </svg>
       </button>
@@ -275,7 +296,7 @@
         </div>
 
         <!-- Editorial Poster Card Stage -->
-        <div id="card-stage" class="relative w-full min-h-[470px] flex items-center justify-center">
+        <div id="card-stage" class="relative w-full min-h-[400px] flex items-center justify-center">
           <!-- Subtle Swipe Overlays -->
           <div id="swipe-badge-like" class="pointer-events-none opacity-0 absolute top-6 left-5 z-20 px-3.5 py-1 rounded-full bg-emerald-500 text-white font-bold text-xs tracking-wide uppercase shadow-lg -rotate-6 transition-opacity">
             Хочу посмотреть
@@ -385,79 +406,100 @@
       </section>
 
       <!-- ============================================================
-           SCREEN 4: КОМНАТА И НАСТРОЙКИ
+           SCREEN 4: КОМНАТА, ПРОФИЛИ И НАСТРОЙКИ
            ============================================================ -->
       <section id="view-settings" class="view-section hidden view-animate space-y-4">
         <div class="pt-1">
           <h2 class="text-xl font-bold tracking-tight text-white">Комната и настройки</h2>
-          <p class="text-xs text-zinc-400 mt-0.5">Синхронизация двух смартфонов и база фильмов</p>
+          <p class="text-xs text-zinc-400 mt-0.5">Синхронизация двух смартфонов в реальном времени</p>
         </div>
 
         <!-- Room Sync Card -->
         <div class="surface-card rounded-3xl p-4 space-y-3.5">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-              <div class="w-9 h-9 rounded-xl bg-white/8 flex items-center justify-center text-white">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                </svg>
-              </div>
-              <div>
-                <h3 class="text-sm font-bold text-white">Синхронизация пары</h3>
-                <p class="text-[11px] text-zinc-400">Общий список и игры по коду</p>
-              </div>
-            </div>
+            <h3 class="text-sm font-bold text-white">Общая комната</h3>
             <span id="sync-status-pill" class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10">Локально</span>
           </div>
 
-          <!-- Active Room Box -->
-          <div id="active-room-box" class="hidden rounded-2xl bg-emerald-500/10 border border-emerald-500/25 p-3.5 flex items-center justify-between">
-            <div>
-              <div class="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Код комнаты</div>
-              <div id="active-room-code" class="text-2xl font-extrabold font-mono tracking-[0.18em] text-white mt-0.5">------</div>
+          <!-- Active Room Display -->
+          <div id="active-room-box" class="hidden space-y-3">
+            <div class="rounded-2xl bg-black/35 border border-white/10 p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Код комнаты</div>
+                <div id="active-room-code" class="text-2xl font-extrabold tracking-[0.22em] text-white mt-0.5">------</div>
+              </div>
+              <button id="copy-room-code-btn" class="px-3.5 py-2 rounded-xl bg-white text-[#0A0B0E] text-xs font-bold active:scale-95 transition">
+                Копировать
+              </button>
             </div>
-            <div class="flex items-center gap-1.5">
-              <button id="copy-room-code-btn" class="px-3 py-2 rounded-xl bg-emerald-500/20 text-emerald-300 text-xs font-semibold active:scale-95">Копировать</button>
-              <button id="leave-room-btn" class="px-3 py-2 rounded-xl bg-white/8 text-zinc-300 text-xs font-semibold active:scale-95">Выйти</button>
-            </div>
+            <button id="leave-room-btn" class="w-full py-2.5 rounded-xl bg-rose-500/15 text-rose-300 text-xs font-semibold active:scale-95 transition">
+              Выйти из комнаты
+            </button>
           </div>
 
-          <!-- Join / Create Controls -->
+          <!-- Create / Join Room Controls -->
           <div id="room-join-controls" class="space-y-2.5">
             <button id="create-room-btn" class="w-full btn-primary py-3 rounded-2xl text-xs font-bold">
-              Создать комнату
+              Создать новую комнату
             </button>
-            <div class="flex items-center gap-2">
-              <input id="join-room-input" type="text" maxlength="6" placeholder="Код комнаты (6 знаков)"
-                class="flex-1 rounded-2xl bg-black/35 border border-white/10 px-3.5 py-2.5 text-xs font-bold font-mono uppercase tracking-widest text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
-              <button id="join-room-btn" class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold active:scale-95 transition">Войти</button>
+            <div class="flex gap-2">
+              <input id="room-code-input" type="text" maxlength="6" placeholder="Код комнаты (6 симв.)"
+                class="flex-1 rounded-xl bg-black/35 border border-white/10 px-3 py-2.5 text-xs font-bold uppercase tracking-widest text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+              <button id="join-room-btn" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white active:scale-95 transition">
+                Войти
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- Profiles -->
-        <div class="surface-card rounded-3xl p-4 space-y-3">
-          <h3 class="text-sm font-bold text-white">Профили</h3>
-          <div class="grid grid-cols-2 gap-2.5">
-            <div class="rounded-2xl bg-black/30 border border-white/6 p-3 space-y-2.5">
-              <div class="flex items-center justify-between">
-                <span class="text-[11px] font-medium text-zinc-400">Партнёр 1</span>
-                <button id="p1-avatar-btn" class="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-base active:scale-90 transition">😎</button>
+        <!-- Profiles (Self Profile + Connected Partner) -->
+        <div class="surface-card rounded-3xl p-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white">Мой профиль</h3>
+            <span id="my-role-label" class="text-[11px] font-semibold text-zinc-400">Партнёр 1</span>
+          </div>
+
+          <div class="flex items-center gap-3.5">
+            <div id="my-profile-avatar-preview" class="w-16 h-16 rounded-full overflow-hidden bg-white/8 border border-white/15 flex items-center justify-center text-3xl shrink-0">😎</div>
+            <div class="flex-1 min-w-0 space-y-2">
+              <input id="my-name-input" type="text" value="Он" maxlength="20" placeholder="Ваше имя..."
+                class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-sm font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+              <div class="flex items-center gap-2">
+                <label for="my-photo-input" class="cursor-pointer px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[11px] font-semibold text-white active:scale-95 transition">
+                  Загрузить фото
+                </label>
+                <input id="my-photo-input" type="file" accept="image/*" class="hidden" />
+                <button id="remove-photo-btn" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-500/15 text-rose-300 text-[11px] font-semibold active:scale-95 transition">
+                  Убрать
+                </button>
               </div>
-              <input id="p1-name-input" type="text" value="Он" maxlength="16"
-                class="w-full rounded-xl bg-white/5 border border-white/10 px-2.5 py-1.5 text-xs font-semibold text-white focus:outline-none focus:border-white/30" />
-              <button data-setrole="p1" class="role-select-btn w-full py-1.5 rounded-xl text-[11px] font-semibold">Выбрать</button>
+            </div>
+          </div>
+
+          <!-- Emoji Picker -->
+          <div class="space-y-1.5">
+            <div class="text-[11px] font-medium text-zinc-400">Или выберите эмодзи</div>
+            <div id="emoji-picker-grid" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
+          </div>
+
+          <!-- Connected Partner Card -->
+          <div class="pt-3 border-t border-white/8 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white">Второй участник</span>
+              <span id="other-partner-status" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-zinc-400">Не подключён</span>
+            </div>
+            <div class="rounded-2xl bg-black/30 border border-white/6 p-3 flex items-center gap-3">
+              <div id="other-partner-avatar" class="w-11 h-11 rounded-full overflow-hidden bg-white/8 border border-white/10 flex items-center justify-center text-xl shrink-0">🥰</div>
+              <div class="flex-1 min-w-0">
+                <div id="other-partner-name" class="text-sm font-bold text-white truncate">Она</div>
+                <div id="other-partner-sub" class="text-[11px] text-zinc-400 truncate">Поделитесь кодом комнаты, чтобы подключить партнёра</div>
+              </div>
             </div>
 
-            <div class="rounded-2xl bg-black/30 border border-white/6 p-3 space-y-2.5">
-              <div class="flex items-center justify-between">
-                <span class="text-[11px] font-medium text-zinc-400">Партнёр 2</span>
-                <button id="p2-avatar-btn" class="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-base active:scale-90 transition">🥰</button>
-              </div>
-              <input id="p2-name-input" type="text" value="Она" maxlength="16"
-                class="w-full rounded-xl bg-white/5 border border-white/10 px-2.5 py-1.5 text-xs font-semibold text-white focus:outline-none focus:border-white/30" />
-              <button data-setrole="p2" class="role-select-btn w-full py-1.5 rounded-xl text-[11px] font-semibold">Выбрать</button>
+            <!-- Role Switcher for 1-device mode -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button data-setrole="p1" class="role-select-btn py-2 rounded-xl text-[11px] font-semibold">Слот 1</button>
+              <button data-setrole="p2" class="role-select-btn py-2 rounded-xl text-[11px] font-semibold">Слот 2</button>
             </div>
           </div>
         </div>
@@ -576,7 +618,7 @@
   </div>
 
   <!-- 3. Battle Arena Modal -->
-  <div id="battle-modal" class="hidden fixed inset-0 z-50 bg-[#0A0B0E]/96 backdrop-blur-xl overflow-y-auto">
+  <div id="battle-modal" class="hidden fixed inset-0 z-50 bg-[#0A0B0E]/96 backdrop-blur-xl overflow-y-auto modal-scroll">
     <div class="max-w-md mx-auto min-h-[100dvh] p-4 pt-safe pb-8 flex flex-col">
       <div class="flex items-center justify-between pb-3.5 border-b border-white/10">
         <h2 class="text-base font-bold text-white tracking-tight">Баттл за пульт</h2>
@@ -588,7 +630,7 @@
 
   <!-- 4. Setup Guide Modal -->
   <div id="guide-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="surface-card w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[85dvh] overflow-y-auto border-white/15 view-animate bg-[#14161C]">
+    <div class="surface-card w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[85dvh] overflow-y-auto modal-scroll border-white/15 view-animate bg-[#14161C]">
       <div class="flex items-center justify-between">
         <h3 class="text-base font-bold text-white">Где взять ключи</h3>
         <button id="close-guide-modal" class="w-8 h-8 rounded-full bg-white/8 text-zinc-300 flex items-center justify-center">
@@ -800,7 +842,7 @@
     };
 
     /* ---------- STATE & FIREBASE ROOM SYNC ---------- */
-    const AVATARS = ["😎", "🥰", "🦊", "🐱", "🐼", "🦄", "🦁", "👾", "🎬", "👑"];
+    const AVATARS = ["😎", "🥰", "🦊", "🐱", "🐼", "🦄", "🦁", "👾", "🎬", "👑", "🔥", "🌙"];
 
     const state = {
       activeTab: "discover",
@@ -811,10 +853,11 @@
       deck: [],
       deckIndex: 0,
       skippedIds: new Set(),
+      myProfile: { name: "Он", avatar: "😎", photoData: null },
       shared: {
         partners: {
-          p1: { name: "Он", avatar: "😎" },
-          p2: { name: "Она", avatar: "🥰" }
+          p1: { uid: null, name: "Он", avatar: "😎", photoData: null, onlineAt: 0 },
+          p2: { uid: null, name: "Она", avatar: "🥰", photoData: null, onlineAt: 0 }
         },
         watchlist: [
           { ...DEMO_CATALOG[0], likes: { p1: true, p2: true }, addedAt: Date.now() - 50000 },
@@ -830,6 +873,8 @@
     };
 
     let fbApp = null, fbAuth = null, fbDb = null, fbUser = null, roomUnsubscribe = null;
+    let lastNotifiedPartnerKey = null;
+    let userSaveTimer = null;
     const appId = typeof __app_id !== "undefined" ? __app_id : "pchih-couple-app";
 
     // Преднастроенный конфиг вашего проекта Firebase (для GitHub Pages и быстрого старта)
@@ -877,11 +922,28 @@
         if (!config || !config.apiKey) return { ok: false, error: "Отсутствует apiKey в конфиге" };
 
         const sdk = await loadFirebaseSDK();
-        fbApp = sdk.initializeApp(config, "pchih-" + Date.now());
-        fbAuth = sdk.getAuth(fbApp);
-        fbDb = sdk.getFirestore(fbApp);
+        if (!fbApp || customConfig) {
+          const appName = customConfig ? "pchih-custom-" + Date.now() : "pchih-main";
+          try {
+            fbApp = sdk.initializeApp(config, appName);
+          } catch {
+            fbApp = sdk.getApp(appName);
+          }
+          fbAuth = sdk.getAuth(fbApp);
+          fbDb = sdk.getFirestore(fbApp);
+        }
 
-        if (!customConfig && typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+        // Ждём восстановления сохранённой сессии, чтобы не терять uid после перезагрузки
+        const existingUser = await new Promise((resolve) => {
+          const unsub = sdk.onAuthStateChanged(fbAuth, (u) => {
+            unsub();
+            resolve(u);
+          });
+        });
+
+        if (existingUser) {
+          fbUser = existingUser;
+        } else if (!customConfig && typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
           const cred = await sdk.signInWithCustomToken(fbAuth, __initial_auth_token);
           fbUser = cred.user;
         } else {
@@ -916,6 +978,91 @@
       return fbSdk.doc(fbDb, "artifacts", appId, "public", "data", "pchih_rooms", roomId);
     }
 
+    function getUserSettingsDocRef() {
+      return fbSdk.doc(fbDb, "artifacts", appId, "users", fbUser.uid, "pchih_profile", "settings");
+    }
+
+    function saveUserSettings(immediate = false) {
+      if (!fbDb || !fbUser || !fbSdk) return;
+      const run = async () => {
+        try {
+          await fbSdk.setDoc(getUserSettingsDocRef(), {
+            tmdbApiKey: MediaAPI.apiKey || "",
+            roomId: state.roomId || null,
+            currentRole: state.currentRole,
+            myProfileJson: JSON.stringify(state.myProfile),
+            localSharedJson: JSON.stringify(state.shared),
+            updatedAt: Date.now()
+          }, { merge: true });
+        } catch (err) {
+          console.error("Save settings error:", err);
+        }
+      };
+      if (immediate) return run();
+      clearTimeout(userSaveTimer);
+      userSaveTimer = setTimeout(run, 350);
+    }
+
+    async function loadUserSettings() {
+      if (!fbDb || !fbUser || !fbSdk) return false;
+      try {
+        const snap = await fbSdk.getDoc(getUserSettingsDocRef());
+        if (!snap.exists()) return false;
+        const data = snap.data();
+
+        if (data.tmdbApiKey) {
+          MediaAPI.apiKey = data.tmdbApiKey;
+          const tmdbInput = document.getElementById("tmdb-key-input");
+          if (tmdbInput) tmdbInput.value = data.tmdbApiKey;
+          const tmdbStatus = document.getElementById("tmdb-status-text");
+          if (tmdbStatus) tmdbStatus.textContent = "Подключён живой TMDB API (ru-RU)";
+        }
+
+        if (data.currentRole === "p1" || data.currentRole === "p2") {
+          state.currentRole = data.currentRole;
+        }
+
+        if (data.myProfileJson) {
+          try { state.myProfile = { ...state.myProfile, ...JSON.parse(data.myProfileJson) }; } catch {}
+        }
+
+        if (data.localSharedJson) {
+          try { state.shared = { ...state.shared, ...JSON.parse(data.localSharedJson) }; } catch {}
+        }
+
+        syncMyProfileToSlot();
+
+        if (data.roomId) {
+          const roomSnap = await fbSdk.getDoc(getRoomDocRef(data.roomId));
+          if (roomSnap.exists()) {
+            state.roomId = data.roomId;
+            if (roomSnap.data().sharedJson) {
+              try { state.shared = { ...state.shared, ...JSON.parse(roomSnap.data().sharedJson) }; } catch {}
+            }
+            syncMyProfileToSlot();
+            subscribeToRoom(state.roomId);
+            await pushSharedState();
+          }
+        }
+        return true;
+      } catch (err) {
+        console.error("Load settings error:", err);
+        return false;
+      }
+    }
+
+    function syncMyProfileToSlot() {
+      const slot = state.shared.partners[state.currentRole] || {};
+      state.shared.partners[state.currentRole] = {
+        ...slot,
+        uid: fbUser?.uid || slot.uid || "local-user",
+        name: state.myProfile.name || (state.currentRole === "p1" ? "Он" : "Она"),
+        avatar: state.myProfile.avatar || "😎",
+        photoData: state.myProfile.photoData || null,
+        onlineAt: Date.now()
+      };
+    }
+
     function formatFirestoreError(err) {
       const code = err?.code || "";
       let msg = err?.message || "Ошибка подключения к базе";
@@ -935,6 +1082,7 @@
     }
 
     async function pushSharedState() {
+      saveUserSettings();
       if (!state.roomId || !fbDb || !fbUser || !fbSdk) return { ok: false, error: "Firebase не инициализирован" };
       try {
         await fbSdk.setDoc(getRoomDocRef(state.roomId), {
@@ -956,7 +1104,24 @@
         (snap) => {
           if (snap.exists() && snap.data().sharedJson) {
             try {
-              state.shared = { ...state.shared, ...JSON.parse(snap.data().sharedJson) };
+              const incoming = JSON.parse(snap.data().sharedJson);
+              const otherRole = state.currentRole === "p1" ? "p2" : "p1";
+              const prevOther = state.shared.partners?.[otherRole];
+              const nextOther = incoming.partners?.[otherRole];
+
+              state.shared = { ...state.shared, ...incoming };
+
+              // Уведомляем, когда второй участник подключается к комнате
+              if (nextOther?.uid && nextOther.uid !== fbUser?.uid) {
+                const partnerKey = `${roomId}:${nextOther.uid}`;
+                const wasDisconnected = !prevOther?.uid || prevOther.uid !== nextOther.uid;
+                if (wasDisconnected && lastNotifiedPartnerKey !== partnerKey) {
+                  lastNotifiedPartnerKey = partnerKey;
+                  vibrate([40, 30, 60]);
+                  showToast(`${nextOther.name} подключился к комнате`, "success");
+                }
+              }
+
               renderAll();
               if (!document.getElementById("battle-modal").classList.contains("hidden")) BattleEngine.render();
             } catch {}
@@ -980,7 +1145,12 @@
           return;
         }
       }
+      state.currentRole = "p1";
+      state.shared.partners.p2 = { uid: null, name: "Ожидание...", avatar: "🥰", photoData: null, onlineAt: 0 };
+      syncMyProfileToSlot();
       state.roomId = code;
+      lastNotifiedPartnerKey = null;
+
       const saved = await pushSharedState();
       if (!saved.ok) {
         state.roomId = null;
@@ -988,8 +1158,9 @@
         showToast(saved.error, "warn");
         return;
       }
+      saveUserSettings(true);
       subscribeToRoom(code);
-      updateRoomUI();
+      renderAll();
       vibrate([40, 30, 60]);
       showToast(`Комната ${code} создана`, "success");
     }
@@ -1004,11 +1175,24 @@
       try {
         const snap = await fbSdk.getDoc(getRoomDocRef(code));
         if (!snap.exists()) return showToast("Комната с таким кодом не найдена", "warn");
+        if (snap.data().sharedJson) {
+          state.shared = { ...state.shared, ...JSON.parse(snap.data().sharedJson) };
+        }
+        // Автоматически определяем свободный слот для вошедшего пользователя
+        const p1Uid = state.shared.partners?.p1?.uid;
+        if (p1Uid && p1Uid === fbUser?.uid) state.currentRole = "p1";
+        else state.currentRole = "p2";
+
+        syncMyProfileToSlot();
         state.roomId = code;
+        lastNotifiedPartnerKey = null;
+        await pushSharedState();
+        saveUserSettings(true);
         subscribeToRoom(code);
-        updateRoomUI();
+        renderAll();
         vibrate([50, 40, 80]);
-        showToast(`Подключено к комнате ${code}`, "success");
+        const other = state.shared.partners[state.currentRole === "p1" ? "p2" : "p1"];
+        showToast(other?.uid ? `Вы в комнате с ${other.name}` : `Подключено к комнате ${code}`, "success");
       } catch (err) {
         console.error("Join room error:", err);
         showToast(formatFirestoreError(err), "warn");
@@ -1019,12 +1203,71 @@
       if (roomUnsubscribe) roomUnsubscribe();
       roomUnsubscribe = null;
       state.roomId = null;
-      updateRoomUI();
+      lastNotifiedPartnerKey = null;
+      saveUserSettings(true);
+      renderAll();
       showToast("Вы вышли из комнаты", "info");
     }
 
     /* ---------- HELPERS ---------- */
     function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch {} }
+
+    function setBodyScrollLock() {
+      const ids = ["rating-modal", "match-modal", "battle-modal", "guide-modal"];
+      const anyOpen = ids.some(id => !document.getElementById(id)?.classList.contains("hidden"));
+      document.body.classList.toggle("modal-open", anyOpen);
+    }
+
+    function openModalEl(id) {
+      document.getElementById(id)?.classList.remove("hidden");
+      setBodyScrollLock();
+    }
+
+    function closeModalEl(id) {
+      document.getElementById(id)?.classList.add("hidden");
+      setBodyScrollLock();
+    }
+
+    function renderAvatarHTML(profile, sizeClass = "w-5 h-5 text-xs") {
+      if (profile?.photoData) {
+        return `<img src="${profile.photoData}" alt="${profile.name || ""}" class="inline-block ${sizeClass} rounded-full object-cover shrink-0 align-middle" />`;
+      }
+      return `<span class="inline-flex items-center justify-center ${sizeClass} shrink-0 align-middle">${profile?.avatar || "😎"}</span>`;
+    }
+
+    function renderAvatarInto(el, profile) {
+      if (!el) return;
+      if (profile?.photoData) {
+        el.innerHTML = `<img src="${profile.photoData}" alt="${profile.name || ""}" class="w-full h-full object-cover" />`;
+      } else {
+        el.textContent = profile?.avatar || "😎";
+      }
+    }
+
+    function compressImageToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("Ошибка чтения файла"));
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = () => reject(new Error("Неподдерживаемый формат изображения"));
+          img.onload = () => {
+            const size = 160;
+            const canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            const minSide = Math.min(img.width, img.height);
+            const sx = (img.width - minSide) / 2;
+            const sy = (img.height - minSide) / 2;
+            ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+            resolve(canvas.toDataURL("image/jpeg", 0.72));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
 
     function showToast(msg, type = "info") {
       const container = document.getElementById("toast-container");
@@ -1080,7 +1323,7 @@
     const BattleEngine = {
       timerInterval: null,
       open() {
-        document.getElementById("battle-modal").classList.remove("hidden");
+        openModalEl("battle-modal");
         if (!state.shared.battle || state.shared.battle.phase === "winner") {
           const wl = state.shared.watchlist;
           state.shared.battle = {
@@ -1095,7 +1338,7 @@
       },
       close() {
         this.clearTimer();
-        document.getElementById("battle-modal").classList.add("hidden");
+        closeModalEl("battle-modal");
       },
       clearTimer() { if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; } },
       getCandidateList() {
@@ -1170,11 +1413,11 @@
 
               <div class="space-y-2.5">
                 <div class="surface-card rounded-2xl p-3.5 space-y-2">
-                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5"><span>${p1.avatar}</span> ${p1.name} выбирает</div>
+                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p1, "w-5 h-5 text-sm")} <span>${p1.name} выбирает</span></div>
                   <select id="battle-p1-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${opts(b.p1MovieId)}</select>
                 </div>
                 <div class="surface-card rounded-2xl p-3.5 space-y-2">
-                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5"><span>${p2.avatar}</span> ${p2.name} выбирает</div>
+                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p2, "w-5 h-5 text-sm")} <span>${p2.name} выбирает</span></div>
                   <select id="battle-p2-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${opts(b.p2MovieId)}</select>
                 </div>
               </div>
@@ -1217,7 +1460,7 @@
           if (d.status === "ready") {
             container.innerHTML = `
               <div class="surface-card rounded-3xl p-6 text-center space-y-5 view-animate">
-                <div class="w-16 h-16 mx-auto rounded-full bg-white/8 flex items-center justify-center text-3xl">${activeP.avatar}</div>
+                <div class="w-16 h-16 mx-auto rounded-full overflow-hidden bg-white/8 flex items-center justify-center text-3xl">${renderAvatarHTML(activeP, "w-16 h-16 text-3xl")}</div>
                 <div class="space-y-1">
                   <div class="text-xs font-semibold text-zinc-400">Раунд ${d.activePlayer === "p1" ? "1 из 2" : "2 из 2"}</div>
                   <h3 class="text-2xl font-bold text-white">Очередь: ${activeP.name}</h3>
@@ -1252,7 +1495,7 @@
             container.innerHTML = `
               <div class="space-y-5">
                 <div class="flex items-center justify-between surface-card rounded-2xl px-4 py-3 text-xs font-semibold">
-                  <span class="text-white">${activeP.avatar} ${activeP.name}</span>
+                  <span class="text-white flex items-center gap-1.5">${renderAvatarHTML(activeP, "w-5 h-5 text-sm")} ${activeP.name}</span>
                   <span class="text-emerald-400">Очки: ${d.currentScore}</span>
                   <span class="text-[#FF3B5C] font-bold"><span id="math-timer-val">${d.timeLeft}</span> сек</span>
                 </div>
@@ -1285,7 +1528,7 @@
                 <div class="surface-card rounded-full px-3.5 py-2 text-xs font-semibold text-white flex items-center gap-2">
                   <span class="text-zinc-400">Ходит</span>
                   <span class="${d.turn === "p1" ? "mark-x" : "mark-o"} font-extrabold">${d.turn === "p1" ? "X" : "O"}</span>
-                  <span>${turnP.avatar} ${turnP.name}</span>
+                  <span class="flex items-center gap-1">${renderAvatarHTML(turnP, "w-4 h-4 text-xs")} ${turnP.name}</span>
                 </div>
                 <button id="ttt-toggle-size" class="surface-card rounded-full px-3.5 py-2 text-xs font-semibold text-zinc-300">Поле ${d.size}×${d.size}</button>
               </div>
@@ -1339,7 +1582,7 @@
             <div class="space-y-4 view-animate">
               <div class="surface-card rounded-3xl p-5 text-center space-y-2.5">
                 <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Раунд ${roundNum} из ${d.maxTurnsPerPlayer}</div>
-                <h3 class="text-lg font-bold text-white">Ходит: ${turnP.avatar} ${turnP.name}</h3>
+                <h3 class="text-lg font-bold text-white flex items-center justify-center gap-2"><span>Ходит:</span> ${renderAvatarHTML(turnP, "w-6 h-6 text-base")} <span>${turnP.name}</span></h3>
                 <div class="text-3xl font-extrabold text-white tracking-tight">${d.minBound} — ${d.maxBound}</div>
                 <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden relative">
                   <div class="h-full bg-white absolute rounded-full" style="left:${d.minBound - 1}%; width:${Math.max(2, d.maxBound - d.minBound + 1)}%"></div>
@@ -1356,7 +1599,7 @@
                 ${d.history.slice().reverse().map(h => {
                   const pl = h.player === "p1" ? p1 : p2;
                   return `<div class="surface-card rounded-xl px-3.5 py-2.5 flex items-center justify-between text-xs">
-                    <span class="text-zinc-300">${pl.avatar} ${pl.name} · <b class="text-white">${h.val}</b></span>
+                    <span class="text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(pl, "w-4 h-4 text-xs")} ${pl.name} · <b class="text-white">${h.val}</b></span>
                     <span class="font-bold ${h.hint === "Больше" ? "text-amber-400" : "text-sky-400"}">${h.hint}</span>
                   </div>`;
                 }).join("")}
@@ -1393,7 +1636,7 @@
             <div class="surface-card rounded-3xl p-6 text-center space-y-5 view-animate">
               <div class="space-y-1">
                 <div class="text-xs font-semibold uppercase tracking-wider text-amber-400">Победитель</div>
-                <h3 class="text-2xl font-extrabold text-white">${winP.avatar} ${winP.name}</h3>
+                <h3 class="text-2xl font-extrabold text-white flex items-center justify-center gap-2">${renderAvatarHTML(winP, "w-8 h-8 text-2xl")} <span>${winP.name}</span></h3>
               </div>
               <div class="rounded-2xl bg-black/35 p-3 flex items-center gap-3.5 text-left border border-white/10">
                 <img src="${winMovie.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-16 aspect-[2/3] rounded-xl object-cover shrink-0" />
@@ -1430,7 +1673,7 @@
 
     /* ---------- DISCOVER DECK & AMBIENT BACKDROP ---------- */
     async function loadDeck() {
-      document.getElementById("discover-card-mount").innerHTML = `<div class="w-full h-[470px] rounded-[28px] skeleton border border-white/8"></div>`;
+      document.getElementById("discover-card-mount").innerHTML = `<div class="w-full h-[min(450px,56dvh)] min-h-[380px] rounded-[28px] skeleton border border-white/8"></div>`;
       const raw = await MediaAPI.fetchDiscover({
         category: state.filters.category, genre: state.filters.genre, smart: state.filters.smart, watched: state.shared.watched
       });
@@ -1469,7 +1712,7 @@
       const catLabels = { movie: "Фильм", tv: "Сериал", animation: "Мультфильм", anime: "Аниме" };
 
       mount.innerHTML = `
-        <article id="active-swipe-card" class="swipe-card relative w-full h-[470px] rounded-[28px] overflow-hidden border border-white/12 shadow-2xl bg-[#14161C]">
+        <article id="active-swipe-card" class="swipe-card relative w-full h-[min(450px,56dvh)] min-h-[380px] rounded-[28px] overflow-hidden border border-white/12 shadow-2xl bg-[#14161C]">
           <img src="${item.poster}" alt="${item.title}"
             onerror="this.onerror=null; this.src='${fallbackPoster}';"
             class="absolute inset-0 w-full h-full object-cover" />
@@ -1519,14 +1762,31 @@
 
     function attachSwipeGestures(card) {
       if (!card) return;
-      let startX = 0, currentX = 0, dragging = false;
+      let startX = 0, startY = 0, currentX = 0, dragging = false, lockAxis = null;
       const likeBadge = document.getElementById("swipe-badge-like");
       const skipBadge = document.getElementById("swipe-badge-skip");
 
-      const start = (x) => { startX = x; currentX = 0; dragging = true; card.classList.add("dragging"); };
-      const move = (x) => {
+      const start = (x, y) => {
+        startX = x; startY = y; currentX = 0; dragging = true; lockAxis = null;
+      };
+      const move = (x, y) => {
         if (!dragging) return;
-        currentX = x - startX;
+        const dx = x - startX;
+        const dy = y - startY;
+        if (!lockAxis) {
+          if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) {
+            lockAxis = "y"; // Отдаём жест вертикальному скроллу страницы
+            return;
+          }
+          if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+            lockAxis = "x";
+            card.classList.add("dragging");
+          } else {
+            return;
+          }
+        }
+        if (lockAxis !== "x") return;
+        currentX = dx;
         card.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
         likeBadge.style.opacity = currentX > 35 ? Math.min(1, (currentX - 35) / 80) : 0;
         skipBadge.style.opacity = currentX < -35 ? Math.min(1, (-currentX - 35) / 80) : 0;
@@ -1534,8 +1794,11 @@
       const end = () => {
         if (!dragging) return;
         dragging = false;
+        const wasHorizontal = lockAxis === "x";
+        lockAxis = null;
         card.classList.remove("dragging");
         likeBadge.style.opacity = 0; skipBadge.style.opacity = 0;
+        if (!wasHorizontal) return;
         if (currentX > 95) {
           card.style.transform = "translateX(140%) rotate(16deg)"; card.style.opacity = "0";
           setTimeout(handleWantCurrent, 200);
@@ -1547,69 +1810,97 @@
         }
       };
 
-      card.addEventListener("touchstart", (e) => start(e.touches[0].clientX), { passive: true });
-      card.addEventListener("touchmove", (e) => move(e.touches[0].clientX), { passive: true });
+      card.addEventListener("touchstart", (e) => start(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+      card.addEventListener("touchmove", (e) => move(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
       card.addEventListener("touchend", end);
-      card.addEventListener("mousedown", (e) => { if (!e.target.closest("button")) start(e.clientX); });
-      window.addEventListener("mousemove", (e) => move(e.clientX));
-      window.addEventListener("mouseup", end);
+      card.addEventListener("touchcancel", end);
+
+      const onMouseMove = (e) => move(e.clientX, e.clientY);
+      const onMouseUp = () => {
+        end();
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      };
+      card.addEventListener("mousedown", (e) => {
+        if (e.target.closest("button")) return;
+        start(e.clientX, e.clientY);
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+      });
     }
 
-    function handleWantCurrent() {
-      const item = getCurrentCardItem();
-      if (!item) return;
-      const role = state.currentRole;
-      const existing = state.shared.watchlist.find(w => w.id === item.id);
-      let isNewMatch = false;
+    /* ---------- DISCOVER ACTIONS, MATCH & RATING ---------- */
+    let pendingMatchItem = null;
+    let pendingRateItem = null;
+    let selectedRatingVal = 8;
 
-      if (existing) {
-        const hadOther = existing.likes[role === "p1" ? "p2" : "p1"];
-        const hadSelf = existing.likes[role];
-        existing.likes[role] = true;
-        if (hadOther && !hadSelf) isNewMatch = true;
-      } else {
-        state.shared.watchlist.unshift({ ...item, likes: { p1: role === "p1", p2: role === "p2" }, addedAt: Date.now() });
-      }
-      pushSharedState();
-      vibrate(isNewMatch ? [70, 40, 120] : 25);
-      if (isNewMatch) openMatchModal(item);
-      else showToast(`Добавлено в список: «${item.title}»`, "success");
+    function advanceDeck() {
       state.deckIndex++;
       renderDiscoverCard();
-      renderWatchlist();
     }
 
     function handleSkipCurrent() {
       const item = getCurrentCardItem();
       if (!item) return;
       state.skippedIds.add(item.id);
-      state.deckIndex++;
-      renderDiscoverCard();
+      vibrate(15);
+      advanceDeck();
+    }
+
+    function handleWantCurrent() {
+      const item = getCurrentCardItem();
+      if (!item) return;
+      const role = state.currentRole;
+      let existing = state.shared.watchlist.find(w => w.id === item.id);
+      if (existing) {
+        existing.likes = existing.likes || { p1: false, p2: false };
+        existing.likes[role] = true;
+      } else {
+        existing = {
+          ...item,
+          likes: { p1: role === "p1", p2: role === "p2" },
+          addedAt: Date.now()
+        };
+        state.shared.watchlist.unshift(existing);
+      }
+      pushSharedState();
+      renderWatchlist();
+
+      if (existing.likes.p1 && existing.likes.p2) {
+        vibrate([70, 40, 120]);
+        openMatchModal(existing);
+      } else {
+        vibrate(25);
+        showToast(`Добавлено: «${item.title}»`, "success");
+      }
+      advanceDeck();
     }
 
     function handleLuckySpin() {
       const card = document.getElementById("active-swipe-card");
       if (card) card.classList.add("roulette-spinning");
-      vibrate([20, 30, 20, 30, 50]);
-      let ticks = 0;
-      const iv = setInterval(() => {
-        if (state.deck.length > 1) { state.deckIndex = Math.floor(Math.random() * state.deck.length); renderDiscoverCard(); }
-        if (++ticks >= 7) {
-          clearInterval(iv);
-          const picked = getCurrentCardItem();
-          if (picked) showToast(`Выпало: «${picked.title}»`, "info");
-        }
-      }, 90);
-    }
+      vibrate([20, 25, 20, 25, 40]);
 
-    /* ---------- MODALS & LIST RENDERERS ---------- */
-    let pendingMatchItem = null, pendingRateItem = null, selectedRatingVal = 8;
+      setTimeout(() => {
+        if (card) card.classList.remove("roulette-spinning");
+        if (state.deck.length > 1) {
+          let nextIdx = state.deckIndex;
+          while (nextIdx === state.deckIndex) {
+            nextIdx = Math.floor(Math.random() * state.deck.length);
+          }
+          state.deckIndex = nextIdx;
+          renderDiscoverCard();
+          const chosen = getCurrentCardItem();
+          if (chosen) showToast(`Случайный выбор: «${chosen.title}»`, "info");
+        }
+      }, 450);
+    }
 
     function openMatchModal(item) {
       pendingMatchItem = item;
       document.getElementById("match-modal-poster").src = item.poster;
       document.getElementById("match-modal-title").textContent = item.title;
-      document.getElementById("match-modal").classList.remove("hidden");
+      openModalEl("match-modal");
       launchConfetti();
     }
 
@@ -1618,39 +1909,57 @@
       selectedRatingVal = (item.ratings && item.ratings[state.currentRole]) || 8;
       document.getElementById("rating-modal-title").textContent = item.title;
       renderRatingGrid();
-      document.getElementById("rating-modal").classList.remove("hidden");
+      openModalEl("rating-modal");
     }
 
     function renderRatingGrid() {
       document.getElementById("rating-value-display").textContent = selectedRatingVal;
       const grid = document.getElementById("rating-grid");
-      grid.innerHTML = Array.from({ length: 10 }, (_, i) => {
-        const n = i + 1;
-        const active = n === selectedRatingVal;
-        return `<button data-rate="${n}" class="rate-num-btn py-2.5 rounded-xl text-sm font-bold transition active:scale-90 ${active ? "bg-white text-[#0A0B0E]" : "bg-white/6 text-zinc-300 hover:bg-white/12"}">${n}</button>`;
+      grid.innerHTML = Array.from({ length: 10 }, (_, idx) => {
+        const val = idx + 1;
+        const active = val === selectedRatingVal;
+        return `<button data-rval="${val}" class="rate-num-btn py-2.5 rounded-xl text-sm font-bold transition active:scale-90 ${active ? "bg-white text-[#0A0B0E] shadow-lg" : "bg-white/8 text-zinc-300 hover:bg-white/15"}">${val}</button>`;
       }).join("");
       grid.querySelectorAll(".rate-num-btn").forEach(btn => {
-        btn.onclick = () => { selectedRatingVal = Number(btn.dataset.rate); vibrate(15); renderRatingGrid(); };
+        btn.onclick = () => {
+          selectedRatingVal = Number(btn.dataset.rval);
+          vibrate(10);
+          renderRatingGrid();
+        };
       });
     }
 
     function savePendingRating() {
       if (!pendingRateItem) return;
+      const item = pendingRateItem;
       const role = state.currentRole;
-      const existing = state.shared.watched.find(w => w.id === pendingRateItem.id);
-      if (existing) { existing.ratings = existing.ratings || {}; existing.ratings[role] = selectedRatingVal; }
-      else state.shared.watched.unshift({ ...pendingRateItem, watchedAt: new Date().toLocaleDateString("ru-RU"), ratings: { [role]: selectedRatingVal } });
 
-      state.shared.watchlist = state.shared.watchlist.filter(w => w.id !== pendingRateItem.id);
-      if (state.shared.tonightMovie?.id === pendingRateItem.id) state.shared.tonightMovie = null;
+      // Убираем из списка желаемого и из закреплённого фильма вечера
+      state.shared.watchlist = state.shared.watchlist.filter(w => w.id !== item.id);
+      if (state.shared.tonightMovie?.id === item.id) state.shared.tonightMovie = null;
 
+      let existing = state.shared.watched.find(w => w.id === item.id);
+      if (existing) {
+        existing.ratings = existing.ratings || {};
+        existing.ratings[role] = selectedRatingVal;
+      } else {
+        state.shared.watched.unshift({
+          ...item,
+          watchedAt: new Date().toLocaleDateString("ru-RU"),
+          ratings: { [role]: selectedRatingVal }
+        });
+      }
+
+      if (getCurrentCardItem()?.id === item.id) advanceDeck();
+      pendingRateItem = null;
+      closeModalEl("rating-modal");
       pushSharedState();
-      document.getElementById("rating-modal").classList.add("hidden");
+      renderAll();
+      vibrate(30);
       showToast(`Оценка ${selectedRatingVal}/10 сохранена`, "success");
-      if (getCurrentCardItem()?.id === pendingRateItem.id) { state.deckIndex++; renderDiscoverCard(); }
-      renderWatchlist(); renderWatched();
     }
 
+    /* ---------- WATCHLIST, WATCHED & PROFILES RENDER ---------- */
     function renderWatchlist() {
       const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2;
       document.getElementById("wl-filter-p1").textContent = p1.name;
@@ -1714,8 +2023,8 @@
               <div class="text-[11px] text-zinc-400">${item.year} · ${(item.genres || []).slice(0, 2).join(", ")}</div>
               <div class="flex flex-wrap items-center gap-1.5">
                 ${isMatch ? `<span class="px-2 py-0.5 rounded-full bg-[#FF3B5C]/15 text-[#FF3B5C] text-[10px] font-bold">Мэтч 100%</span>` : ""}
-                ${item.likes?.p1 ? `<span class="px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${p1.avatar} ${p1.name}</span>` : ""}
-                ${item.likes?.p2 ? `<span class="px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${p2.avatar} ${p2.name}</span>` : ""}
+                ${item.likes?.p1 ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${renderAvatarHTML(p1, "w-3.5 h-3.5 text-[10px]")} ${p1.name}</span>` : ""}
+                ${item.likes?.p2 ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${renderAvatarHTML(p2, "w-3.5 h-3.5 text-[10px]")} ${p2.name}</span>` : ""}
               </div>
               <div class="flex items-center gap-2 pt-1">
                 ${!myLiked ? `<button data-like="${item.id}" class="wl-like-btn px-2.5 py-1 rounded-full bg-[#FF3B5C] text-white text-[10px] font-bold">Тоже хочу</button>` : ""}
@@ -1763,9 +2072,9 @@
             <div class="text-[11px] text-zinc-400 mt-0.5">${item.watchedAt || "Недавно"} · ${(item.genres || []).slice(0, 2).join(", ")}</div>
             <div class="flex items-center justify-between mt-2">
               <div class="flex items-center gap-2 text-[11px] font-medium text-zinc-300">
-                <span>${p1.avatar} ${item.ratings?.p1 ?? "—"}</span>
+                <span class="inline-flex items-center gap-1">${renderAvatarHTML(p1, "w-4 h-4 text-xs")} ${item.ratings?.p1 ?? "—"}</span>
                 <span class="text-zinc-600">·</span>
-                <span>${p2.avatar} ${item.ratings?.p2 ?? "—"}</span>
+                <span class="inline-flex items-center gap-1">${renderAvatarHTML(p2, "w-4 h-4 text-xs")} ${item.ratings?.p2 ?? "—"}</span>
               </div>
               <button data-editrate="${item.id}" class="edit-watched-rate text-[11px] font-semibold text-white/80 hover:text-white">Изменить</button>
             </div>
@@ -1779,21 +2088,76 @@
 
     function updateHeaderAndProfiles() {
       const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2;
-      const activeP = state.currentRole === "p1" ? p1 : p2;
-      document.getElementById("header-partner-avatar").textContent = activeP.avatar;
-      document.getElementById("header-partner-name").textContent = activeP.name;
-      document.getElementById("p1-avatar-btn").textContent = p1.avatar;
-      document.getElementById("p2-avatar-btn").textContent = p2.avatar;
-      const p1Inp = document.getElementById("p1-name-input"), p2Inp = document.getElementById("p2-name-input");
-      if (document.activeElement !== p1Inp) p1Inp.value = p1.name;
-      if (document.activeElement !== p2Inp) p2Inp.value = p2.name;
+      const myRole = state.currentRole;
+      const otherRole = myRole === "p1" ? "p2" : "p1";
+      const me = state.shared.partners[myRole];
+      const other = state.shared.partners[otherRole];
+
+      // Header: мой профиль
+      renderAvatarInto(document.getElementById("header-partner-avatar"), me);
+      document.getElementById("header-partner-name").textContent = me.name;
+
+      // Header: подключённый партнёр рядом с Live
+      const isOtherConnected = Boolean(state.roomId && other?.uid && other.uid !== fbUser?.uid);
+      const headerOther = document.getElementById("header-other-partner");
+      headerOther.classList.toggle("hidden", !isOtherConnected);
+      headerOther.classList.toggle("inline-flex", isOtherConnected);
+      if (isOtherConnected) {
+        renderAvatarInto(document.getElementById("header-other-avatar"), other);
+        document.getElementById("header-other-name").textContent = other.name;
+      }
+
+      // Settings: мой профиль
+      document.getElementById("my-role-label").textContent = myRole === "p1" ? "Партнёр 1" : "Партнёр 2";
+      renderAvatarInto(document.getElementById("my-profile-avatar-preview"), state.myProfile);
+      const myNameInp = document.getElementById("my-name-input");
+      if (document.activeElement !== myNameInp) myNameInp.value = state.myProfile.name || me.name;
+      document.getElementById("remove-photo-btn").classList.toggle("hidden", !state.myProfile.photoData);
+
+      // Emoji picker
+      const picker = document.getElementById("emoji-picker-grid");
+      picker.innerHTML = AVATARS.map(em => {
+        const active = !state.myProfile.photoData && state.myProfile.avatar === em;
+        return `<button data-emoji="${em}" class="emoji-pick-btn shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-lg transition active:scale-90 ${active ? "bg-white text-black shadow" : "bg-white/6 hover:bg-white/12"}">${em}</button>`;
+      }).join("");
+      picker.querySelectorAll(".emoji-pick-btn").forEach(btn => {
+        btn.onclick = () => {
+          state.myProfile.avatar = btn.dataset.emoji;
+          state.myProfile.photoData = null;
+          syncMyProfileToSlot();
+          renderAll();
+          pushSharedState();
+          vibrate(15);
+        };
+      });
+
+      // Settings: карточка второго участника
+      renderAvatarInto(document.getElementById("other-partner-avatar"), other);
+      document.getElementById("other-partner-name").textContent = isOtherConnected ? other.name : (other?.name || "Ожидание...");
+      const statusBadge = document.getElementById("other-partner-status");
+      const subText = document.getElementById("other-partner-sub");
+      if (isOtherConnected) {
+        statusBadge.textContent = "В сети";
+        statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25";
+        subText.textContent = "Подключён к вашей комнате";
+      } else if (state.roomId) {
+        statusBadge.textContent = "Ожидание";
+        statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300";
+        subText.textContent = `Отправьте код ${state.roomId} второму участнику`;
+      } else {
+        statusBadge.textContent = "Не подключён";
+        statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-zinc-400";
+        subText.textContent = "Создайте комнату или введите код выше";
+      }
 
       document.querySelectorAll(".role-select-btn").forEach(btn => {
-        const isMe = btn.dataset.setrole === state.currentRole;
+        const role = btn.dataset.setrole;
+        const isMe = role === state.currentRole;
+        const label = role === "p1" ? (p1.name || "Слот 1") : (p2.name || "Слот 2");
         btn.className = isMe
-          ? "role-select-btn w-full py-1.5 rounded-xl text-[11px] font-bold bg-white text-[#0A0B0E]"
-          : "role-select-btn w-full py-1.5 rounded-xl text-[11px] font-semibold bg-white/6 text-zinc-400";
-        btn.textContent = isMe ? "Активен" : "Выбрать";
+          ? "role-select-btn py-2 rounded-xl text-[11px] font-bold bg-white text-[#0A0B0E]"
+          : "role-select-btn py-2 rounded-xl text-[11px] font-semibold bg-white/6 text-zinc-400";
+        btn.textContent = isMe ? `Вы: ${label}` : `Переключить: ${label}`;
       });
     }
 
@@ -1838,8 +2202,11 @@
 
       document.getElementById("partner-switcher-btn").onclick = () => {
         state.currentRole = state.currentRole === "p1" ? "p2" : "p1";
+        const slot = state.shared.partners[state.currentRole];
+        state.myProfile = { name: slot.name, avatar: slot.avatar, photoData: slot.photoData || null };
+        saveUserSettings();
         renderAll();
-        showToast(`Профиль: ${state.shared.partners[state.currentRole].name}`, "info");
+        showToast(`Профиль: ${slot.name}`, "info");
       };
 
       document.querySelectorAll(".cat-pill").forEach(btn => {
@@ -1888,19 +2255,19 @@
 
       document.getElementById("open-battle-btn").onclick = () => BattleEngine.open();
       document.getElementById("close-battle-modal").onclick = () => BattleEngine.close();
-      document.getElementById("close-rating-modal").onclick = () => document.getElementById("rating-modal").classList.add("hidden");
+      document.getElementById("close-rating-modal").onclick = () => closeModalEl("rating-modal");
       document.getElementById("confirm-rating-btn").onclick = savePendingRating;
-      document.getElementById("close-match-modal").onclick = () => document.getElementById("match-modal").classList.add("hidden");
+      document.getElementById("close-match-modal").onclick = () => closeModalEl("match-modal");
       document.getElementById("match-pin-btn").onclick = () => {
         if (pendingMatchItem) {
           state.shared.tonightMovie = { ...pendingMatchItem, pinnedAt: Date.now() };
           pushSharedState(); renderWatchlist();
           showToast(`Закреплено на вечер: «${pendingMatchItem.title}»`, "success");
         }
-        document.getElementById("match-modal").classList.add("hidden");
+        closeModalEl("match-modal");
       };
 
-      // Live Search
+      // Live Search on Watched tab
       let searchTimer = null;
       const searchInput = document.getElementById("watched-search-input");
       const searchClear = document.getElementById("watched-search-clear");
@@ -1916,45 +2283,107 @@
           if (!items.length) return (searchResults.innerHTML = `<div class="text-xs text-zinc-500 text-center py-3">Ничего не найдено</div>`);
           searchResults.innerHTML = items.map(i => `
             <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition">
-              <img src="${i.poster}" onerror="this.src='https://placehold.co/100x150/14161C/ffffff?text=Film'" class="w-10 aspect-[2/3] rounded-lg object-cover shrink-0" />
+              <img src="${i.poster}" onerror="this.src='https://placehold.co/100x150/14161C/ffffff?text=Film'" class="w-9 aspect-[2/3] rounded-lg object-cover shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="text-xs font-bold text-white truncate">${i.title}</div>
-                <div class="text-[11px] text-zinc-400">${i.year} · ★ ${i.rating}</div>
+                <div class="text-[10px] text-zinc-400">${i.year} · ★ ${i.rating}</div>
               </div>
-              <button data-sr="${i.id}" class="sr-add-btn px-3 py-1.5 rounded-full bg-white text-[#0A0B0E] text-[10px] font-bold shrink-0">Оценить</button>
+              <button data-sid="${i.id}" class="search-rate-btn px-2.5 py-1.5 rounded-lg bg-white text-[#0A0B0E] text-[10px] font-bold shrink-0">Оценить</button>
             </div>
           `).join("");
-          searchResults.querySelectorAll(".sr-add-btn").forEach(btn => {
-            btn.onclick = () => { const f = items.find(x => x.id === btn.dataset.sr); if (f) openRatingModal(f); };
+          searchResults.querySelectorAll(".search-rate-btn").forEach(btn => {
+            btn.onclick = () => {
+              const found = items.find(x => x.id === btn.dataset.sid);
+              if (found) {
+                searchResults.classList.add("hidden");
+                searchInput.value = "";
+                searchClear.classList.add("hidden");
+                openRatingModal(found);
+              }
+            };
           });
         }, 300);
       };
-      searchClear.onclick = () => { searchInput.value = ""; searchClear.classList.add("hidden"); searchResults.classList.add("hidden"); };
+      searchClear.onclick = () => {
+        searchInput.value = "";
+        searchClear.classList.add("hidden");
+        searchResults.classList.add("hidden");
+      };
 
-      // Settings
+      // Room controls
       document.getElementById("create-room-btn").onclick = createRoom;
-      document.getElementById("join-room-btn").onclick = () => joinRoom(document.getElementById("join-room-input").value);
+      document.getElementById("join-room-btn").onclick = () => joinRoom(document.getElementById("room-code-input").value);
+      document.getElementById("room-code-input").onkeydown = (e) => {
+        if (e.key === "Enter") joinRoom(e.target.value);
+      };
       document.getElementById("leave-room-btn").onclick = leaveRoom;
       document.getElementById("copy-room-code-btn").onclick = () => {
         if (!state.roomId) return;
         const ta = document.createElement("textarea");
-        ta.value = state.roomId; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
-        showToast(`Код ${state.roomId} скопирован`, "success");
+        ta.value = state.roomId;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast(`Код ${state.roomId} скопирован`, "success");
+        } catch {
+          showToast(`Код комнаты: ${state.roomId}`, "info");
+        }
+        document.body.removeChild(ta);
       };
 
-      document.getElementById("p1-name-input").oninput = (e) => { state.shared.partners.p1.name = e.target.value || "Он"; renderAll(); pushSharedState(); };
-      document.getElementById("p2-name-input").oninput = (e) => { state.shared.partners.p2.name = e.target.value || "Она"; renderAll(); pushSharedState(); };
-      const cycleAv = (r) => { const c = state.shared.partners[r].avatar; state.shared.partners[r].avatar = AVATARS[(AVATARS.indexOf(c) + 1) % AVATARS.length]; renderAll(); pushSharedState(); };
-      document.getElementById("p1-avatar-btn").onclick = () => cycleAv("p1");
-      document.getElementById("p2-avatar-btn").onclick = () => cycleAv("p2");
+      // Profile controls
+      document.getElementById("my-name-input").oninput = (e) => {
+        state.myProfile.name = e.target.value.trim() || (state.currentRole === "p1" ? "Он" : "Она");
+        syncMyProfileToSlot();
+        renderAll();
+        pushSharedState();
+      };
+
+      document.getElementById("my-photo-input").onchange = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+          const dataUrl = await compressImageToDataUrl(file);
+          state.myProfile.photoData = dataUrl;
+          syncMyProfileToSlot();
+          renderAll();
+          pushSharedState();
+          showToast("Фото профиля обновлено", "success");
+        } catch (err) {
+          showToast(err.message || "Не удалось загрузить фото", "warn");
+        } finally {
+          e.target.value = "";
+        }
+      };
+
+      document.getElementById("remove-photo-btn").onclick = () => {
+        state.myProfile.photoData = null;
+        syncMyProfileToSlot();
+        renderAll();
+        pushSharedState();
+        showToast("Фото удалено", "info");
+      };
+
       document.querySelectorAll(".role-select-btn").forEach(btn => {
-        btn.onclick = () => { state.currentRole = btn.dataset.setrole; renderAll(); showToast(`Активный профиль: ${state.shared.partners[state.currentRole].name}`, "info"); };
+        btn.onclick = () => {
+          state.currentRole = btn.dataset.setrole;
+          const slot = state.shared.partners[state.currentRole];
+          state.myProfile = { name: slot.name, avatar: slot.avatar, photoData: slot.photoData || null };
+          saveUserSettings();
+          renderAll();
+          showToast(`Активный профиль: ${slot.name}`, "info");
+        };
       });
 
+      // TMDB & Firebase config
       document.getElementById("save-tmdb-key-btn").onclick = () => {
         const key = document.getElementById("tmdb-key-input").value.trim();
         MediaAPI.apiKey = key;
         document.getElementById("tmdb-status-text").textContent = key ? "Подключён живой TMDB API (ru-RU)" : "Активна встроенная демо-база (18 тайтлов)";
+        saveUserSettings(true);
         showToast(key ? "Ключ TMDB сохранён" : "Включена демо-база", "success");
         loadDeck();
       };
@@ -1965,16 +2394,22 @@
         try {
           const parsed = parseFirebaseConfigInput(raw);
           const res = await initFirebase(parsed);
-          showToast(res.ok ? `Подключён проект ${parsed.projectId}` : res.error, res.ok ? "success" : "warn");
-          updateRoomUI();
+          if (res.ok) {
+            showToast("Firebase подключён", "success");
+            const restored = await loadUserSettings();
+            renderAll();
+            if (restored && MediaAPI.apiKey) loadDeck();
+          } else {
+            showToast(res.error || "Ошибка подключения Firebase", "warn");
+          }
         } catch (err) {
-          showToast("Не удалось разобрать конфиг: проверьте скобки { }", "warn");
+          showToast(err.message || "Неверный формат Firebase Config", "warn");
         }
       };
 
-      document.getElementById("open-guide-btn").onclick = () => document.getElementById("guide-modal").classList.remove("hidden");
-      document.getElementById("close-guide-modal").onclick = () => document.getElementById("guide-modal").classList.add("hidden");
-      document.getElementById("guide-ok-btn").onclick = () => document.getElementById("guide-modal").classList.add("hidden");
+      document.getElementById("open-guide-btn").onclick = () => openModalEl("guide-modal");
+      document.getElementById("close-guide-modal").onclick = () => closeModalEl("guide-modal");
+      document.getElementById("guide-ok-btn").onclick = () => closeModalEl("guide-modal");
     }
 
     async function bootApp() {
@@ -1983,8 +2418,14 @@
       if (fbInput) fbInput.value = JSON.stringify(DEFAULT_USER_FIREBASE_CONFIG, null, 2);
       renderAll();
       loadDeck();
-      await initFirebase();
-      updateRoomUI();
+      const fbRes = await initFirebase();
+      if (fbRes.ok) {
+        const restored = await loadUserSettings();
+        renderAll();
+        if (restored && MediaAPI.apiKey) loadDeck();
+      } else {
+        updateRoomUI();
+      }
     }
 
     if (document.readyState === "loading") {

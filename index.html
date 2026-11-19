@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0A0B0E" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ПЧиХ" />
+  <title>ПЧиХ — Посмотреть, Что Хотим?</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'] },
+          colors: {
+            canvas: '#0A0B0E',
+            elevated: '#14161C',
+            card: '#181B22',
+            crimson: '#FF3B5C',
+            gold: '#F5B041',
+          }
+        }
+      }
+    };
+  </script>
+
+  <link id="pwa-manifest-link" rel="manifest" href="" />
+
+  <style>
+    /* ==========================================================================
+       EDITORIAL CINEMA DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --bg-canvas: #0A0B0E;
+      --surface-1: #13151B;
+      --surface-2: #1B1E26;
+      --hairline: rgba(255, 255, 255, 0.08);
+      --hairline-strong: rgba(255, 255, 255, 0.14);
+      --accent-love: #FF3B5C;
+      --accent-gold: #F5B041;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-canvas);
+      color: #F4F5F7;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overscroll-behavior-y: none;
+      overflow-x: hidden;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Dynamic Ambient Backdrop (mirrors current movie poster color) */
+    #ambient-backdrop {
+      position: fixed;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 65%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(80px) saturate(1.4);
+      opacity: 0.22;
+      transition: background-image 0.7s ease, opacity 0.5s ease;
+      pointer-events: none;
+      z-index: 0;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+    }
+
+    /* Refined Surface Materials */
+    .surface-card {
+      background: rgba(22, 24, 31, 0.76);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--hairline);
+    }
+
+    .surface-dock {
+      background: rgba(18, 20, 26, 0.86);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--hairline-strong);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.75);
+    }
+
+    .btn-primary {
+      background: #FFFFFF;
+      color: #0A0B0E;
+      transition: transform 0.14s ease, opacity 0.15s ease;
+    }
+    .btn-primary:active { transform: scale(0.96); }
+
+    .btn-love {
+      background: linear-gradient(135deg, #FF3B5C 0%, #E11D48 100%);
+      color: #FFFFFF;
+      box-shadow: 0 10px 24px -6px rgba(255, 59, 92, 0.48);
+      transition: transform 0.14s ease, box-shadow 0.2s ease;
+    }
+    .btn-love:active { transform: scale(0.94); }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .pt-safe { padding-top: calc(var(--safe-top) + 12px); }
+    .pb-dock { padding-bottom: calc(var(--safe-bottom) + 104px); }
+    .bottom-dock-safe { bottom: calc(var(--safe-bottom) + 14px); }
+
+    /* Skeleton Loader */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #14161c 25%, #1e212b 50%, #14161c 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+    }
+
+    /* Subtle View Transition */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .view-animate {
+      animation: fadeUp 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Swipe Card Physics */
+    .swipe-card {
+      touch-action: pan-y;
+      user-select: none;
+      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s ease;
+      will-change: transform;
+    }
+    .swipe-card.dragging { transition: none !important; }
+
+    /* Poster Vignette */
+    .poster-vignette {
+      background: linear-gradient(
+        to top,
+        rgba(10, 11, 14, 0.98) 0%,
+        rgba(10, 11, 14, 0.82) 28%,
+        rgba(10, 11, 14, 0.20) 58%,
+        rgba(10, 11, 14, 0.35) 100%
+      );
+    }
+
+    /* Tic-Tac-Toe Accents */
+    .mark-x { color: #60A5FA; text-shadow: 0 0 18px rgba(96, 165, 250, 0.45); }
+    .mark-o { color: #FF3B5C; text-shadow: 0 0 18px rgba(255, 59, 92, 0.45); }
+    .win-cell {
+      background: rgba(255, 255, 255, 0.12) !important;
+      border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    @keyframes roulettePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.975); }
+    }
+    .roulette-spinning { animation: roulettePulse 0.15s ease-in-out infinite; }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body class="selection:bg-white/20">
+  <!-- Dynamic Ambient Movie Glow -->
+  <div id="ambient-backdrop"></div>
+  <!-- Confetti Layer -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Mobile-First App Shell -->
+  <div id="app-shell" class="relative z-10 max-w-md mx-auto min-h-[100dvh] flex flex-col">
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="sticky top-0 z-30 px-4 pt-safe pb-3 flex items-center justify-between bg-gradient-to-b from-[#0A0B0E] via-[#0A0B0E]/90 to-transparent">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-[10px] bg-white text-[#0A0B0E] flex items-center justify-center shadow-md">
+          <!-- Minimal Film Mark -->
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-[17px] font-extrabold tracking-tight text-white leading-none">ПЧиХ</h1>
+          <span id="room-badge-header" class="hidden items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Live
+          </span>
+        </div>
+      </div>
+
+      <!-- Segmented Partner Switcher -->
+      <button id="partner-switcher-btn" class="surface-card rounded-full pl-1.5 pr-3 py-1 flex items-center gap-2 active:scale-95 transition" title="Сменить активного партнёра">
+        <span id="header-partner-avatar" class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs">😎</span>
+        <span id="header-partner-name" class="text-xs font-semibold text-white">Он</span>
+        <svg class="w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- ==================== MAIN VIEWS ==================== -->
+    <main id="main-content" class="flex-1 px-4 pt-1 pb-dock">
+
+      <!-- ============================================================
+           SCREEN 1: ПОДБОР (СВАЙПЫ И РУЛЕТКА)
+           ============================================================ -->
+      <section id="view-discover" class="view-section view-animate space-y-3">
+        <!-- Clean Filter Bar -->
+        <div class="space-y-2">
+          <div id="category-pills" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <button data-cat="all" class="cat-pill active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition bg-white text-[#0A0B0E]">Все</button>
+            <button data-cat="movie" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Фильмы</button>
+            <button data-cat="tv" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Сериалы</button>
+            <button data-cat="animation" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Мультфильмы</button>
+            <button data-cat="anime" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Аниме</button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+              <select id="genre-select" class="w-full appearance-none surface-card rounded-xl pl-3.5 pr-8 py-2 text-xs font-medium text-zinc-200 bg-[#14161C] focus:outline-none focus:border-white/30">
+                <option value="all">Любой жанр и настроение</option>
+                <option value="Комедия">Комедия / Лёгкое</option>
+                <option value="Фантастика">Фантастика</option>
+                <option value="Триллер">Триллер / Детектив</option>
+                <option value="Драма">Драма</option>
+                <option value="Романтика">Романтика</option>
+                <option value="Фэнтези">Фэнтези / Приключения</option>
+                <option value="Боевик">Боевик / Экшен</option>
+                <option value="Ужасы">Ужасы / Мистика</option>
+              </select>
+              <svg class="pointer-events-none w-3.5 h-3.5 text-zinc-400 absolute right-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+
+            <button id="smart-mode-btn" class="surface-card rounded-xl px-3 py-2 text-xs font-semibold text-zinc-300 flex items-center gap-1.5 shrink-0 transition active:scale-95">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/>
+              </svg>
+              <span>Для вас</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Smart Recommendations Status -->
+        <div id="smart-mode-banner" class="hidden rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200 flex items-center justify-between">
+          <span>Подборка по вашим высоким оценкам</span>
+          <button id="smart-refresh-btn" class="font-semibold text-amber-300 underline underline-offset-2">Обновить</button>
+        </div>
+
+        <!-- Editorial Poster Card Stage -->
+        <div id="card-stage" class="relative w-full min-h-[470px] flex items-center justify-center">
+          <!-- Subtle Swipe Overlays -->
+          <div id="swipe-badge-like" class="pointer-events-none opacity-0 absolute top-6 left-5 z-20 px-3.5 py-1 rounded-full bg-emerald-500 text-white font-bold text-xs tracking-wide uppercase shadow-lg -rotate-6 transition-opacity">
+            Хочу посмотреть
+          </div>
+          <div id="swipe-badge-skip" class="pointer-events-none opacity-0 absolute top-6 right-5 z-20 px-3.5 py-1 rounded-full bg-zinc-900/90 border border-white/20 text-zinc-200 font-bold text-xs tracking-wide uppercase shadow-lg rotate-6 transition-opacity">
+            Пропустить
+          </div>
+
+          <div id="discover-card-mount" class="w-full"></div>
+        </div>
+
+        <!-- Tactile Action Dock -->
+        <div class="flex items-center justify-between gap-2.5 pt-1 px-1">
+          <!-- Skip -->
+          <button id="btn-skip" class="surface-card w-14 h-14 rounded-full flex items-center justify-center text-zinc-300 hover:text-white active:scale-90 transition" title="Пропустить">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6L6 18"/><path d="M6 6l12 12"/>
+            </svg>
+          </button>
+
+          <!-- Watched -->
+          <button id="btn-watched" class="surface-card flex-1 h-12 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-semibold text-zinc-200 hover:bg-white/10 active:scale-95 transition">
+            <svg class="w-4 h-4 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            <span>Смотрели</span>
+          </button>
+
+          <!-- Roulette / Lucky -->
+          <button id="btn-lucky" class="surface-card w-12 h-12 rounded-2xl flex items-center justify-center text-amber-300 hover:bg-white/10 active:scale-90 transition" title="Случайный выбор">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>
+            </svg>
+          </button>
+
+          <!-- Want to Watch (Primary) -->
+          <button id="btn-want" class="btn-love w-14 h-14 rounded-full flex items-center justify-center text-white" title="Хочу посмотреть">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN 2: НАШ СПИСОК И БАТТЛ ЗА ПУЛЬТ
+           ============================================================ -->
+      <section id="view-watchlist" class="view-section hidden view-animate space-y-4">
+        <!-- Tonight's Winner Banner -->
+        <div id="tonight-movie-banner" class="hidden"></div>
+
+        <!-- Header & Battle CTA -->
+        <div class="flex items-end justify-between pt-1">
+          <div>
+            <h2 class="text-xl font-bold tracking-tight text-white">Наш список</h2>
+            <p id="watchlist-stats" class="text-xs text-zinc-400 mt-0.5">0 кандидатов • 0 совпадений</p>
+          </div>
+          <button id="open-battle-btn" class="btn-primary px-3.5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/>
+            </svg>
+            <span>Баттл за пульт</span>
+          </button>
+        </div>
+
+        <!-- Watchlist Filters -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          <button data-wlfilter="all" class="wl-filter-btn active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-[#0A0B0E]">Все</button>
+          <button data-wlfilter="matches" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Совпадения</button>
+          <button data-wlfilter="p1" id="wl-filter-p1" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Он</button>
+          <button data-wlfilter="p2" id="wl-filter-p2" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Она</button>
+        </div>
+
+        <!-- List -->
+        <div id="watchlist-container" class="space-y-2.5"></div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN 3: ИСТОРИЯ ПРОСМОТРОВ И ПОИСК
+           ============================================================ -->
+      <section id="view-watched" class="view-section hidden view-animate space-y-4">
+        <div class="pt-1">
+          <h2 class="text-xl font-bold tracking-tight text-white">Просмотрено</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">Ваши оценки обучают персональные рекомендации</p>
+        </div>
+
+        <!-- Apple-Style Search Input -->
+        <div class="space-y-2">
+          <div class="relative">
+            <svg class="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input id="watched-search-input" type="text" placeholder="Найти и оценить фильм, сериал, аниме..."
+              class="w-full rounded-2xl bg-[#14161C] border border-white/10 pl-10 pr-9 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-white/30 transition" />
+            <button id="watched-search-clear" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white p-1">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div id="watched-search-results" class="hidden surface-card rounded-2xl p-2 space-y-1.5 max-h-64 overflow-y-auto"></div>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <span class="text-xs font-semibold text-zinc-400">История пары</span>
+          <span id="watched-count-badge" class="text-xs font-semibold text-zinc-300">0 тайтлов</span>
+        </div>
+        <div id="watched-container" class="space-y-2.5"></div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN 4: КОМНАТА И НАСТРОЙКИ
+           ============================================================ -->
+      <section id="view-settings" class="view-section hidden view-animate space-y-4">
+        <div class="pt-1">
+          <h2 class="text-xl font-bold tracking-tight text-white">Комната и настройки</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">Синхронизация двух смартфонов и база фильмов</p>
+        </div>
+
+        <!-- Room Sync Card -->
+        <div class="surface-card rounded-3xl p-4 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-white/8 flex items-center justify-center text-white">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Синхронизация пары</h3>
+                <p class="text-[11px] text-zinc-400">Общий список и игры по коду</p>
+              </div>
+            </div>
+            <span id="sync-status-pill" class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10">Локально</span>
+          </div>
+
+          <!-- Active Room Box -->
+          <div id="active-room-box" class="hidden rounded-2xl bg-emerald-500/10 border border-emerald-500/25 p-3.5 flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Код комнаты</div>
+              <div id="active-room-code" class="text-2xl font-extrabold font-mono tracking-[0.18em] text-white mt-0.5">------</div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button id="copy-room-code-btn" class="px-3 py-2 rounded-xl bg-emerald-500/20 text-emerald-300 text-xs font-semibold active:scale-95">Копировать</button>
+              <button id="leave-room-btn" class="px-3 py-2 rounded-xl bg-white/8 text-zinc-300 text-xs font-semibold active:scale-95">Выйти</button>
+            </div>
+          </div>
+
+          <!-- Join / Create Controls -->
+          <div id="room-join-controls" class="space-y-2.5">
+            <button id="create-room-btn" class="w-full btn-primary py-3 rounded-2xl text-xs font-bold">
+              Создать комнату
+            </button>
+            <div class="flex items-center gap-2">
+              <input id="join-room-input" type="text" maxlength="6" placeholder="Код комнаты (6 знаков)"
+                class="flex-1 rounded-2xl bg-black/35 border border-white/10 px-3.5 py-2.5 text-xs font-bold font-mono uppercase tracking-widest text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+              <button id="join-room-btn" class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold active:scale-95 transition">Войти</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profiles -->
+        <div class="surface-card rounded-3xl p-4 space-y-3">
+          <h3 class="text-sm font-bold text-white">Профили</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="rounded-2xl bg-black/30 border border-white/6 p-3 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-zinc-400">Партнёр 1</span>
+                <button id="p1-avatar-btn" class="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-base active:scale-90 transition">😎</button>
+              </div>
+              <input id="p1-name-input" type="text" value="Он" maxlength="16"
+                class="w-full rounded-xl bg-white/5 border border-white/10 px-2.5 py-1.5 text-xs font-semibold text-white focus:outline-none focus:border-white/30" />
+              <button data-setrole="p1" class="role-select-btn w-full py-1.5 rounded-xl text-[11px] font-semibold">Выбрать</button>
+            </div>
+
+            <div class="rounded-2xl bg-black/30 border border-white/6 p-3 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium text-zinc-400">Партнёр 2</span>
+                <button id="p2-avatar-btn" class="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-base active:scale-90 transition">🥰</button>
+              </div>
+              <input id="p2-name-input" type="text" value="Она" maxlength="16"
+                class="w-full rounded-xl bg-white/5 border border-white/10 px-2.5 py-1.5 text-xs font-semibold text-white focus:outline-none focus:border-white/30" />
+              <button data-setrole="p2" class="role-select-btn w-full py-1.5 rounded-xl text-[11px] font-semibold">Выбрать</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- API Keys & Firebase -->
+        <div class="surface-card rounded-3xl p-4 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white">Интеграции (TMDB / Firebase)</h3>
+            <button id="open-guide-btn" class="text-xs font-semibold text-amber-400 hover:text-amber-300">Инструкция</button>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-medium text-zinc-400">TMDB API Key (v3)</label>
+            <div class="flex gap-2">
+              <input id="tmdb-key-input" type="password" placeholder="Вставьте ключ TMDB..."
+                class="flex-1 rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+              <button id="save-tmdb-key-btn" class="px-4 py-2 rounded-xl bg-white text-[#0A0B0E] text-xs font-bold active:scale-95">ОК</button>
+            </div>
+            <p id="tmdb-status-text" class="text-[11px] text-zinc-500">Активна встроенная демо-база (18 тайтлов)</p>
+          </div>
+
+          <div class="space-y-1.5 pt-3 border-t border-white/8">
+            <label class="text-[11px] font-medium text-zinc-400">Firebase Config JSON (для GitHub Pages)</label>
+            <textarea id="firebase-config-input" rows="3" placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "..."}'
+              class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-[11px] font-mono text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-white/30"></textarea>
+            <button id="save-firebase-btn" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white active:scale-95 transition">
+              Подключить Firebase
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== FLOATING PILL TAB BAR ==================== -->
+    <nav class="fixed left-4 right-4 bottom-dock-safe z-40 pointer-events-none">
+      <div class="max-w-sm mx-auto surface-dock rounded-full p-1.5 grid grid-cols-4 gap-1 pointer-events-auto">
+        <button data-tab="discover" class="nav-tab active flex flex-col items-center justify-center gap-0.5 py-2 rounded-full bg-white text-[#0A0B0E] transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/>
+          </svg>
+          <span class="text-[10px] font-bold">Подбор</span>
+        </button>
+
+        <button data-tab="watchlist" class="nav-tab relative flex flex-col items-center justify-center gap-0.5 py-2 rounded-full text-zinc-400 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="text-[10px] font-semibold">Список</span>
+          <span id="nav-watchlist-badge" class="hidden absolute top-1 right-4 min-w-[16px] h-4 px-1 rounded-full bg-[#FF3B5C] text-white text-[9px] font-bold flex items-center justify-center">0</span>
+        </button>
+
+        <button data-tab="watched" class="nav-tab flex flex-col items-center justify-center gap-0.5 py-2 rounded-full text-zinc-400 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span class="text-[10px] font-semibold">История</span>
+        </button>
+
+        <button data-tab="settings" class="nav-tab flex flex-col items-center justify-center gap-0.5 py-2 rounded-full text-zinc-400 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.85 1 1.51 1H21a2 2 0 0 1 0 4h-.09c-.66 0-1.25.4-1.51 1z"/>
+          </svg>
+          <span class="text-[10px] font-semibold">Комната</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Rating Sheet -->
+  <div id="rating-modal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-end sm:items-center justify-center p-4">
+    <div class="surface-card w-full max-w-sm rounded-3xl p-5 space-y-5 border-white/15 view-animate bg-[#14161C]">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <span class="text-[11px] font-semibold text-zinc-400">Оценить просмотренное</span>
+          <h3 id="rating-modal-title" class="text-lg font-bold text-white leading-tight mt-0.5">Название</h3>
+        </div>
+        <button id="close-rating-modal" class="w-8 h-8 rounded-full bg-white/8 text-zinc-300 flex items-center justify-center">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="flex items-baseline justify-center gap-1 py-1">
+        <span id="rating-value-display" class="text-5xl font-extrabold text-white tracking-tight">8</span>
+        <span class="text-lg font-semibold text-zinc-500">/ 10</span>
+      </div>
+
+      <div id="rating-grid" class="grid grid-cols-5 gap-2"></div>
+
+      <button id="confirm-rating-btn" class="w-full btn-primary py-3.5 rounded-2xl text-sm font-bold">
+        Сохранить оценку
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. Match Celebration Modal -->
+  <div id="match-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-lg flex items-center justify-center p-5">
+    <div class="surface-card w-full max-w-sm rounded-3xl p-6 text-center space-y-5 border-white/15 view-animate bg-[#14161C]">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FF3B5C]/15 border border-[#FF3B5C]/30 text-[#FF3B5C] text-[11px] font-bold uppercase tracking-wider">
+        100% Совпадение
+      </div>
+      <div class="space-y-1">
+        <h3 class="text-xl font-bold text-white">Вы оба хотите это посмотреть</h3>
+        <p id="match-modal-title" class="text-sm font-medium text-zinc-300"></p>
+      </div>
+      <div class="w-36 aspect-[2/3] mx-auto rounded-2xl overflow-hidden shadow-2xl border border-white/15">
+        <img id="match-modal-poster" src="" alt="" class="w-full h-full object-cover" />
+      </div>
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button id="match-pin-btn" class="btn-love py-3 rounded-2xl text-xs font-bold">Смотрим сегодня</button>
+        <button id="close-match-modal" class="bg-white/8 hover:bg-white/12 py-3 rounded-2xl text-xs font-semibold text-zinc-200 transition">Искать дальше</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Battle Arena Modal -->
+  <div id="battle-modal" class="hidden fixed inset-0 z-50 bg-[#0A0B0E]/96 backdrop-blur-xl overflow-y-auto">
+    <div class="max-w-md mx-auto min-h-[100dvh] p-4 pt-safe pb-8 flex flex-col">
+      <div class="flex items-center justify-between pb-3.5 border-b border-white/10">
+        <h2 class="text-base font-bold text-white tracking-tight">Баттл за пульт</h2>
+        <button id="close-battle-modal" class="px-3 py-1.5 rounded-full bg-white/8 text-xs font-semibold text-zinc-300 hover:text-white">Закрыть</button>
+      </div>
+      <div id="battle-content" class="flex-1 flex flex-col justify-center py-5"></div>
+    </div>
+  </div>
+
+  <!-- 4. Setup Guide Modal -->
+  <div id="guide-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="surface-card w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[85dvh] overflow-y-auto border-white/15 view-animate bg-[#14161C]">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">Где взять ключи</h3>
+        <button id="close-guide-modal" class="w-8 h-8 rounded-full bg-white/8 text-zinc-300 flex items-center justify-center">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-zinc-300 leading-relaxed">
+        <div class="rounded-2xl bg-white/5 p-3.5 space-y-1.5">
+          <div class="font-bold text-white">1. Firebase Config JSON</div>
+          <p>1. Откройте <b>console.firebase.google.com</b> и создайте проект.</p>
+          <p>2. В меню слева: <b>Build → Firestore Database</b> (создайте базу) и <b>Authentication → Sign-in method → Anonymous</b> (включите).</p>
+          <p>3. Нажмите на шестерёнку <b>Project Settings</b> вверху слева → пролистайте вниз до <b>Your apps</b> → нажмите иконку <b>&lt;/&gt; (Web)</b> → зарегистрируйте приложение.</p>
+          <p>4. Скопируйте объект <code>firebaseConfig</code> и оберните ключи в двойные кавычки (валидный JSON).</p>
+        </div>
+
+        <div class="rounded-2xl bg-white/5 p-3.5 space-y-1.5">
+          <div class="font-bold text-white">2. TMDB API Key (бесплатно)</div>
+          <p>1. Зайдите на <b>themoviedb.org</b> → Настройки профиля → <b>API</b>.</p>
+          <p>2. Запросите ключ Developer и скопируйте <b>API Key (v3 auth)</b>.</p>
+        </div>
+      </div>
+
+      <button id="guide-ok-btn" class="w-full btn-primary py-3 rounded-2xl text-xs font-bold">Понятно</button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-[70] w-[90%] max-w-sm pointer-events-none space-y-2"></div>
+
+  <!-- ==================== APPLICATION LOGIC ==================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    /* ---------- PWA MANIFEST ---------- */
+    (function injectManifest() {
+      try {
+        const manifest = {
+          name: "ПЧиХ — Посмотреть, Что Хотим?",
+          short_name: "ПЧиХ",
+          start_url: ".",
+          display: "standalone",
+          background_color: "#0A0B0E",
+          theme_color: "#0A0B0E",
+          icons: [
+            { src: "https://placehold.co/192x192/14161C/ffffff?text=%D0%9F%D0%A7", sizes: "192x192", type: "image/png" },
+            { src: "https://placehold.co/512x512/14161C/ffffff?text=%D0%9F%D0%A7", sizes: "512x512", type: "image/png" }
+          ]
+        };
+        const blob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
+        const link = document.getElementById("pwa-manifest-link");
+        if (link) link.href = URL.createObjectURL(blob);
+      } catch {}
+    })();
+
+    /* ---------- DEMO CATALOG & TMDB API ---------- */
+    const DEMO_CATALOG = [
+      { id: "movie-157336", tmdbId: 157336, mediaType: "movie", category: "movie", title: "Интерстеллар", year: "2014", rating: 8.4, runtime: "2 ч 49 м", genres: ["Фантастика", "Драма"], poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", overview: "Когда засуха, пыльные бури и вымирание растений приводят человечество к продовольственному кризису, коллектив исследователей отправляется сквозь червоточину в путешествие, чтобы найти новую планету." },
+      { id: "movie-693134", tmdbId: 693134, mediaType: "movie", category: "movie", title: "Дюна: Часть вторая", year: "2024", rating: 8.2, runtime: "2 ч 46 м", genres: ["Фантастика", "Боевик", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg", overview: "Пол Атрейдес объединяется с Чани и фрименами, чтобы отомстить заговорщикам, уничтожившим его семью, и предотвратить ужасное будущее, которое видит лишь он." },
+      { id: "movie-496243", tmdbId: 496243, mediaType: "movie", category: "movie", title: "Паразиты", year: "2019", rating: 8.5, runtime: "2 ч 12 м", genres: ["Триллер", "Комедия", "Драма"], poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg", overview: "Обычное корейское семейство Кимов жизнь не балует. Однажды старший сын получает шанс устроиться репетитором в особняк богатой семьи Пак, и у Кимов созревает дерзкий план." },
+      { id: "movie-27205", tmdbId: 27205, mediaType: "movie", category: "movie", title: "Начало", year: "2010", rating: 8.4, runtime: "2 ч 28 м", genres: ["Фантастика", "Боевик", "Триллер"], poster: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg", overview: "Кобб — талантливый вор, лучший из лучших в опасном искусстве извлечения секретов из глубин подсознания во время сна. Но теперь ему нужно не украсть идею, а внедрить её." },
+      { id: "movie-546554", tmdbId: 546554, mediaType: "movie", category: "movie", title: "Достать ножи", year: "2019", rating: 7.8, runtime: "2 ч 10 м", genres: ["Триллер", "Комедия"], poster: "https://image.tmdb.org/t/p/w500/pThyQovXQrw2m0s9x82twj48Jq4.jpg", overview: "На следующее утро после празднования 85-летия известного автора криминальных романов виновника торжества находят мёртвым. За дело берётся детектив Бенуа Блан." },
+      { id: "movie-11324", tmdbId: 11324, mediaType: "movie", category: "movie", title: "Остров проклятых", year: "2010", rating: 8.2, runtime: "2 ч 18 м", genres: ["Триллер", "Драма", "Ужасы"], poster: "https://image.tmdb.org/t/p/w500/4GDy0PHYX3VRXUtwK5ysFbg3kEx.jpg", overview: "Два судебных пристава отправляются на отдалённый остров в штате Массачусетс, чтобы расследовать исчезновение пациентки клиники для умалишённых преступников." },
+      { id: "movie-313369", tmdbId: 313369, mediaType: "movie", category: "movie", title: "Ла-Ла Ленд", year: "2016", rating: 7.9, runtime: "2 ч 08 м", genres: ["Романтика", "Драма", "Комедия"], poster: "https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg", overview: "История любви начинающей актрисы и фанатичного джазового музыканта, пытающихся осуществить свои мечты в Лос-Анджелесе." },
+      { id: "tv-94605", tmdbId: 94605, mediaType: "tv", category: "animation", title: "Аркейн", year: "2021", rating: 8.7, runtime: "2 сезона", genres: ["Фантастика", "Боевик", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg", overview: "На фоне конфликта между утопическим Пилтовером и подземным Зауном две сестры оказываются по разные стороны баррикад в мире магии и технологий." },
+      { id: "tv-66732", tmdbId: 66732, mediaType: "tv", category: "tv", title: "Очень странные дела", year: "2016", rating: 8.6, runtime: "4 сезона", genres: ["Фантастика", "Ужасы", "Триллер"], poster: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg", overview: "1980-е годы, тихий городок Хоукинс. Благоприятное течение местной жизни нарушает загадочное исчезновение мальчика по имени Уилл." },
+      { id: "tv-95396", tmdbId: 95396, mediaType: "tv", category: "tv", title: "Разделение", year: "2022", rating: 8.4, runtime: "2 сезона", genres: ["Фантастика", "Триллер", "Драма"], poster: "https://image.tmdb.org/t/p/w500/lFf6LLrQjYldcZItzOkGmMMigP7.jpg", overview: "Корпорация Lumon Industries придумала способ хирургически отделять рабочие воспоминания сотрудников от личных." },
+      { id: "tv-76479", tmdbId: 76479, mediaType: "tv", category: "tv", title: "Пацаны", year: "2019", rating: 8.5, runtime: "4 сезона", genres: ["Боевик", "Фантастика", "Комедия"], poster: "https://image.tmdb.org/t/p/w500/2zmTngn1tYC1AvfnrFLhxeD82hz.jpg", overview: "Мир, где супергерои — настоящие медиазвёзды, за идеальным фасадом которых скрываются коррупция и цинизм." },
+      { id: "tv-97546", tmdbId: 97546, mediaType: "tv", category: "tv", title: "Тед Лассо", year: "2020", rating: 8.5, runtime: "3 сезона", genres: ["Комедия", "Драма"], poster: "https://image.tmdb.org/t/p/w500/5fhZdwP1DVJ0FyVH6vrFdHwpXIn.jpg", overview: "Тренера по американскому футболу из Канзаса приглашают возглавить профессиональный английский футбольный клуб, несмотря на отсутствие опыта." },
+      { id: "movie-569094", tmdbId: 569094, mediaType: "movie", category: "animation", title: "Человек-паук: Паутина вселенных", year: "2023", rating: 8.4, runtime: "2 ч 20 м", genres: ["Боевик", "Фантастика", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg", overview: "Майлз Моралес отправляется в приключение по мультивселенной вместе с Гвен Стейси и новой командой Людей-пауков." },
+      { id: "movie-508965", tmdbId: 508965, mediaType: "movie", category: "animation", title: "Клаус", year: "2019", rating: 8.3, runtime: "1 ч 36 м", genres: ["Комедия", "Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/q125RHUDgR4gjwh1QkfYuJLYkL.jpg", overview: "Избалованного сына владельца почтовой империи отправляют в мрачный северный город, где он знакомится с загадочным мастером игрушек Клаусом." },
+      { id: "movie-1022789", tmdbId: 1022789, mediaType: "movie", category: "animation", title: "Головоломка 2", year: "2024", rating: 7.7, runtime: "1 ч 37 м", genres: ["Комедия", "Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", overview: "Головной отдел мозга Райли подвергается внезапному ремонту, чтобы освободить место для совершенно новых эмоций — первой появляется Тревожность." },
+      { id: "movie-372058", tmdbId: 372058, mediaType: "movie", category: "anime", title: "Твоё имя", year: "2016", rating: 8.5, runtime: "1 ч 46 м", genres: ["Романтика", "Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg", overview: "Токийский парень Таки и провинциальная девушка Мицуха обнаруживают, что во сне они меняются телами и проживают жизни друг друга." },
+      { id: "movie-129", tmdbId: 129, mediaType: "movie", category: "anime", title: "Унесённые призраками", year: "2001", rating: 8.5, runtime: "2 ч 05 м", genres: ["Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", overview: "Маленькая Тихиро вместе с родителями оказывается в странном пустынном городе, где с наступлением темноты оживают духи." },
+      { id: "tv-1429", tmdbId: 1429, mediaType: "tv", category: "anime", title: "Атака титанов", year: "2013", rating: 8.7, runtime: "4 сезона", genres: ["Боевик", "Фэнтези", "Триллер"], poster: "https://image.tmdb.org/t/p/w500/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg", overview: "Уже сто лет человечество живёт под защитой гигантских стен, спасаясь от титанов. Но однажды появляется Колоссальный титан, меняющий всё." }
+    ];
+
+    const TMDB_GENRE_MAP = {
+      28: "Боевик", 12: "Фэнтези", 16: "Анимация", 35: "Комедия", 80: "Триллер",
+      18: "Драма", 14: "Фэнтези", 27: "Ужасы", 9648: "Триллер", 10749: "Романтика",
+      878: "Фантастика", 53: "Триллер", 10759: "Боевик", 10765: "Фантастика"
+    };
+    const GENRE_NAME_TO_TMDB = {
+      "Комедия": 35, "Фантастика": 878, "Триллер": 53, "Драма": 18,
+      "Романтика": 10749, "Фэнтези": 14, "Боевик": 28, "Ужасы": 27
+    };
+
+    const MediaAPI = {
+      apiKey: "",
+      normalizeTmdbItem(item, forcedType = null) {
+        const mediaType = forcedType || item.media_type || (item.first_air_date ? "tv" : "movie");
+        const genreIds = item.genre_ids || (item.genres ? item.genres.map(g => g.id) : []);
+        const isAnim = genreIds.includes(16);
+        const isJp = item.original_language === "ja";
+        let category = mediaType;
+        if (isAnim && isJp) category = "anime";
+        else if (isAnim) category = "animation";
+
+        const genres = [...new Set(genreIds.map(id => TMDB_GENRE_MAP[id]).filter(Boolean))];
+        if (!genres.length) genres.push(mediaType === "tv" ? "Сериал" : "Кино");
+
+        const dateStr = item.release_date || item.first_air_date || "";
+        const title = item.title || item.name || "Без названия";
+        const poster = item.poster_path
+          ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+          : `https://placehold.co/500x750/14161C/ffffff?text=${encodeURIComponent(title.slice(0, 18))}`;
+
+        return {
+          id: `${mediaType}-${item.id}`,
+          tmdbId: item.id,
+          mediaType,
+          category,
+          title,
+          year: dateStr ? dateStr.slice(0, 4) : "—",
+          rating: item.vote_average ? Number(item.vote_average.toFixed(1)) : 7.5,
+          runtime: mediaType === "tv" ? "Сериал" : "Фильм",
+          genres: genres.slice(0, 3),
+          poster,
+          overview: item.overview || "Описание на русском языке пока не добавлено."
+        };
+      },
+
+      async fetchDiscover({ category = "all", genre = "all", smart = false, watched = [], page = 1 }) {
+        if (!this.apiKey) {
+          let list = [...DEMO_CATALOG];
+          if (category !== "all") list = list.filter(i => i.category === category);
+          if (genre !== "all") list = list.filter(i => i.genres.includes(genre));
+          if (smart && watched.length > 0) {
+            const scores = {};
+            watched.forEach(w => {
+              const avg = getAverageRating(w);
+              if (avg >= 7) (w.genres || []).forEach(g => { scores[g] = (scores[g] || 0) + avg; });
+            });
+            list.sort((a, b) => {
+              const sA = (a.genres || []).reduce((s, g) => s + (scores[g] || 0), 0) + a.rating;
+              const sB = (b.genres || []).reduce((s, g) => s + (scores[g] || 0), 0) + b.rating;
+              return sB - sA;
+            });
+          } else {
+            list.sort(() => Math.random() - 0.5);
+          }
+          return list;
+        }
+
+        try {
+          if (smart && watched.length > 0) {
+            const top = [...watched].filter(w => getAverageRating(w) >= 7 && w.tmdbId).sort((a, b) => getAverageRating(b) - getAverageRating(a));
+            if (top.length) {
+              const seed = top[Math.floor(Math.random() * Math.min(3, top.length))];
+              const res = await fetch(`https://api.themoviedb.org/3/${seed.mediaType}/${seed.tmdbId}/recommendations?api_key=${this.apiKey}&language=ru-RU&page=1`);
+              if (res.ok) {
+                const data = await res.json();
+                if (data.results?.length) {
+                  let mapped = data.results.map(r => this.normalizeTmdbItem(r, seed.mediaType));
+                  if (category !== "all") mapped = mapped.filter(m => m.category === category);
+                  if (mapped.length) return mapped;
+                }
+              }
+            }
+          }
+
+          const endpointType = category === "tv" ? "tv" : (category === "movie" ? "movie" : (Math.random() > 0.4 ? "movie" : "tv"));
+          const params = new URLSearchParams({
+            api_key: this.apiKey, language: "ru-RU", sort_by: "popularity.desc", "vote_count.gte": "120", page: String(page)
+          });
+          const withGenres = [];
+          if (category === "animation") { withGenres.push(16); params.set("without_original_language", "ja"); }
+          else if (category === "anime") { withGenres.push(16); params.set("with_original_language", "ja"); }
+          if (genre !== "all" && GENRE_NAME_TO_TMDB[genre]) withGenres.push(GENRE_NAME_TO_TMDB[genre]);
+          if (withGenres.length) params.set("with_genres", withGenres.join(","));
+
+          const res = await fetch(`https://api.themoviedb.org/3/discover/${endpointType}?${params.toString()}`);
+          if (!res.ok) throw new Error("TMDB API error");
+          const data = await res.json();
+          return (data.results || []).map(r => this.normalizeTmdbItem(r, endpointType));
+        } catch {
+          showToast("Ошибка TMDB API — используется демо-база", "warn");
+          return [...DEMO_CATALOG].sort(() => Math.random() - 0.5);
+        }
+      },
+
+      async search(query) {
+        const q = query.trim();
+        if (!q) return [];
+        if (!this.apiKey) {
+          const low = q.toLowerCase();
+          return DEMO_CATALOG.filter(i => i.title.toLowerCase().includes(low) || i.genres.some(g => g.toLowerCase().includes(low)));
+        }
+        try {
+          const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${this.apiKey}&language=ru-RU&query=${encodeURIComponent(q)}&include_adult=false`);
+          if (!res.ok) throw new Error();
+          const data = await res.json();
+          return (data.results || []).filter(r => r.media_type === "movie" || r.media_type === "tv").slice(0, 8).map(r => this.normalizeTmdbItem(r));
+        } catch {
+          return DEMO_CATALOG.filter(i => i.title.toLowerCase().includes(q.toLowerCase()));
+        }
+      }
+    };
+
+    /* ---------- STATE & FIREBASE ROOM SYNC ---------- */
+    const AVATARS = ["😎", "🥰", "🦊", "🐱", "🐼", "🦄", "🦁", "👾", "🎬", "👑"];
+
+    const state = {
+      activeTab: "discover",
+      currentRole: "p1",
+      roomId: null,
+      filters: { category: "all", genre: "all", smart: false },
+      watchlistFilter: "all",
+      deck: [],
+      deckIndex: 0,
+      skippedIds: new Set(),
+      shared: {
+        partners: {
+          p1: { name: "Он", avatar: "😎" },
+          p2: { name: "Она", avatar: "🥰" }
+        },
+        watchlist: [
+          { ...DEMO_CATALOG[0], likes: { p1: true, p2: true }, addedAt: Date.now() - 50000 },
+          { ...DEMO_CATALOG[7], likes: { p1: true, p2: false }, addedAt: Date.now() - 30000 },
+          { ...DEMO_CATALOG[15], likes: { p1: false, p2: true }, addedAt: Date.now() - 10000 }
+        ],
+        watched: [
+          { ...DEMO_CATALOG[3], watchedAt: new Date().toLocaleDateString("ru-RU"), ratings: { p1: 9, p2: 10 } }
+        ],
+        tonightMovie: null,
+        battle: null
+      }
+    };
+
+    let fbApp = null, fbAuth = null, fbDb = null, fbUser = null, roomUnsubscribe = null;
+    const appId = typeof __app_id !== "undefined" ? __app_id : "pchih-couple-app";
+
+    async function initFirebase(customConfig = null) {
+      try {
+        let config = customConfig;
+        if (!config && typeof __firebase_config !== "undefined" && __firebase_config) {
+          config = JSON.parse(__firebase_config);
+        }
+        if (!config || !config.apiKey) return false;
+
+        fbApp = initializeApp(config, customConfig ? "custom-pchih-" + Date.now() : undefined);
+        fbAuth = getAuth(fbApp);
+        fbDb = getFirestore(fbApp);
+
+        if (!customConfig && typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+          const cred = await signInWithCustomToken(fbAuth, __initial_auth_token);
+          fbUser = cred.user;
+        } else {
+          const cred = await signInAnonymously(fbAuth);
+          fbUser = cred.user;
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function getRoomDocRef(roomId) {
+      return doc(fbDb, "artifacts", appId, "public", "data", "pchih_rooms", roomId);
+    }
+
+    async function pushSharedState() {
+      if (!state.roomId || !fbDb || !fbUser) return;
+      try {
+        await setDoc(getRoomDocRef(state.roomId), {
+          sharedJson: JSON.stringify(state.shared),
+          updatedAt: Date.now()
+        }, { merge: true });
+      } catch (err) {
+        console.error("Sync error:", err);
+      }
+    }
+
+    function subscribeToRoom(roomId) {
+      if (!fbDb || !fbUser) return;
+      if (roomUnsubscribe) roomUnsubscribe();
+      roomUnsubscribe = onSnapshot(
+        getRoomDocRef(roomId),
+        (snap) => {
+          if (snap.exists() && snap.data().sharedJson) {
+            try {
+              state.shared = { ...state.shared, ...JSON.parse(snap.data().sharedJson) };
+              renderAll();
+              if (!document.getElementById("battle-modal").classList.contains("hidden")) BattleEngine.render();
+            } catch {}
+          }
+        },
+        () => showToast("Потеряна связь с комнатой", "warn")
+      );
+    }
+
+    async function createRoom() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+
+      if (!fbDb || !fbUser) {
+        const ok = await initFirebase();
+        if (!ok) {
+          state.roomId = code;
+          updateRoomUI();
+          showToast(`Комната ${code} создана (локально)`, "info");
+          return;
+        }
+      }
+      state.roomId = code;
+      await pushSharedState();
+      subscribeToRoom(code);
+      updateRoomUI();
+      vibrate([40, 30, 60]);
+      showToast(`Комната ${code} создана`, "success");
+    }
+
+    async function joinRoom(codeRaw) {
+      const code = codeRaw.trim().toUpperCase();
+      if (code.length < 4) return showToast("Введите 6-значный код", "warn");
+      if (!fbDb || !fbUser) {
+        const ok = await initFirebase();
+        if (!ok) return showToast("Добавьте Firebase Config JSON в настройках", "warn");
+      }
+      try {
+        const snap = await getDoc(getRoomDocRef(code));
+        if (!snap.exists()) return showToast("Комната не найдена", "warn");
+        state.roomId = code;
+        subscribeToRoom(code);
+        updateRoomUI();
+        vibrate([50, 40, 80]);
+        showToast(`Подключено к комнате ${code}`, "success");
+      } catch {
+        showToast("Ошибка подключения", "warn");
+      }
+    }
+
+    function leaveRoom() {
+      if (roomUnsubscribe) roomUnsubscribe();
+      roomUnsubscribe = null;
+      state.roomId = null;
+      updateRoomUI();
+      showToast("Вы вышли из комнаты", "info");
+    }
+
+    /* ---------- HELPERS ---------- */
+    function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch {} }
+
+    function showToast(msg, type = "info") {
+      const container = document.getElementById("toast-container");
+      const el = document.createElement("div");
+      const tone = {
+        info: "bg-[#1B1E26]/95 border-white/15 text-white",
+        success: "bg-emerald-950/95 border-emerald-500/35 text-emerald-200",
+        warn: "bg-rose-950/95 border-rose-500/35 text-rose-200"
+      };
+      el.className = `px-4 py-2.5 rounded-full border text-xs font-semibold text-center shadow-2xl backdrop-blur-md transition-all duration-300 ${tone[type] || tone.info}`;
+      el.textContent = msg;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(-6px)";
+        setTimeout(() => el.remove(), 260);
+      }, 2200);
+    }
+
+    function getAverageRating(item) {
+      const vals = Object.values(item.ratings || {}).filter(v => typeof v === "number");
+      return vals.length ? Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)) : 0;
+    }
+
+    function launchConfetti() {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const colors = ["#FFFFFF", "#FF3B5C", "#F5B041", "#60A5FA", "#34D399"];
+      const particles = Array.from({ length: 90 }, () => ({
+        x: Math.random() * canvas.width, y: -20 - Math.random() * canvas.height * 0.3,
+        w: 5 + Math.random() * 5, h: 7 + Math.random() * 7,
+        vx: (Math.random() - 0.5) * 4.5, vy: 3 + Math.random() * 4.5,
+        rot: Math.random() * Math.PI * 2, vrot: (Math.random() - 0.5) * 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      }));
+      let frames = 0;
+      (function frame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.rot += p.vrot;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = p.color; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+        if (++frames < 130) requestAnimationFrame(frame);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      })();
+    }
+
+    /* ---------- BATTLE ENGINE (3 MINI-GAMES) ---------- */
+    const BattleEngine = {
+      timerInterval: null,
+      open() {
+        document.getElementById("battle-modal").classList.remove("hidden");
+        if (!state.shared.battle || state.shared.battle.phase === "winner") {
+          const wl = state.shared.watchlist;
+          state.shared.battle = {
+            phase: "setup",
+            p1MovieId: wl[0]?.id || DEMO_CATALOG[0].id,
+            p2MovieId: wl[1]?.id || wl[0]?.id || DEMO_CATALOG[1].id,
+            gameType: null, winner: null, data: {}
+          };
+          pushSharedState();
+        }
+        this.render();
+      },
+      close() {
+        this.clearTimer();
+        document.getElementById("battle-modal").classList.add("hidden");
+      },
+      clearTimer() { if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; } },
+      getCandidateList() {
+        const map = new Map();
+        state.shared.watchlist.forEach(m => map.set(m.id, m));
+        if (map.size < 2) DEMO_CATALOG.slice(0, 6).forEach(m => map.set(m.id, m));
+        return Array.from(map.values());
+      },
+      getMovieById(id) { return this.getCandidateList().find(m => m.id === id) || DEMO_CATALOG[0]; },
+
+      startGame(type) {
+        const b = state.shared.battle;
+        b.gameType = type; b.winner = null;
+        if (type === "math") {
+          b.phase = "math";
+          b.data = { activePlayer: "p1", status: "ready", scores: { p1: null, p2: null }, currentScore: 0, timeLeft: 15, question: this.generateMathQ() };
+        } else if (type === "ttt") {
+          b.phase = "ttt";
+          b.data = { size: 3, board: Array(9).fill(null), turn: "p1", winLine: null, draw: false };
+        } else if (type === "guess") {
+          b.phase = "guess";
+          b.data = { secret: Math.floor(Math.random() * 100) + 1, turn: "p1", minBound: 1, maxBound: 100, maxTurnsPerPlayer: 5, history: [] };
+        }
+        pushSharedState();
+        this.render();
+      },
+
+      finishBattle(winnerRole) {
+        this.clearTimer();
+        const b = state.shared.battle;
+        b.phase = "winner"; b.winner = winnerRole;
+        const winMovie = this.getMovieById(winnerRole === "p1" ? b.p1MovieId : b.p2MovieId);
+        state.shared.tonightMovie = { ...winMovie, wonBy: winnerRole, pinnedAt: Date.now() };
+        pushSharedState();
+        vibrate([80, 50, 120, 50, 180]);
+        launchConfetti();
+        this.render();
+        renderWatchlist();
+      },
+
+      generateMathQ() {
+        const ops = ["+", "-", "×"];
+        const op = ops[Math.floor(Math.random() * ops.length)];
+        let a, b, ans;
+        if (op === "+") { a = Math.floor(Math.random() * 35) + 7; b = Math.floor(Math.random() * 35) + 6; ans = a + b; }
+        else if (op === "-") { a = Math.floor(Math.random() * 45) + 20; b = Math.floor(Math.random() * (a - 5)) + 4; ans = a - b; }
+        else { a = Math.floor(Math.random() * 11) + 2; b = Math.floor(Math.random() * 9) + 2; ans = a * b; }
+        const choices = new Set([ans]);
+        while (choices.size < 4) {
+          const off = (Math.floor(Math.random() * 9) + 1) * (Math.random() > 0.5 ? 1 : -1);
+          if (ans + off > 0) choices.add(ans + off);
+        }
+        return { text: `${a} ${op} ${b}`, ans, choices: Array.from(choices).sort(() => Math.random() - 0.5) };
+      },
+
+      render() {
+        const container = document.getElementById("battle-content");
+        const b = state.shared.battle;
+        if (!b) return;
+        const p1 = state.shared.partners.p1;
+        const p2 = state.shared.partners.p2;
+
+        if (b.phase === "setup") {
+          const candidates = this.getCandidateList();
+          const opts = (sel) => candidates.map(m => `<option value="${m.id}" ${m.id === sel ? "selected" : ""}>${m.title} (${m.year})</option>`).join("");
+          container.innerHTML = `
+            <div class="space-y-5 view-animate">
+              <div class="text-center space-y-1">
+                <h3 class="text-xl font-bold text-white">Ставки на вечер</h3>
+                <p class="text-xs text-zinc-400">Победитель забирает право выбора фильма</p>
+              </div>
+
+              <div class="space-y-2.5">
+                <div class="surface-card rounded-2xl p-3.5 space-y-2">
+                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5"><span>${p1.avatar}</span> ${p1.name} выбирает</div>
+                  <select id="battle-p1-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${opts(b.p1MovieId)}</select>
+                </div>
+                <div class="surface-card rounded-2xl p-3.5 space-y-2">
+                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5"><span>${p2.avatar}</span> ${p2.name} выбирает</div>
+                  <select id="battle-p2-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${opts(b.p2MovieId)}</select>
+                </div>
+              </div>
+
+              <div class="space-y-2 pt-1">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 px-1">Выберите игру</div>
+                <button data-game="math" class="start-game-btn w-full surface-card rounded-2xl p-4 flex items-center justify-between text-left active:scale-[0.98] transition hover:border-white/20">
+                  <div>
+                    <div class="text-sm font-bold text-white">Математический спринт</div>
+                    <div class="text-xs text-zinc-400 mt-0.5">Максимум верных ответов за 15 секунд</div>
+                  </div>
+                  <span class="text-zinc-400 text-sm font-bold">→</span>
+                </button>
+                <button data-game="ttt" class="start-game-btn w-full surface-card rounded-2xl p-4 flex items-center justify-between text-left active:scale-[0.98] transition hover:border-white/20">
+                  <div>
+                    <div class="text-sm font-bold text-white">Крестики-нолики</div>
+                    <div class="text-xs text-zinc-400 mt-0.5">Быстрая дуэль на поле 3×3 или 4×4</div>
+                  </div>
+                  <span class="text-zinc-400 text-sm font-bold">→</span>
+                </button>
+                <button data-game="guess" class="start-game-btn w-full surface-card rounded-2xl p-4 flex items-center justify-between text-left active:scale-[0.98] transition hover:border-white/20">
+                  <div>
+                    <div class="text-sm font-bold text-white">Интуиция (1–100)</div>
+                    <div class="text-xs text-zinc-400 mt-0.5">Угадай число или окажись ближе за 5 ходов</div>
+                  </div>
+                  <span class="text-zinc-400 text-sm font-bold">→</span>
+                </button>
+              </div>
+            </div>
+          `;
+          document.getElementById("battle-p1-select").onchange = (e) => { b.p1MovieId = e.target.value; pushSharedState(); };
+          document.getElementById("battle-p2-select").onchange = (e) => { b.p2MovieId = e.target.value; pushSharedState(); };
+          container.querySelectorAll(".start-game-btn").forEach(btn => btn.onclick = () => this.startGame(btn.dataset.game));
+          return;
+        }
+
+        if (b.phase === "math") {
+          const d = b.data;
+          const activeP = d.activePlayer === "p1" ? p1 : p2;
+          if (d.status === "ready") {
+            container.innerHTML = `
+              <div class="surface-card rounded-3xl p-6 text-center space-y-5 view-animate">
+                <div class="w-16 h-16 mx-auto rounded-full bg-white/8 flex items-center justify-center text-3xl">${activeP.avatar}</div>
+                <div class="space-y-1">
+                  <div class="text-xs font-semibold text-zinc-400">Раунд ${d.activePlayer === "p1" ? "1 из 2" : "2 из 2"}</div>
+                  <h3 class="text-2xl font-bold text-white">Очередь: ${activeP.name}</h3>
+                  <p class="text-xs text-zinc-400">У вас есть 15 секунд, чтобы решить максимум примеров</p>
+                </div>
+                ${d.scores.p1 !== null ? `<div class="rounded-xl bg-white/5 py-2.5 text-xs font-semibold text-zinc-300">Результат ${p1.name}: <b class="text-white">${d.scores.p1}</b></div>` : ""}
+                <button id="math-go-btn" class="w-full btn-primary py-3.5 rounded-2xl text-sm font-bold">Начать (15 сек)</button>
+              </div>
+            `;
+            document.getElementById("math-go-btn").onclick = () => {
+              d.status = "playing"; d.currentScore = 0; d.timeLeft = 15; d.question = this.generateMathQ();
+              this.render();
+              this.clearTimer();
+              this.timerInterval = setInterval(() => {
+                d.timeLeft--;
+                const el = document.getElementById("math-timer-val");
+                if (el) el.textContent = d.timeLeft;
+                if (d.timeLeft <= 0) {
+                  this.clearTimer();
+                  d.scores[d.activePlayer] = d.currentScore;
+                  if (d.activePlayer === "p1") {
+                    d.activePlayer = "p2"; d.status = "ready"; pushSharedState(); this.render();
+                  } else {
+                    if (d.scores.p1 > d.scores.p2) this.finishBattle("p1");
+                    else if (d.scores.p2 > d.scores.p1) this.finishBattle("p2");
+                    else { showToast(`Ничья (${d.scores.p1}:${d.scores.p2}) — переигровка`, "info"); this.startGame("math"); }
+                  }
+                }
+              }, 1000);
+            };
+          } else {
+            container.innerHTML = `
+              <div class="space-y-5">
+                <div class="flex items-center justify-between surface-card rounded-2xl px-4 py-3 text-xs font-semibold">
+                  <span class="text-white">${activeP.avatar} ${activeP.name}</span>
+                  <span class="text-emerald-400">Очки: ${d.currentScore}</span>
+                  <span class="text-[#FF3B5C] font-bold"><span id="math-timer-val">${d.timeLeft}</span> сек</span>
+                </div>
+                <div class="surface-card rounded-3xl py-12 px-4 text-center">
+                  <div class="text-4xl font-extrabold tracking-tight text-white">${d.question.text}</div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                  ${d.question.choices.map(c => `<button data-ans="${c}" class="math-choice-btn surface-card rounded-2xl py-5 text-2xl font-bold text-white active:scale-95 transition hover:bg-white/10">${c}</button>`).join("")}
+                </div>
+              </div>
+            `;
+            container.querySelectorAll(".math-choice-btn").forEach(btn => {
+              btn.onclick = () => {
+                if (Number(btn.dataset.ans) === d.question.ans) { d.currentScore++; vibrate(20); }
+                else vibrate([35, 20, 35]);
+                d.question = this.generateMathQ();
+                this.render();
+              };
+            });
+          }
+          return;
+        }
+
+        if (b.phase === "ttt") {
+          const d = b.data;
+          const turnP = d.turn === "p1" ? p1 : p2;
+          container.innerHTML = `
+            <div class="space-y-5 view-animate">
+              <div class="flex items-center justify-between">
+                <div class="surface-card rounded-full px-3.5 py-2 text-xs font-semibold text-white flex items-center gap-2">
+                  <span class="text-zinc-400">Ходит</span>
+                  <span class="${d.turn === "p1" ? "mark-x" : "mark-o"} font-extrabold">${d.turn === "p1" ? "X" : "O"}</span>
+                  <span>${turnP.avatar} ${turnP.name}</span>
+                </div>
+                <button id="ttt-toggle-size" class="surface-card rounded-full px-3.5 py-2 text-xs font-semibold text-zinc-300">Поле ${d.size}×${d.size}</button>
+              </div>
+
+              <div class="grid ${d.size === 4 ? "grid-cols-4" : "grid-cols-3"} gap-2.5 aspect-square w-full max-w-[320px] mx-auto">
+                ${d.board.map((cell, idx) => `
+                  <button data-idx="${idx}" class="ttt-cell surface-card rounded-2xl flex items-center justify-center ${d.size === 4 ? "text-3xl" : "text-5xl"} font-extrabold active:scale-95 transition ${d.winLine?.includes(idx) ? "win-cell" : ""}">
+                    ${cell === "p1" ? '<span class="mark-x">✕</span>' : cell === "p2" ? '<span class="mark-o">○</span>' : ""}
+                  </button>
+                `).join("")}
+              </div>
+
+              ${d.draw ? `
+                <div class="text-center space-y-2.5">
+                  <div class="text-sm font-semibold text-zinc-300">Ничья</div>
+                  <button id="ttt-reset-btn" class="btn-primary px-6 py-2.5 rounded-full text-xs font-bold">Сыграть ещё раз</button>
+                </div>
+              ` : ""}
+            </div>
+          `;
+          document.getElementById("ttt-toggle-size").onclick = () => {
+            d.size = d.size === 3 ? 4 : 3; d.board = Array(d.size * d.size).fill(null); d.turn = "p1"; d.winLine = null; d.draw = false;
+            pushSharedState(); this.render();
+          };
+          const resetBtn = document.getElementById("ttt-reset-btn");
+          if (resetBtn) resetBtn.onclick = () => { d.board = Array(d.size * d.size).fill(null); d.turn = "p1"; d.winLine = null; d.draw = false; pushSharedState(); this.render(); };
+          container.querySelectorAll(".ttt-cell").forEach(btn => {
+            btn.onclick = () => {
+              const idx = Number(btn.dataset.idx);
+              if (d.board[idx] || d.winLine || d.draw) return;
+              d.board[idx] = d.turn; vibrate(20);
+              const winLine = this.checkTTTWin(d.board, d.size);
+              if (winLine) {
+                d.winLine = winLine; const winner = d.turn; pushSharedState(); this.render();
+                setTimeout(() => this.finishBattle(winner), 600);
+                return;
+              }
+              if (d.board.every(Boolean)) d.draw = true;
+              else d.turn = d.turn === "p1" ? "p2" : "p1";
+              pushSharedState(); this.render();
+            };
+          });
+          return;
+        }
+
+        if (b.phase === "guess") {
+          const d = b.data;
+          const turnP = d.turn === "p1" ? p1 : p2;
+          const roundNum = Math.min(d.maxTurnsPerPlayer, Math.floor(d.history.length / 2) + 1);
+          container.innerHTML = `
+            <div class="space-y-4 view-animate">
+              <div class="surface-card rounded-3xl p-5 text-center space-y-2.5">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Раунд ${roundNum} из ${d.maxTurnsPerPlayer}</div>
+                <h3 class="text-lg font-bold text-white">Ходит: ${turnP.avatar} ${turnP.name}</h3>
+                <div class="text-3xl font-extrabold text-white tracking-tight">${d.minBound} — ${d.maxBound}</div>
+                <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden relative">
+                  <div class="h-full bg-white absolute rounded-full" style="left:${d.minBound - 1}%; width:${Math.max(2, d.maxBound - d.minBound + 1)}%"></div>
+                </div>
+              </div>
+
+              <div class="flex gap-2">
+                <input id="guess-input" type="number" min="1" max="100" inputmode="numeric" placeholder="Число 1–100"
+                  class="flex-1 rounded-2xl bg-[#14161C] border border-white/15 px-4 py-3.5 text-lg font-bold text-center text-white focus:outline-none focus:border-white/40" />
+                <button id="guess-submit-btn" class="btn-primary px-6 rounded-2xl text-sm font-bold">Угадать</button>
+              </div>
+
+              <div class="space-y-1.5 max-h-48 overflow-y-auto">
+                ${d.history.slice().reverse().map(h => {
+                  const pl = h.player === "p1" ? p1 : p2;
+                  return `<div class="surface-card rounded-xl px-3.5 py-2.5 flex items-center justify-between text-xs">
+                    <span class="text-zinc-300">${pl.avatar} ${pl.name} · <b class="text-white">${h.val}</b></span>
+                    <span class="font-bold ${h.hint === "Больше" ? "text-amber-400" : "text-sky-400"}">${h.hint}</span>
+                  </div>`;
+                }).join("")}
+              </div>
+            </div>
+          `;
+          const submitGuess = () => {
+            const val = parseInt(document.getElementById("guess-input").value, 10);
+            if (isNaN(val) || val < 1 || val > 100) return showToast("Введите число от 1 до 100", "warn");
+            vibrate(25);
+            if (val === d.secret) { showToast(`Точно в цель! Число: ${d.secret}`, "success"); return this.finishBattle(d.turn); }
+            const hint = val < d.secret ? "Больше" : "Меньше";
+            if (val < d.secret) d.minBound = Math.max(d.minBound, val + 1);
+            else d.maxBound = Math.min(d.maxBound, val - 1);
+            d.history.push({ player: d.turn, val, hint });
+            if (d.history.length >= d.maxTurnsPerPlayer * 2) {
+              const dist = (r) => Math.min(...d.history.filter(h => h.player === r).map(h => Math.abs(h.val - d.secret)));
+              const win = dist("p1") <= dist("p2") ? "p1" : "p2";
+              showToast(`Было загадано ${d.secret}. Ближе: ${win === "p1" ? p1.name : p2.name}`, "info");
+              return this.finishBattle(win);
+            }
+            d.turn = d.turn === "p1" ? "p2" : "p1";
+            pushSharedState(); this.render();
+          };
+          document.getElementById("guess-submit-btn").onclick = submitGuess;
+          document.getElementById("guess-input").onkeydown = (e) => { if (e.key === "Enter") submitGuess(); };
+          return;
+        }
+
+        if (b.phase === "winner") {
+          const winP = b.winner === "p1" ? p1 : p2;
+          const winMovie = this.getMovieById(b.winner === "p1" ? b.p1MovieId : b.p2MovieId);
+          container.innerHTML = `
+            <div class="surface-card rounded-3xl p-6 text-center space-y-5 view-animate">
+              <div class="space-y-1">
+                <div class="text-xs font-semibold uppercase tracking-wider text-amber-400">Победитель</div>
+                <h3 class="text-2xl font-extrabold text-white">${winP.avatar} ${winP.name}</h3>
+              </div>
+              <div class="rounded-2xl bg-black/35 p-3 flex items-center gap-3.5 text-left border border-white/10">
+                <img src="${winMovie.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-16 aspect-[2/3] rounded-xl object-cover shrink-0" />
+                <div class="min-w-0">
+                  <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Фильм этого вечера</div>
+                  <div class="text-base font-bold text-white truncate mt-0.5">${winMovie.title}</div>
+                  <div class="text-xs text-zinc-400 mt-1">${winMovie.year} · ★ ${winMovie.rating}</div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button id="battle-rematch-btn" class="bg-white/8 py-3 rounded-2xl text-xs font-semibold text-zinc-200">Реванш</button>
+                <button id="battle-done-btn" class="btn-primary py-3 rounded-2xl text-xs font-bold">Готово</button>
+              </div>
+            </div>
+          `;
+          document.getElementById("battle-rematch-btn").onclick = () => { b.phase = "setup"; pushSharedState(); this.render(); };
+          document.getElementById("battle-done-btn").onclick = () => this.close();
+        }
+      },
+
+      checkTTTWin(board, size) {
+        const lines = [];
+        for (let r = 0; r < size; r++) lines.push(Array.from({ length: size }, (_, c) => r * size + c));
+        for (let c = 0; c < size; c++) lines.push(Array.from({ length: size }, (_, r) => r * size + c));
+        lines.push(Array.from({ length: size }, (_, i) => i * size + i));
+        lines.push(Array.from({ length: size }, (_, i) => i * size + (size - 1 - i)));
+        for (const line of lines) {
+          const first = board[line[0]];
+          if (first && line.every(idx => board[idx] === first)) return line;
+        }
+        return null;
+      }
+    };
+
+    /* ---------- DISCOVER DECK & AMBIENT BACKDROP ---------- */
+    async function loadDeck() {
+      document.getElementById("discover-card-mount").innerHTML = `<div class="w-full h-[470px] rounded-[28px] skeleton border border-white/8"></div>`;
+      const raw = await MediaAPI.fetchDiscover({
+        category: state.filters.category, genre: state.filters.genre, smart: state.filters.smart, watched: state.shared.watched
+      });
+      const watchedIds = new Set(state.shared.watched.map(w => w.id));
+      const filtered = raw.filter(i => !watchedIds.has(i.id) && !state.skippedIds.has(i.id));
+      state.deck = filtered.length ? filtered : raw;
+      state.deckIndex = 0;
+      renderDiscoverCard();
+    }
+
+    function getCurrentCardItem() {
+      return state.deck.length ? state.deck[state.deckIndex % state.deck.length] : null;
+    }
+
+    function renderDiscoverCard() {
+      const mount = document.getElementById("discover-card-mount");
+      const ambient = document.getElementById("ambient-backdrop");
+      const item = getCurrentCardItem();
+
+      if (!item) {
+        ambient.style.backgroundImage = "none";
+        mount.innerHTML = `
+          <div class="surface-card rounded-[28px] p-8 text-center space-y-3">
+            <div class="text-base font-bold text-white">Подборка закончилась</div>
+            <p class="text-xs text-zinc-400">Смените фильтры или начните заново</p>
+            <button id="reset-deck-btn" class="btn-primary px-5 py-2.5 rounded-full text-xs font-bold">Обновить</button>
+          </div>
+        `;
+        const btn = document.getElementById("reset-deck-btn");
+        if (btn) btn.onclick = () => { state.skippedIds.clear(); loadDeck(); };
+        return;
+      }
+
+      ambient.style.backgroundImage = `url('${item.poster}')`;
+      const fallbackPoster = `https://placehold.co/500x750/14161C/ffffff?text=${encodeURIComponent(item.title.slice(0, 16))}`;
+      const catLabels = { movie: "Фильм", tv: "Сериал", animation: "Мультфильм", anime: "Аниме" };
+
+      mount.innerHTML = `
+        <article id="active-swipe-card" class="swipe-card relative w-full h-[470px] rounded-[28px] overflow-hidden border border-white/12 shadow-2xl bg-[#14161C]">
+          <img src="${item.poster}" alt="${item.title}"
+            onerror="this.onerror=null; this.src='${fallbackPoster}';"
+            class="absolute inset-0 w-full h-full object-cover" />
+          <div class="absolute inset-0 poster-vignette"></div>
+
+          <!-- Top Metadata Bar -->
+          <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-md text-[11px] font-semibold text-zinc-200 border border-white/10">
+              ${catLabels[item.category] || "Кино"}
+            </span>
+            <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-xs font-bold text-amber-400 border border-white/10 flex items-center gap-1">
+              <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              ${item.rating}
+            </span>
+          </div>
+
+          <!-- Bottom Editorial Info -->
+          <div class="absolute bottom-0 left-0 right-0 p-5 space-y-2.5">
+            <div>
+              <h2 class="text-2xl font-extrabold tracking-tight text-white leading-tight">${item.title}</h2>
+              <div class="flex items-center gap-1.5 text-xs text-zinc-300 font-medium mt-1">
+                <span>${item.year}</span>
+                <span class="text-zinc-500">•</span>
+                <span>${item.runtime}</span>
+                <span class="text-zinc-500">•</span>
+                <span class="truncate">${(item.genres || []).slice(0, 2).join(", ")}</span>
+              </div>
+            </div>
+
+            <p id="card-overview-text" class="text-[13px] text-zinc-300/90 leading-snug line-clamp-2">${item.overview}</p>
+            <button id="toggle-overview-btn" class="text-[11px] font-semibold text-white/80 hover:text-white underline underline-offset-2">Подробнее</button>
+          </div>
+        </article>
+      `;
+
+      const ovText = document.getElementById("card-overview-text");
+      const ovBtn = document.getElementById("toggle-overview-btn");
+      ovBtn.onclick = (e) => {
+        e.stopPropagation();
+        const expanded = !ovText.classList.contains("line-clamp-2");
+        ovText.classList.toggle("line-clamp-2", expanded);
+        ovBtn.textContent = expanded ? "Подробнее" : "Свернуть";
+      };
+
+      attachSwipeGestures(document.getElementById("active-swipe-card"));
+    }
+
+    function attachSwipeGestures(card) {
+      if (!card) return;
+      let startX = 0, currentX = 0, dragging = false;
+      const likeBadge = document.getElementById("swipe-badge-like");
+      const skipBadge = document.getElementById("swipe-badge-skip");
+
+      const start = (x) => { startX = x; currentX = 0; dragging = true; card.classList.add("dragging"); };
+      const move = (x) => {
+        if (!dragging) return;
+        currentX = x - startX;
+        card.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
+        likeBadge.style.opacity = currentX > 35 ? Math.min(1, (currentX - 35) / 80) : 0;
+        skipBadge.style.opacity = currentX < -35 ? Math.min(1, (-currentX - 35) / 80) : 0;
+      };
+      const end = () => {
+        if (!dragging) return;
+        dragging = false;
+        card.classList.remove("dragging");
+        likeBadge.style.opacity = 0; skipBadge.style.opacity = 0;
+        if (currentX > 95) {
+          card.style.transform = "translateX(140%) rotate(16deg)"; card.style.opacity = "0";
+          setTimeout(handleWantCurrent, 200);
+        } else if (currentX < -95) {
+          card.style.transform = "translateX(-140%) rotate(-16deg)"; card.style.opacity = "0";
+          setTimeout(handleSkipCurrent, 200);
+        } else {
+          card.style.transform = "";
+        }
+      };
+
+      card.addEventListener("touchstart", (e) => start(e.touches[0].clientX), { passive: true });
+      card.addEventListener("touchmove", (e) => move(e.touches[0].clientX), { passive: true });
+      card.addEventListener("touchend", end);
+      card.addEventListener("mousedown", (e) => { if (!e.target.closest("button")) start(e.clientX); });
+      window.addEventListener("mousemove", (e) => move(e.clientX));
+      window.addEventListener("mouseup", end);
+    }
+
+    function handleWantCurrent() {
+      const item = getCurrentCardItem();
+      if (!item) return;
+      const role = state.currentRole;
+      const existing = state.shared.watchlist.find(w => w.id === item.id);
+      let isNewMatch = false;
+
+      if (existing) {
+        const hadOther = existing.likes[role === "p1" ? "p2" : "p1"];
+        const hadSelf = existing.likes[role];
+        existing.likes[role] = true;
+        if (hadOther && !hadSelf) isNewMatch = true;
+      } else {
+        state.shared.watchlist.unshift({ ...item, likes: { p1: role === "p1", p2: role === "p2" }, addedAt: Date.now() });
+      }
+      pushSharedState();
+      vibrate(isNewMatch ? [70, 40, 120] : 25);
+      if (isNewMatch) openMatchModal(item);
+      else showToast(`Добавлено в список: «${item.title}»`, "success");
+      state.deckIndex++;
+      renderDiscoverCard();
+      renderWatchlist();
+    }
+
+    function handleSkipCurrent() {
+      const item = getCurrentCardItem();
+      if (!item) return;
+      state.skippedIds.add(item.id);
+      state.deckIndex++;
+      renderDiscoverCard();
+    }
+
+    function handleLuckySpin() {
+      const card = document.getElementById("active-swipe-card");
+      if (card) card.classList.add("roulette-spinning");
+      vibrate([20, 30, 20, 30, 50]);
+      let ticks = 0;
+      const iv = setInterval(() => {
+        if (state.deck.length > 1) { state.deckIndex = Math.floor(Math.random() * state.deck.length); renderDiscoverCard(); }
+        if (++ticks >= 7) {
+          clearInterval(iv);
+          const picked = getCurrentCardItem();
+          if (picked) showToast(`Выпало: «${picked.title}»`, "info");
+        }
+      }, 90);
+    }
+
+    /* ---------- MODALS & LIST RENDERERS ---------- */
+    let pendingMatchItem = null, pendingRateItem = null, selectedRatingVal = 8;
+
+    function openMatchModal(item) {
+      pendingMatchItem = item;
+      document.getElementById("match-modal-poster").src = item.poster;
+      document.getElementById("match-modal-title").textContent = item.title;
+      document.getElementById("match-modal").classList.remove("hidden");
+      launchConfetti();
+    }
+
+    function openRatingModal(item) {
+      pendingRateItem = item;
+      selectedRatingVal = (item.ratings && item.ratings[state.currentRole]) || 8;
+      document.getElementById("rating-modal-title").textContent = item.title;
+      renderRatingGrid();
+      document.getElementById("rating-modal").classList.remove("hidden");
+    }
+
+    function renderRatingGrid() {
+      document.getElementById("rating-value-display").textContent = selectedRatingVal;
+      const grid = document.getElementById("rating-grid");
+      grid.innerHTML = Array.from({ length: 10 }, (_, i) => {
+        const n = i + 1;
+        const active = n === selectedRatingVal;
+        return `<button data-rate="${n}" class="rate-num-btn py-2.5 rounded-xl text-sm font-bold transition active:scale-90 ${active ? "bg-white text-[#0A0B0E]" : "bg-white/6 text-zinc-300 hover:bg-white/12"}">${n}</button>`;
+      }).join("");
+      grid.querySelectorAll(".rate-num-btn").forEach(btn => {
+        btn.onclick = () => { selectedRatingVal = Number(btn.dataset.rate); vibrate(15); renderRatingGrid(); };
+      });
+    }
+
+    function savePendingRating() {
+      if (!pendingRateItem) return;
+      const role = state.currentRole;
+      const existing = state.shared.watched.find(w => w.id === pendingRateItem.id);
+      if (existing) { existing.ratings = existing.ratings || {}; existing.ratings[role] = selectedRatingVal; }
+      else state.shared.watched.unshift({ ...pendingRateItem, watchedAt: new Date().toLocaleDateString("ru-RU"), ratings: { [role]: selectedRatingVal } });
+
+      state.shared.watchlist = state.shared.watchlist.filter(w => w.id !== pendingRateItem.id);
+      if (state.shared.tonightMovie?.id === pendingRateItem.id) state.shared.tonightMovie = null;
+
+      pushSharedState();
+      document.getElementById("rating-modal").classList.add("hidden");
+      showToast(`Оценка ${selectedRatingVal}/10 сохранена`, "success");
+      if (getCurrentCardItem()?.id === pendingRateItem.id) { state.deckIndex++; renderDiscoverCard(); }
+      renderWatchlist(); renderWatched();
+    }
+
+    function renderWatchlist() {
+      const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2;
+      document.getElementById("wl-filter-p1").textContent = p1.name;
+      document.getElementById("wl-filter-p2").textContent = p2.name;
+
+      const badge = document.getElementById("nav-watchlist-badge");
+      badge.textContent = state.shared.watchlist.length;
+      badge.classList.toggle("hidden", state.shared.watchlist.length === 0);
+
+      const tonightBox = document.getElementById("tonight-movie-banner");
+      const tm = state.shared.tonightMovie;
+      if (tm) {
+        tonightBox.classList.remove("hidden");
+        tonightBox.innerHTML = `
+          <div class="surface-card rounded-3xl p-4 border-amber-400/30 bg-gradient-to-br from-amber-500/10 to-transparent space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">Выбор на этот вечер</span>
+              <button id="clear-tonight-btn" class="text-xs font-medium text-zinc-400 hover:text-white">Снять</button>
+            </div>
+            <div class="flex items-center gap-3.5">
+              <img src="${tm.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-16 aspect-[2/3] rounded-xl object-cover shrink-0 shadow-lg" />
+              <div class="flex-1 min-w-0">
+                <h3 class="text-base font-bold text-white truncate">${tm.title}</h3>
+                <div class="text-xs text-zinc-400 mt-0.5">${tm.year} · ★ ${tm.rating}</div>
+                <button id="tonight-mark-watched" class="mt-2.5 px-3 py-1.5 rounded-full bg-white text-[#0A0B0E] text-[11px] font-bold active:scale-95">Посмотрели — оценить</button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById("clear-tonight-btn").onclick = () => { state.shared.tonightMovie = null; pushSharedState(); renderWatchlist(); };
+        document.getElementById("tonight-mark-watched").onclick = () => openRatingModal(tm);
+      } else {
+        tonightBox.classList.add("hidden");
+      }
+
+      const matchesCount = state.shared.watchlist.filter(i => i.likes?.p1 && i.likes?.p2).length;
+      document.getElementById("watchlist-stats").textContent = `${state.shared.watchlist.length} в списке • ${matchesCount} совпадений`;
+
+      let items = [...state.shared.watchlist].sort((a, b) => ((b.likes?.p1 && b.likes?.p2) ? 1 : 0) - ((a.likes?.p1 && a.likes?.p2) ? 1 : 0));
+      if (state.watchlistFilter === "matches") items = items.filter(i => i.likes?.p1 && i.likes?.p2);
+      if (state.watchlistFilter === "p1") items = items.filter(i => i.likes?.p1);
+      if (state.watchlistFilter === "p2") items = items.filter(i => i.likes?.p2);
+
+      const container = document.getElementById("watchlist-container");
+      if (!items.length) {
+        container.innerHTML = `<div class="surface-card rounded-3xl p-8 text-center space-y-1.5"><div class="text-sm font-bold text-white">Список пуст</div><p class="text-xs text-zinc-400">Отмечайте фильмы на экране «Подбор»</p></div>`;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const isMatch = item.likes?.p1 && item.likes?.p2;
+        const myLiked = item.likes?.[state.currentRole];
+        return `
+          <div class="surface-card rounded-2xl p-3 flex gap-3.5 items-center ${isMatch ? "border-[#FF3B5C]/35" : ""}">
+            <img src="${item.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-16 aspect-[2/3] rounded-xl object-cover shrink-0 bg-zinc-900" />
+            <div class="flex-1 min-w-0 space-y-1.5">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-sm font-bold text-white leading-snug truncate">${item.title}</h3>
+                <span class="text-xs font-bold text-amber-400 shrink-0">★ ${item.rating}</span>
+              </div>
+              <div class="text-[11px] text-zinc-400">${item.year} · ${(item.genres || []).slice(0, 2).join(", ")}</div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                ${isMatch ? `<span class="px-2 py-0.5 rounded-full bg-[#FF3B5C]/15 text-[#FF3B5C] text-[10px] font-bold">Мэтч 100%</span>` : ""}
+                ${item.likes?.p1 ? `<span class="px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${p1.avatar} ${p1.name}</span>` : ""}
+                ${item.likes?.p2 ? `<span class="px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${p2.avatar} ${p2.name}</span>` : ""}
+              </div>
+              <div class="flex items-center gap-2 pt-1">
+                ${!myLiked ? `<button data-like="${item.id}" class="wl-like-btn px-2.5 py-1 rounded-full bg-[#FF3B5C] text-white text-[10px] font-bold">Тоже хочу</button>` : ""}
+                <button data-watch="${item.id}" class="wl-watch-btn px-2.5 py-1 rounded-full bg-white/8 text-zinc-200 text-[10px] font-semibold">Оценить</button>
+                <button data-del="${item.id}" class="wl-del-btn text-zinc-500 hover:text-rose-400 text-[10px] font-medium ml-auto px-1">Удалить</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll(".wl-like-btn").forEach(btn => {
+        btn.onclick = () => {
+          const item = state.shared.watchlist.find(i => i.id === btn.dataset.like);
+          if (!item) return;
+          item.likes[state.currentRole] = true;
+          pushSharedState(); renderWatchlist();
+          if (item.likes.p1 && item.likes.p2) { vibrate([70, 40, 120]); openMatchModal(item); }
+        };
+      });
+      container.querySelectorAll(".wl-watch-btn").forEach(btn => {
+        btn.onclick = () => { const i = state.shared.watchlist.find(x => x.id === btn.dataset.watch); if (i) openRatingModal(i); };
+      });
+      container.querySelectorAll(".wl-del-btn").forEach(btn => {
+        btn.onclick = () => { state.shared.watchlist = state.shared.watchlist.filter(x => x.id !== btn.dataset.del); pushSharedState(); renderWatchlist(); };
+      });
+    }
+
+    function renderWatched() {
+      const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2, list = state.shared.watched;
+      document.getElementById("watched-count-badge").textContent = `${list.length} тайтлов`;
+      const container = document.getElementById("watched-container");
+      if (!list.length) {
+        container.innerHTML = `<div class="surface-card rounded-3xl p-8 text-center space-y-1.5"><div class="text-sm font-bold text-white">История пуста</div><p class="text-xs text-zinc-400">Найдите любимые фильмы через поиск выше</p></div>`;
+        return;
+      }
+      container.innerHTML = list.map(item => `
+        <div class="surface-card rounded-2xl p-3 flex items-center gap-3.5">
+          <img src="${item.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-12 aspect-[2/3] rounded-lg object-cover shrink-0" />
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="text-sm font-bold text-white truncate">${item.title}</h4>
+              <span class="px-2 py-0.5 rounded-full bg-white/10 text-white text-xs font-bold shrink-0">${getAverageRating(item) || "—"}</span>
+            </div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">${item.watchedAt || "Недавно"} · ${(item.genres || []).slice(0, 2).join(", ")}</div>
+            <div class="flex items-center justify-between mt-2">
+              <div class="flex items-center gap-2 text-[11px] font-medium text-zinc-300">
+                <span>${p1.avatar} ${item.ratings?.p1 ?? "—"}</span>
+                <span class="text-zinc-600">·</span>
+                <span>${p2.avatar} ${item.ratings?.p2 ?? "—"}</span>
+              </div>
+              <button data-editrate="${item.id}" class="edit-watched-rate text-[11px] font-semibold text-white/80 hover:text-white">Изменить</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+      container.querySelectorAll(".edit-watched-rate").forEach(btn => {
+        btn.onclick = () => { const i = state.shared.watched.find(w => w.id === btn.dataset.editrate); if (i) openRatingModal(i); };
+      });
+    }
+
+    function updateHeaderAndProfiles() {
+      const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2;
+      const activeP = state.currentRole === "p1" ? p1 : p2;
+      document.getElementById("header-partner-avatar").textContent = activeP.avatar;
+      document.getElementById("header-partner-name").textContent = activeP.name;
+      document.getElementById("p1-avatar-btn").textContent = p1.avatar;
+      document.getElementById("p2-avatar-btn").textContent = p2.avatar;
+      const p1Inp = document.getElementById("p1-name-input"), p2Inp = document.getElementById("p2-name-input");
+      if (document.activeElement !== p1Inp) p1Inp.value = p1.name;
+      if (document.activeElement !== p2Inp) p2Inp.value = p2.name;
+
+      document.querySelectorAll(".role-select-btn").forEach(btn => {
+        const isMe = btn.dataset.setrole === state.currentRole;
+        btn.className = isMe
+          ? "role-select-btn w-full py-1.5 rounded-xl text-[11px] font-bold bg-white text-[#0A0B0E]"
+          : "role-select-btn w-full py-1.5 rounded-xl text-[11px] font-semibold bg-white/6 text-zinc-400";
+        btn.textContent = isMe ? "Активен" : "Выбрать";
+      });
+    }
+
+    function updateRoomUI() {
+      const hasRoom = Boolean(state.roomId);
+      document.getElementById("active-room-box").classList.toggle("hidden", !hasRoom);
+      document.getElementById("room-join-controls").classList.toggle("hidden", hasRoom);
+      const liveBadge = document.getElementById("room-badge-header");
+      liveBadge.classList.toggle("hidden", !hasRoom);
+      liveBadge.classList.toggle("inline-flex", hasRoom);
+
+      const pill = document.getElementById("sync-status-pill");
+      if (hasRoom) {
+        document.getElementById("active-room-code").textContent = state.roomId;
+        pill.textContent = fbDb ? "В сети" : "Локально";
+        pill.className = "text-[10px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25";
+      } else {
+        pill.textContent = "Локально";
+        pill.className = "text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10";
+      }
+    }
+
+    function renderAll() { updateHeaderAndProfiles(); updateRoomUI(); renderWatchlist(); renderWatched(); }
+
+    /* ---------- EVENT BINDINGS ---------- */
+    function bindEvents() {
+      document.querySelectorAll(".nav-tab").forEach(btn => {
+        btn.onclick = () => {
+          const tab = btn.dataset.tab;
+          state.activeTab = tab;
+          document.querySelectorAll(".view-section").forEach(sec => sec.classList.add("hidden"));
+          document.getElementById(`view-${tab}`).classList.remove("hidden");
+          document.querySelectorAll(".nav-tab").forEach(t => {
+            const act = t.dataset.tab === tab;
+            t.classList.toggle("bg-white", act);
+            t.classList.toggle("text-[#0A0B0E]", act);
+            t.classList.toggle("text-zinc-400", !act);
+          });
+          vibrate(10);
+        };
+      });
+
+      document.getElementById("partner-switcher-btn").onclick = () => {
+        state.currentRole = state.currentRole === "p1" ? "p2" : "p1";
+        renderAll();
+        showToast(`Профиль: ${state.shared.partners[state.currentRole].name}`, "info");
+      };
+
+      document.querySelectorAll(".cat-pill").forEach(btn => {
+        btn.onclick = () => {
+          state.filters.category = btn.dataset.cat;
+          document.querySelectorAll(".cat-pill").forEach(b => {
+            const act = b.dataset.cat === state.filters.category;
+            b.className = act
+              ? "cat-pill active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition bg-white text-[#0A0B0E]"
+              : "cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300";
+          });
+          loadDeck();
+        };
+      });
+
+      document.getElementById("genre-select").onchange = (e) => { state.filters.genre = e.target.value; loadDeck(); };
+
+      document.getElementById("smart-mode-btn").onclick = () => {
+        state.filters.smart = !state.filters.smart;
+        const btn = document.getElementById("smart-mode-btn");
+        btn.className = state.filters.smart
+          ? "bg-amber-400 text-[#0A0B0E] rounded-xl px-3 py-2 text-xs font-bold flex items-center gap-1.5 shrink-0 transition active:scale-95"
+          : "surface-card rounded-xl px-3 py-2 text-xs font-semibold text-zinc-300 flex items-center gap-1.5 shrink-0 transition active:scale-95";
+        document.getElementById("smart-mode-banner").classList.toggle("hidden", !state.filters.smart);
+        loadDeck();
+      };
+      document.getElementById("smart-refresh-btn").onclick = loadDeck;
+
+      document.getElementById("btn-skip").onclick = handleSkipCurrent;
+      document.getElementById("btn-want").onclick = handleWantCurrent;
+      document.getElementById("btn-lucky").onclick = handleLuckySpin;
+      document.getElementById("btn-watched").onclick = () => { const i = getCurrentCardItem(); if (i) openRatingModal(i); };
+
+      document.querySelectorAll(".wl-filter-btn").forEach(btn => {
+        btn.onclick = () => {
+          state.watchlistFilter = btn.dataset.wlfilter;
+          document.querySelectorAll(".wl-filter-btn").forEach(b => {
+            const act = b.dataset.wlfilter === state.watchlistFilter;
+            b.className = act
+              ? "wl-filter-btn active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-[#0A0B0E]"
+              : "wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300";
+          });
+          renderWatchlist();
+        };
+      });
+
+      document.getElementById("open-battle-btn").onclick = () => BattleEngine.open();
+      document.getElementById("close-battle-modal").onclick = () => BattleEngine.close();
+      document.getElementById("close-rating-modal").onclick = () => document.getElementById("rating-modal").classList.add("hidden");
+      document.getElementById("confirm-rating-btn").onclick = savePendingRating;
+      document.getElementById("close-match-modal").onclick = () => document.getElementById("match-modal").classList.add("hidden");
+      document.getElementById("match-pin-btn").onclick = () => {
+        if (pendingMatchItem) {
+          state.shared.tonightMovie = { ...pendingMatchItem, pinnedAt: Date.now() };
+          pushSharedState(); renderWatchlist();
+          showToast(`Закреплено на вечер: «${pendingMatchItem.title}»`, "success");
+        }
+        document.getElementById("match-modal").classList.add("hidden");
+      };
+
+      // Live Search
+      let searchTimer = null;
+      const searchInput = document.getElementById("watched-search-input");
+      const searchClear = document.getElementById("watched-search-clear");
+      const searchResults = document.getElementById("watched-search-results");
+      searchInput.oninput = () => {
+        const q = searchInput.value.trim();
+        searchClear.classList.toggle("hidden", !q);
+        clearTimeout(searchTimer);
+        if (!q) return searchResults.classList.add("hidden");
+        searchTimer = setTimeout(async () => {
+          const items = await MediaAPI.search(q);
+          searchResults.classList.remove("hidden");
+          if (!items.length) return (searchResults.innerHTML = `<div class="text-xs text-zinc-500 text-center py-3">Ничего не найдено</div>`);
+          searchResults.innerHTML = items.map(i => `
+            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition">
+              <img src="${i.poster}" onerror="this.src='https://placehold.co/100x150/14161C/ffffff?text=Film'" class="w-10 aspect-[2/3] rounded-lg object-cover shrink-0" />
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-bold text-white truncate">${i.title}</div>
+                <div class="text-[11px] text-zinc-400">${i.year} · ★ ${i.rating}</div>
+              </div>
+              <button data-sr="${i.id}" class="sr-add-btn px-3 py-1.5 rounded-full bg-white text-[#0A0B0E] text-[10px] font-bold shrink-0">Оценить</button>
+            </div>
+          `).join("");
+          searchResults.querySelectorAll(".sr-add-btn").forEach(btn => {
+            btn.onclick = () => { const f = items.find(x => x.id === btn.dataset.sr); if (f) openRatingModal(f); };
+          });
+        }, 300);
+      };
+      searchClear.onclick = () => { searchInput.value = ""; searchClear.classList.add("hidden"); searchResults.classList.add("hidden"); };
+
+      // Settings
+      document.getElementById("create-room-btn").onclick = createRoom;
+      document.getElementById("join-room-btn").onclick = () => joinRoom(document.getElementById("join-room-input").value);
+      document.getElementById("leave-room-btn").onclick = leaveRoom;
+      document.getElementById("copy-room-code-btn").onclick = () => {
+        if (!state.roomId) return;
+        const ta = document.createElement("textarea");
+        ta.value = state.roomId; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+        showToast(`Код ${state.roomId} скопирован`, "success");
+      };
+
+      document.getElementById("p1-name-input").oninput = (e) => { state.shared.partners.p1.name = e.target.value || "Он"; renderAll(); pushSharedState(); };
+      document.getElementById("p2-name-input").oninput = (e) => { state.shared.partners.p2.name = e.target.value || "Она"; renderAll(); pushSharedState(); };
+      const cycleAv = (r) => { const c = state.shared.partners[r].avatar; state.shared.partners[r].avatar = AVATARS[(AVATARS.indexOf(c) + 1) % AVATARS.length]; renderAll(); pushSharedState(); };
+      document.getElementById("p1-avatar-btn").onclick = () => cycleAv("p1");
+      document.getElementById("p2-avatar-btn").onclick = () => cycleAv("p2");
+      document.querySelectorAll(".role-select-btn").forEach(btn => {
+        btn.onclick = () => { state.currentRole = btn.dataset.setrole; renderAll(); showToast(`Активный профиль: ${state.shared.partners[state.currentRole].name}`, "info"); };
+      });
+
+      document.getElementById("save-tmdb-key-btn").onclick = () => {
+        const key = document.getElementById("tmdb-key-input").value.trim();
+        MediaAPI.apiKey = key;
+        document.getElementById("tmdb-status-text").textContent = key ? "Подключён живой TMDB API (ru-RU)" : "Активна встроенная демо-база (18 тайтлов)";
+        showToast(key ? "Ключ TMDB сохранён" : "Включена демо-база", "success");
+        loadDeck();
+      };
+
+      document.getElementById("save-firebase-btn").onclick = async () => {
+        const raw = document.getElementById("firebase-config-input").value.trim();
+        if (!raw) return showToast("Вставьте Firebase Config JSON", "warn");
+        try {
+          const ok = await initFirebase(JSON.parse(raw));
+          showToast(ok ? "Firebase успешно подключён" : "Не удалось подключиться", ok ? "success" : "warn");
+          updateRoomUI();
+        } catch {
+          showToast("Проверьте формат JSON (ключи в двойных кавычках)", "warn");
+        }
+      };
+
+      document.getElementById("open-guide-btn").onclick = () => document.getElementById("guide-modal").classList.remove("hidden");
+      document.getElementById("close-guide-modal").onclick = () => document.getElementById("guide-modal").classList.add("hidden");
+      document.getElementById("guide-ok-btn").onclick = () => document.getElementById("guide-modal").classList.add("hidden");
+    }
+
+    window.addEventListener("load", async () => {
+      bindEvents();
+      renderAll();
+      loadDeck();
+      await initFirebase();
+      updateRoomUI();
+    });
+  </script>
+</body>
+</html>

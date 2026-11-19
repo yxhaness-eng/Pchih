@@ -480,9 +480,10 @@
           </div>
 
           <div class="space-y-1.5 pt-3 border-t border-white/8">
-            <label class="text-[11px] font-medium text-zinc-400">Firebase Config JSON (для GitHub Pages)</label>
-            <textarea id="firebase-config-input" rows="3" placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "..."}'
+            <label class="text-[11px] font-medium text-zinc-400">Firebase Config (JSON или JS-код из Firebase)</label>
+            <textarea id="firebase-config-input" rows="4" placeholder='Вставьте const firebaseConfig = { ... }; или JSON'
               class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-[11px] font-mono text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-white/30"></textarea>
+            <p id="firebase-status-text" class="text-[11px] text-zinc-500">Готов к подключению проекта pchih-4b21f</p>
             <button id="save-firebase-btn" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white active:scale-95 transition">
               Подключить Firebase
             </button>
@@ -822,15 +823,51 @@
     let fbApp = null, fbAuth = null, fbDb = null, fbUser = null, roomUnsubscribe = null;
     const appId = typeof __app_id !== "undefined" ? __app_id : "pchih-couple-app";
 
+    // Преднастроенный конфиг вашего проекта Firebase (для GitHub Pages и быстрого старта)
+    const DEFAULT_USER_FIREBASE_CONFIG = {
+      apiKey: "AIzaSyC3JM_fJSHFxkDCCFXz27J2pl92b9VeTeA",
+      authDomain: "pchih-4b21f.firebaseapp.com",
+      projectId: "pchih-4b21f",
+      storageBucket: "pchih-4b21f.firebasestorage.app",
+      messagingSenderId: "98659599421",
+      appId: "1:98659599421:web:7f2238145b1ace61399654",
+      measurementId: "G-MSPPKNHYKP"
+    };
+
+    /**
+     * Парсит как чистый JSON, так и сырой JS-фрагмент `const firebaseConfig = { ... };`
+     */
+    function parseFirebaseConfigInput(raw) {
+      const trimmed = raw.trim();
+      try {
+        return JSON.parse(trimmed);
+      } catch {
+        const start = trimmed.indexOf("{");
+        const end = trimmed.lastIndexOf("}");
+        if (start === -1 || end === -1 || end <= start) {
+          throw new Error("Не найден объект с настройками { ... }");
+        }
+        let body = trimmed.slice(start, end + 1);
+        body = body.replace(/\/\/.*$/gm, "");
+        body = body.replace(/([{,]\s*)([a-zA-Z0-9_$]+)\s*:/g, '$1"$2":');
+        body = body.replace(/:\s*'([^']*)'/g, ': "$1"');
+        body = body.replace(/,\s*}/g, "}");
+        return JSON.parse(body);
+      }
+    }
+
     async function initFirebase(customConfig = null) {
       try {
         let config = customConfig;
         if (!config && typeof __firebase_config !== "undefined" && __firebase_config) {
           config = JSON.parse(__firebase_config);
         }
-        if (!config || !config.apiKey) return false;
+        if (!config) {
+          config = DEFAULT_USER_FIREBASE_CONFIG;
+        }
+        if (!config || !config.apiKey) return { ok: false, error: "Отсутствует apiKey в конфиге" };
 
-        fbApp = initializeApp(config, customConfig ? "custom-pchih-" + Date.now() : undefined);
+        fbApp = initializeApp(config, "pchih-" + Date.now());
         fbAuth = getAuth(fbApp);
         fbDb = getFirestore(fbApp);
 
@@ -841,9 +878,27 @@
           const cred = await signInAnonymously(fbAuth);
           fbUser = cred.user;
         }
-        return true;
-      } catch {
-        return false;
+
+        const statusEl = document.getElementById("firebase-status-text");
+        if (statusEl) {
+          statusEl.textContent = `Подключён проект: ${config.projectId || "Firebase"}`;
+          statusEl.className = "text-[11px] text-emerald-400";
+        }
+        return { ok: true };
+      } catch (err) {
+        console.error("Firebase init error:", err);
+        let msg = err?.message || "Ошибка подключения";
+        if (err?.code === "auth/operation-not-allowed" || err?.code === "auth/configuration-not-found") {
+          msg = "Включите Anonymous в Firebase → Authentication → Sign-in method";
+        } else if (err?.code === "auth/api-key-not-valid") {
+          msg = "Неверный apiKey в конфиге Firebase";
+        }
+        const statusEl = document.getElementById("firebase-status-text");
+        if (statusEl) {
+          statusEl.textContent = msg;
+          statusEl.className = "text-[11px] text-rose-400";
+        }
+        return { ok: false, error: msg };
       }
     }
 
@@ -851,15 +906,102 @@
       return doc(fbDb, "artifacts", appId, "public", "data", "pchih_rooms", roomId);
     }
 
+    function formatFirestoreError(err) {
+      const code = err?.code || "";
+      let msg = err?.message || "Ошибка подключения к базе";
+      if (code === "permission-denied") {
+        msg = "Нет прав доступа к Firestore (проверьте вкладку Rules в Firebase)";
+      } else if (code === "unavailable" || code === "failed-precondition" || code === "not-found") {
+        msg = "База Firestore не создана или недоступна";
+      } else if (code === "unauthenticated") {
+        msg = "Включите Anonymous в Authentication → Sign-in method";
+      }
+      const statusEl = document.getElementById("firebase-status-text");
+      if (statusEl) {
+        statusEl.textContent = msg;
+        statusEl.className = "text-[11px] text-rose-400";
+      }
+      return msg;
+    }
+
     async function pushSharedState() {
-      if (!state.roomId || !fbDb || !fbUser) return;
+      if (!state.roomId || !fbDb || !fbUser) return { ok: false, error: "Firebase не инициализирован" };
       try {
         await setDoc(getRoomDocRef(state.roomId), {
           sharedJson: JSON.stringify(state.shared),
           updatedAt: Date.now()
         }, { merge: true });
+        return { ok: true };
       } catch (err) {
         console.error("Sync error:", err);
+        return { ok: false, error: formatFirestoreError(err) };
+      }
+    }
+
+    function subscribeToRoom(roomId) {
+      if (!fbDb || !fbUser) return;
+      if (roomUnsubscribe) roomUnsubscribe();
+      roomUnsubscribe = onSnapshot(
+        getRoomDocRef(roomId),
+        (snap) => {
+          if (snap.exists() && snap.data().sharedJson) {
+            try {
+              state.shared = { ...state.shared, ...JSON.parse(snap.data().sharedJson) };
+              renderAll();
+              if (!document.getElementById("battle-modal").classList.contains("hidden")) BattleEngine.render();
+            } catch {}
+          }
+        },
+        (err) => showToast(formatFirestoreError(err), "warn")
+      );
+    }
+
+    async function createRoom() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+
+      if (!fbDb || !fbUser) {
+        const res = await initFirebase();
+        if (!res.ok) {
+          state.roomId = code;
+          updateRoomUI();
+          showToast(res.error || `Комната ${code} создана (локально)`, "warn");
+          return;
+        }
+      }
+      state.roomId = code;
+      const saved = await pushSharedState();
+      if (!saved.ok) {
+        state.roomId = null;
+        updateRoomUI();
+        showToast(saved.error, "warn");
+        return;
+      }
+      subscribeToRoom(code);
+      updateRoomUI();
+      vibrate([40, 30, 60]);
+      showToast(`Комната ${code} создана`, "success");
+    }
+
+    async function joinRoom(codeRaw) {
+      const code = codeRaw.trim().toUpperCase();
+      if (code.length < 4) return showToast("Введите 6-значный код", "warn");
+      if (!fbDb || !fbUser) {
+        const res = await initFirebase();
+        if (!res.ok) return showToast(res.error || "Добавьте Firebase Config в настройках", "warn");
+      }
+      try {
+        const snap = await getDoc(getRoomDocRef(code));
+        if (!snap.exists()) return showToast("Комната с таким кодом не найдена", "warn");
+        state.roomId = code;
+        subscribeToRoom(code);
+        updateRoomUI();
+        vibrate([50, 40, 80]);
+        showToast(`Подключено к комнате ${code}`, "success");
+      } catch (err) {
+        console.error("Join room error:", err);
+        showToast(formatFirestoreError(err), "warn");
       }
     }
 
@@ -887,11 +1029,11 @@
       for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
 
       if (!fbDb || !fbUser) {
-        const ok = await initFirebase();
-        if (!ok) {
+        const res = await initFirebase();
+        if (!res.ok) {
           state.roomId = code;
           updateRoomUI();
-          showToast(`Комната ${code} создана (локально)`, "info");
+          showToast(res.error || `Комната ${code} создана (локально)`, "warn");
           return;
         }
       }
@@ -907,8 +1049,8 @@
       const code = codeRaw.trim().toUpperCase();
       if (code.length < 4) return showToast("Введите 6-значный код", "warn");
       if (!fbDb || !fbUser) {
-        const ok = await initFirebase();
-        if (!ok) return showToast("Добавьте Firebase Config JSON в настройках", "warn");
+        const res = await initFirebase();
+        if (!res.ok) return showToast(res.error || "Добавьте Firebase Config в настройках", "warn");
       }
       try {
         const snap = await getDoc(getRoomDocRef(code));
@@ -1869,13 +2011,14 @@
 
       document.getElementById("save-firebase-btn").onclick = async () => {
         const raw = document.getElementById("firebase-config-input").value.trim();
-        if (!raw) return showToast("Вставьте Firebase Config JSON", "warn");
+        if (!raw) return showToast("Вставьте Firebase Config", "warn");
         try {
-          const ok = await initFirebase(JSON.parse(raw));
-          showToast(ok ? "Firebase успешно подключён" : "Не удалось подключиться", ok ? "success" : "warn");
+          const parsed = parseFirebaseConfigInput(raw);
+          const res = await initFirebase(parsed);
+          showToast(res.ok ? `Подключён проект ${parsed.projectId}` : res.error, res.ok ? "success" : "warn");
           updateRoomUI();
-        } catch {
-          showToast("Проверьте формат JSON (ключи в двойных кавычках)", "warn");
+        } catch (err) {
+          showToast("Не удалось разобрать конфиг: проверьте скобки { }", "warn");
         }
       };
 
@@ -1886,6 +2029,8 @@
 
     window.addEventListener("load", async () => {
       bindEvents();
+      const fbInput = document.getElementById("firebase-config-input");
+      if (fbInput) fbInput.value = JSON.stringify(DEFAULT_USER_FIREBASE_CONFIG, null, 2);
       renderAll();
       loadDeck();
       await initFirebase();

@@ -217,33 +217,29 @@
 
     <!-- ==================== HEADER ==================== -->
     <header class="sticky top-0 z-30 px-4 pt-safe pb-3 flex items-center justify-between bg-gradient-to-b from-[#0A0B0E] via-[#0A0B0E]/90 to-transparent">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-[10px] bg-white text-[#0A0B0E] flex items-center justify-center shadow-md">
-          <!-- Minimal Film Mark -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-8 h-8 rounded-[10px] bg-white text-[#0A0B0E] flex items-center justify-center shadow-md shrink-0">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/>
           </svg>
         </div>
-        <div class="flex items-center gap-2">
-          <h1 class="text-[17px] font-extrabold tracking-tight text-white leading-none">ПЧиХ</h1>
-          <span id="room-badge-header" class="hidden items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+        <div class="flex items-center gap-2 min-w-0">
+          <h1 class="text-[17px] font-extrabold tracking-tight text-white leading-none shrink-0">ПЧиХ</h1>
+          <span id="room-badge-header" class="hidden items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             Live
           </span>
-          <div id="header-other-partner" class="hidden items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-white/6 border border-white/10">
-            <span id="header-other-avatar" class="w-4 h-4 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-[10px]"></span>
+          <div id="header-other-partner" class="hidden items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-white/6 border border-white/10 min-w-0">
+            <span id="header-other-avatar" class="w-4 h-4 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-[10px] shrink-0"></span>
             <span id="header-other-name" class="text-[10px] font-semibold text-zinc-200 max-w-[68px] truncate"></span>
           </div>
         </div>
       </div>
 
-      <!-- Active User Profile Pill -->
-      <button id="partner-switcher-btn" class="surface-card rounded-full pl-1.5 pr-3 py-1 flex items-center gap-2 active:scale-95 transition" title="Сменить слот партнёра">
+      <!-- My Profile Pill (opens Profile/Room tab) -->
+      <button id="my-profile-header-btn" class="surface-card rounded-full pl-1.5 pr-3 py-1 flex items-center gap-2 active:scale-95 transition shrink-0" title="Мой профиль">
         <span id="header-partner-avatar" class="w-6 h-6 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-xs shrink-0">😎</span>
-        <span id="header-partner-name" class="text-xs font-semibold text-white max-w-[84px] truncate">Он</span>
-        <svg class="w-3.5 h-3.5 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7 15l5 5 5-5"/><path d="M7 9l5-5 5 5"/>
-        </svg>
+        <span id="header-partner-name" class="text-xs font-semibold text-white max-w-[84px] truncate">Игрок</span>
       </button>
     </header>
 
@@ -261,6 +257,7 @@
             <button data-cat="movie" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Фильмы</button>
             <button data-cat="tv" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Сериалы</button>
             <button data-cat="animation" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Мультфильмы</button>
+            <button data-cat="animation_tv" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Мультсериалы</button>
             <button data-cat="anime" class="cat-pill shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition surface-card text-zinc-300">Аниме</button>
           </div>
 
@@ -297,7 +294,6 @@
 
         <!-- Editorial Poster Card Stage -->
         <div id="card-stage" class="relative w-full min-h-[400px] flex items-center justify-center">
-          <!-- Subtle Swipe Overlays -->
           <div id="swipe-badge-like" class="pointer-events-none opacity-0 absolute top-6 left-5 z-20 px-3.5 py-1 rounded-full bg-emerald-500 text-white font-bold text-xs tracking-wide uppercase shadow-lg -rotate-6 transition-opacity">
             Хочу посмотреть
           </div>
@@ -310,14 +306,12 @@
 
         <!-- Tactile Action Dock -->
         <div class="flex items-center justify-between gap-2.5 pt-1 px-1">
-          <!-- Skip -->
           <button id="btn-skip" class="surface-card w-14 h-14 rounded-full flex items-center justify-center text-zinc-300 hover:text-white active:scale-90 transition" title="Пропустить">
             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 6L6 18"/><path d="M6 6l12 12"/>
             </svg>
           </button>
 
-          <!-- Watched -->
           <button id="btn-watched" class="surface-card flex-1 h-12 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-semibold text-zinc-200 hover:bg-white/10 active:scale-95 transition">
             <svg class="w-4 h-4 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 6L9 17l-5-5"/>
@@ -325,14 +319,12 @@
             <span>Смотрели</span>
           </button>
 
-          <!-- Roulette / Lucky -->
           <button id="btn-lucky" class="surface-card w-12 h-12 rounded-2xl flex items-center justify-center text-amber-300 hover:bg-white/10 active:scale-90 transition" title="Случайный выбор">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>
             </svg>
           </button>
 
-          <!-- Want to Watch (Primary) -->
           <button id="btn-want" class="btn-love w-14 h-14 rounded-full flex items-center justify-center text-white" title="Хочу посмотреть">
             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -345,6 +337,9 @@
            SCREEN 2: НАШ СПИСОК И БАТТЛ ЗА ПУЛЬТ
            ============================================================ -->
       <section id="view-watchlist" class="view-section hidden view-animate space-y-4">
+        <!-- Live Active Battle Invitation Banner -->
+        <div id="live-battle-banner" class="hidden"></div>
+
         <!-- Tonight's Winner Banner -->
         <div id="tonight-movie-banner" class="hidden"></div>
 
@@ -366,8 +361,8 @@
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
           <button data-wlfilter="all" class="wl-filter-btn active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-[#0A0B0E]">Все</button>
           <button data-wlfilter="matches" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Совпадения</button>
-          <button data-wlfilter="p1" id="wl-filter-p1" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Он</button>
-          <button data-wlfilter="p2" id="wl-filter-p2" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Она</button>
+          <button data-wlfilter="p1" id="wl-filter-p1" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Игрок 1</button>
+          <button data-wlfilter="p2" id="wl-filter-p2" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Игрок 2</button>
         </div>
 
         <!-- List -->
@@ -383,7 +378,7 @@
           <p class="text-xs text-zinc-400 mt-0.5">Ваши оценки обучают персональные рекомендации</p>
         </div>
 
-        <!-- Apple-Style Search Input -->
+        <!-- Live Search Input -->
         <div class="space-y-2">
           <div class="relative">
             <svg class="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -406,11 +401,11 @@
       </section>
 
       <!-- ============================================================
-           SCREEN 4: КОМНАТА, ПРОФИЛИ И НАСТРОЙКИ
+           SCREEN 4: КОМНАТА И ПРОФИЛЬ
            ============================================================ -->
       <section id="view-settings" class="view-section hidden view-animate space-y-4">
         <div class="pt-1">
-          <h2 class="text-xl font-bold tracking-tight text-white">Комната и настройки</h2>
+          <h2 class="text-xl font-bold tracking-tight text-white">Комната и профиль</h2>
           <p class="text-xs text-zinc-400 mt-0.5">Синхронизация двух смартфонов в реальном времени</p>
         </div>
 
@@ -452,17 +447,17 @@
           </div>
         </div>
 
-        <!-- Profiles (Self Profile + Connected Partner) -->
+        <!-- Self Profile + Connected Partner -->
         <div class="surface-card rounded-3xl p-4 space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-bold text-white">Мой профиль</h3>
-            <span id="my-role-label" class="text-[11px] font-semibold text-zinc-400">Партнёр 1</span>
+            <span class="text-[11px] font-medium text-zinc-400">Виден партнёру</span>
           </div>
 
           <div class="flex items-center gap-3.5">
             <div id="my-profile-avatar-preview" class="w-16 h-16 rounded-full overflow-hidden bg-white/8 border border-white/15 flex items-center justify-center text-3xl shrink-0">😎</div>
             <div class="flex-1 min-w-0 space-y-2">
-              <input id="my-name-input" type="text" value="Он" maxlength="20" placeholder="Ваше имя..."
+              <input id="my-name-input" type="text" value="Игрок" maxlength="20" placeholder="Ваше имя..."
                 class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-sm font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
               <div class="flex items-center gap-2">
                 <label for="my-photo-input" class="cursor-pointer px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[11px] font-semibold text-white active:scale-95 transition">
@@ -489,46 +484,12 @@
               <span id="other-partner-status" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-zinc-400">Не подключён</span>
             </div>
             <div class="rounded-2xl bg-black/30 border border-white/6 p-3 flex items-center gap-3">
-              <div id="other-partner-avatar" class="w-11 h-11 rounded-full overflow-hidden bg-white/8 border border-white/10 flex items-center justify-center text-xl shrink-0">🥰</div>
+              <div id="other-partner-avatar" class="w-11 h-11 rounded-full overflow-hidden bg-white/8 border border-white/10 flex items-center justify-center text-xl shrink-0">🍿</div>
               <div class="flex-1 min-w-0">
-                <div id="other-partner-name" class="text-sm font-bold text-white truncate">Она</div>
+                <div id="other-partner-name" class="text-sm font-bold text-white truncate">Ожидание партнёра</div>
                 <div id="other-partner-sub" class="text-[11px] text-zinc-400 truncate">Поделитесь кодом комнаты, чтобы подключить партнёра</div>
               </div>
             </div>
-
-            <!-- Role Switcher for 1-device mode -->
-            <div class="grid grid-cols-2 gap-2 pt-1">
-              <button data-setrole="p1" class="role-select-btn py-2 rounded-xl text-[11px] font-semibold">Слот 1</button>
-              <button data-setrole="p2" class="role-select-btn py-2 rounded-xl text-[11px] font-semibold">Слот 2</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- API Keys & Firebase -->
-        <div class="surface-card rounded-3xl p-4 space-y-3.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-white">Интеграции (TMDB / Firebase)</h3>
-            <button id="open-guide-btn" class="text-xs font-semibold text-amber-400 hover:text-amber-300">Инструкция</button>
-          </div>
-
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-medium text-zinc-400">TMDB API Key (v3)</label>
-            <div class="flex gap-2">
-              <input id="tmdb-key-input" type="password" placeholder="Вставьте ключ TMDB..."
-                class="flex-1 rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
-              <button id="save-tmdb-key-btn" class="px-4 py-2 rounded-xl bg-white text-[#0A0B0E] text-xs font-bold active:scale-95">ОК</button>
-            </div>
-            <p id="tmdb-status-text" class="text-[11px] text-zinc-500">Активна встроенная демо-база (18 тайтлов)</p>
-          </div>
-
-          <div class="space-y-1.5 pt-3 border-t border-white/8">
-            <label class="text-[11px] font-medium text-zinc-400">Firebase Config (JSON или JS-код из Firebase)</label>
-            <textarea id="firebase-config-input" rows="4" placeholder='Вставьте const firebaseConfig = { ... }; или JSON'
-              class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-[11px] font-mono text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-white/30"></textarea>
-            <p id="firebase-status-text" class="text-[11px] text-zinc-500">Готов к подключению проекта pchih-4b21f</p>
-            <button id="save-firebase-btn" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-semibold text-white active:scale-95 transition">
-              Подключить Firebase
-            </button>
           </div>
         </div>
       </section>
@@ -561,7 +522,7 @@
 
         <button data-tab="settings" class="nav-tab flex flex-col items-center justify-center gap-0.5 py-2 rounded-full text-zinc-400 transition">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.85 1 1.51 1H21a2 2 0 0 1 0 4h-.09c-.66 0-1.25.4-1.51 1z"/>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
           <span class="text-[10px] font-semibold">Комната</span>
         </button>
@@ -628,42 +589,12 @@
     </div>
   </div>
 
-  <!-- 4. Setup Guide Modal -->
-  <div id="guide-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="surface-card w-full max-w-sm rounded-3xl p-5 space-y-4 max-h-[85dvh] overflow-y-auto modal-scroll border-white/15 view-animate bg-[#14161C]">
-      <div class="flex items-center justify-between">
-        <h3 class="text-base font-bold text-white">Где взять ключи</h3>
-        <button id="close-guide-modal" class="w-8 h-8 rounded-full bg-white/8 text-zinc-300 flex items-center justify-center">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
-        </button>
-      </div>
-
-      <div class="space-y-3 text-xs text-zinc-300 leading-relaxed">
-        <div class="rounded-2xl bg-white/5 p-3.5 space-y-1.5">
-          <div class="font-bold text-white">1. Firebase Config JSON</div>
-          <p>1. Откройте <b>console.firebase.google.com</b> и создайте проект.</p>
-          <p>2. В меню слева: <b>Build → Firestore Database</b> (создайте базу) и <b>Authentication → Sign-in method → Anonymous</b> (включите).</p>
-          <p>3. Нажмите на шестерёнку <b>Project Settings</b> вверху слева → пролистайте вниз до <b>Your apps</b> → нажмите иконку <b>&lt;/&gt; (Web)</b> → зарегистрируйте приложение.</p>
-          <p>4. Скопируйте объект <code>firebaseConfig</code> и оберните ключи в двойные кавычки (валидный JSON).</p>
-        </div>
-
-        <div class="rounded-2xl bg-white/5 p-3.5 space-y-1.5">
-          <div class="font-bold text-white">2. TMDB API Key (бесплатно)</div>
-          <p>1. Зайдите на <b>themoviedb.org</b> → Настройки профиля → <b>API</b>.</p>
-          <p>2. Запросите ключ Developer и скопируйте <b>API Key (v3 auth)</b>.</p>
-        </div>
-      </div>
-
-      <button id="guide-ok-btn" class="w-full btn-primary py-3 rounded-2xl text-xs font-bold">Понятно</button>
-    </div>
-  </div>
-
   <!-- Toast Container -->
   <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-[70] w-[90%] max-w-sm pointer-events-none space-y-2"></div>
 
   <!-- ==================== APPLICATION LOGIC ==================== -->
   <script type="module">
-    /* Firebase SDK загружается лениво, чтобы интерфейс всегда открывался мгновенно даже при медленной сети */
+    /* Ленивая загрузка Firebase SDK, чтобы интерфейс открывался мгновенно */
     let fbSdk = null;
     async function loadFirebaseSDK() {
       if (fbSdk) return fbSdk;
@@ -697,47 +628,49 @@
       } catch {}
     })();
 
-    /* ---------- DEMO CATALOG & TMDB API ---------- */
+    /* ---------- DEMO CATALOG & LIVE TMDB API ---------- */
     const DEMO_CATALOG = [
       { id: "movie-157336", tmdbId: 157336, mediaType: "movie", category: "movie", title: "Интерстеллар", year: "2014", rating: 8.4, runtime: "2 ч 49 м", genres: ["Фантастика", "Драма"], poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", overview: "Когда засуха, пыльные бури и вымирание растений приводят человечество к продовольственному кризису, коллектив исследователей отправляется сквозь червоточину в путешествие, чтобы найти новую планету." },
       { id: "movie-693134", tmdbId: 693134, mediaType: "movie", category: "movie", title: "Дюна: Часть вторая", year: "2024", rating: 8.2, runtime: "2 ч 46 м", genres: ["Фантастика", "Боевик", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg", overview: "Пол Атрейдес объединяется с Чани и фрименами, чтобы отомстить заговорщикам, уничтожившим его семью, и предотвратить ужасное будущее, которое видит лишь он." },
       { id: "movie-496243", tmdbId: 496243, mediaType: "movie", category: "movie", title: "Паразиты", year: "2019", rating: 8.5, runtime: "2 ч 12 м", genres: ["Триллер", "Комедия", "Драма"], poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg", overview: "Обычное корейское семейство Кимов жизнь не балует. Однажды старший сын получает шанс устроиться репетитором в особняк богатой семьи Пак, и у Кимов созревает дерзкий план." },
       { id: "movie-27205", tmdbId: 27205, mediaType: "movie", category: "movie", title: "Начало", year: "2010", rating: 8.4, runtime: "2 ч 28 м", genres: ["Фантастика", "Боевик", "Триллер"], poster: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg", overview: "Кобб — талантливый вор, лучший из лучших в опасном искусстве извлечения секретов из глубин подсознания во время сна. Но теперь ему нужно не украсть идею, а внедрить её." },
-      { id: "movie-546554", tmdbId: 546554, mediaType: "movie", category: "movie", title: "Достать ножи", year: "2019", rating: 7.8, runtime: "2 ч 10 м", genres: ["Триллер", "Комедия"], poster: "https://image.tmdb.org/t/p/w500/pThyQovXQrw2m0s9x82twj48Jq4.jpg", overview: "На следующее утро после празднования 85-летия известного автора криминальных романов виновника торжества находят мёртвым. За дело берётся детектив Бенуа Блан." },
-      { id: "movie-11324", tmdbId: 11324, mediaType: "movie", category: "movie", title: "Остров проклятых", year: "2010", rating: 8.2, runtime: "2 ч 18 м", genres: ["Триллер", "Драма", "Ужасы"], poster: "https://image.tmdb.org/t/p/w500/4GDy0PHYX3VRXUtwK5ysFbg3kEx.jpg", overview: "Два судебных пристава отправляются на отдалённый остров в штате Массачусетс, чтобы расследовать исчезновение пациентки клиники для умалишённых преступников." },
-      { id: "movie-313369", tmdbId: 313369, mediaType: "movie", category: "movie", title: "Ла-Ла Ленд", year: "2016", rating: 7.9, runtime: "2 ч 08 м", genres: ["Романтика", "Драма", "Комедия"], poster: "https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg", overview: "История любви начинающей актрисы и фанатичного джазового музыканта, пытающихся осуществить свои мечты в Лос-Анджелесе." },
-      { id: "tv-94605", tmdbId: 94605, mediaType: "tv", category: "animation", title: "Аркейн", year: "2021", rating: 8.7, runtime: "2 сезона", genres: ["Фантастика", "Боевик", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg", overview: "На фоне конфликта между утопическим Пилтовером и подземным Зауном две сестры оказываются по разные стороны баррикад в мире магии и технологий." },
+      { id: "tv-94605", tmdbId: 94605, mediaType: "tv", category: "animation_tv", title: "Аркейн", year: "2021", rating: 8.7, runtime: "2 сезона", genres: ["Фантастика", "Боевик", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg", overview: "На фоне конфликта между утопическим Пилтовером и подземным Зауном две сестры оказываются по разные стороны баррикад в мире магии и технологий." },
       { id: "tv-66732", tmdbId: 66732, mediaType: "tv", category: "tv", title: "Очень странные дела", year: "2016", rating: 8.6, runtime: "4 сезона", genres: ["Фантастика", "Ужасы", "Триллер"], poster: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg", overview: "1980-е годы, тихий городок Хоукинс. Благоприятное течение местной жизни нарушает загадочное исчезновение мальчика по имени Уилл." },
-      { id: "tv-95396", tmdbId: 95396, mediaType: "tv", category: "tv", title: "Разделение", year: "2022", rating: 8.4, runtime: "2 сезона", genres: ["Фантастика", "Триллер", "Драма"], poster: "https://image.tmdb.org/t/p/w500/lFf6LLrQjYldcZItzOkGmMMigP7.jpg", overview: "Корпорация Lumon Industries придумала способ хирургически отделять рабочие воспоминания сотрудников от личных." },
-      { id: "tv-76479", tmdbId: 76479, mediaType: "tv", category: "tv", title: "Пацаны", year: "2019", rating: 8.5, runtime: "4 сезона", genres: ["Боевик", "Фантастика", "Комедия"], poster: "https://image.tmdb.org/t/p/w500/2zmTngn1tYC1AvfnrFLhxeD82hz.jpg", overview: "Мир, где супергерои — настоящие медиазвёзды, за идеальным фасадом которых скрываются коррупция и цинизм." },
-      { id: "tv-97546", tmdbId: 97546, mediaType: "tv", category: "tv", title: "Тед Лассо", year: "2020", rating: 8.5, runtime: "3 сезона", genres: ["Комедия", "Драма"], poster: "https://image.tmdb.org/t/p/w500/5fhZdwP1DVJ0FyVH6vrFdHwpXIn.jpg", overview: "Тренера по американскому футболу из Канзаса приглашают возглавить профессиональный английский футбольный клуб, несмотря на отсутствие опыта." },
       { id: "movie-569094", tmdbId: 569094, mediaType: "movie", category: "animation", title: "Человек-паук: Паутина вселенных", year: "2023", rating: 8.4, runtime: "2 ч 20 м", genres: ["Боевик", "Фантастика", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg", overview: "Майлз Моралес отправляется в приключение по мультивселенной вместе с Гвен Стейси и новой командой Людей-пауков." },
-      { id: "movie-508965", tmdbId: 508965, mediaType: "movie", category: "animation", title: "Клаус", year: "2019", rating: 8.3, runtime: "1 ч 36 м", genres: ["Комедия", "Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/q125RHUDgR4gjwh1QkfYuJLYkL.jpg", overview: "Избалованного сына владельца почтовой империи отправляют в мрачный северный город, где он знакомится с загадочным мастером игрушек Клаусом." },
-      { id: "movie-1022789", tmdbId: 1022789, mediaType: "movie", category: "animation", title: "Головоломка 2", year: "2024", rating: 7.7, runtime: "1 ч 37 м", genres: ["Комедия", "Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", overview: "Головной отдел мозга Райли подвергается внезапному ремонту, чтобы освободить место для совершенно новых эмоций — первой появляется Тревожность." },
       { id: "movie-372058", tmdbId: 372058, mediaType: "movie", category: "anime", title: "Твоё имя", year: "2016", rating: 8.5, runtime: "1 ч 46 м", genres: ["Романтика", "Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg", overview: "Токийский парень Таки и провинциальная девушка Мицуха обнаруживают, что во сне они меняются телами и проживают жизни друг друга." },
-      { id: "movie-129", tmdbId: 129, mediaType: "movie", category: "anime", title: "Унесённые призраками", year: "2001", rating: 8.5, runtime: "2 ч 05 м", genres: ["Фэнтези", "Драма"], poster: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", overview: "Маленькая Тихиро вместе с родителями оказывается в странном пустынном городе, где с наступлением темноты оживают духи." },
       { id: "tv-1429", tmdbId: 1429, mediaType: "tv", category: "anime", title: "Атака титанов", year: "2013", rating: 8.7, runtime: "4 сезона", genres: ["Боевик", "Фэнтези", "Триллер"], poster: "https://image.tmdb.org/t/p/w500/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg", overview: "Уже сто лет человечество живёт под защитой гигантских стен, спасаясь от титанов. Но однажды появляется Колоссальный титан, меняющий всё." }
     ];
+
+    const DEFAULT_TMDB_API_KEY = "7b0d744bfd3ba9fc743d3ae8890d822d";
 
     const TMDB_GENRE_MAP = {
       28: "Боевик", 12: "Фэнтези", 16: "Анимация", 35: "Комедия", 80: "Триллер",
       18: "Драма", 14: "Фэнтези", 27: "Ужасы", 9648: "Триллер", 10749: "Романтика",
-      878: "Фантастика", 53: "Триллер", 10759: "Боевик", 10765: "Фантастика"
+      878: "Фантастика", 53: "Триллер", 10759: "Боевик", 10765: "Фантастика", 10751: "Семейный"
     };
-    const GENRE_NAME_TO_TMDB = {
+
+    // Отдельные ID жанров TMDB для фильмов и для сериалов (иначе сериалы возвращают пустой список)
+    const MOVIE_GENRE_TO_TMDB = {
       "Комедия": 35, "Фантастика": 878, "Триллер": 53, "Драма": 18,
       "Романтика": 10749, "Фэнтези": 14, "Боевик": 28, "Ужасы": 27
     };
+    const TV_GENRE_TO_TMDB = {
+      "Комедия": 35, "Фантастика": 10765, "Триллер": 9648, "Драма": 18,
+      "Романтика": 10749, "Фэнтези": 10765, "Боевик": 10759, "Ужасы": 9648
+    };
 
     const MediaAPI = {
-      apiKey: "",
+      apiKey: DEFAULT_TMDB_API_KEY,
+
       normalizeTmdbItem(item, forcedType = null) {
         const mediaType = forcedType || item.media_type || (item.first_air_date ? "tv" : "movie");
         const genreIds = item.genre_ids || (item.genres ? item.genres.map(g => g.id) : []);
         const isAnim = genreIds.includes(16);
         const isJp = item.original_language === "ja";
+
         let category = mediaType;
         if (isAnim && isJp) category = "anime";
+        else if (isAnim && mediaType === "tv") category = "animation_tv";
         else if (isAnim) category = "animation";
 
         const genres = [...new Set(genreIds.map(id => TMDB_GENRE_MAP[id]).filter(Boolean))];
@@ -764,38 +697,58 @@
         };
       },
 
-      async fetchDiscover({ category = "all", genre = "all", smart = false, watched = [], page = 1 }) {
-        if (!this.apiKey) {
-          let list = [...DEMO_CATALOG];
-          if (category !== "all") list = list.filter(i => i.category === category);
-          if (genre !== "all") list = list.filter(i => i.genres.includes(genre));
-          if (smart && watched.length > 0) {
-            const scores = {};
-            watched.forEach(w => {
-              const avg = getAverageRating(w);
-              if (avg >= 7) (w.genres || []).forEach(g => { scores[g] = (scores[g] || 0) + avg; });
-            });
-            list.sort((a, b) => {
-              const sA = (a.genres || []).reduce((s, g) => s + (scores[g] || 0), 0) + a.rating;
-              const sB = (b.genres || []).reduce((s, g) => s + (scores[g] || 0), 0) + b.rating;
-              return sB - sA;
-            });
-          } else {
-            list.sort(() => Math.random() - 0.5);
-          }
-          return list;
+      async discoverEndpoint(endpointType, { category, genre, page }) {
+        const params = new URLSearchParams({
+          api_key: this.apiKey,
+          language: "ru-RU",
+          sort_by: "popularity.desc",
+          page: String(page)
+        });
+
+        const withGenres = [];
+        if (category === "animation" || category === "animation_tv") {
+          withGenres.push(16);
+          params.set("without_original_language", "ja");
+          params.set("vote_count.gte", "20");
+        } else if (category === "anime") {
+          withGenres.push(16);
+          params.set("with_original_language", "ja");
+          params.set("vote_count.gte", "15");
+        } else if (category === "movie" || category === "tv") {
+          params.set("without_genres", "16");
+          params.set("vote_count.gte", endpointType === "tv" ? "30" : "50");
+        } else {
+          params.set("vote_count.gte", "35");
         }
 
+        const genreMap = endpointType === "tv" ? TV_GENRE_TO_TMDB : MOVIE_GENRE_TO_TMDB;
+        if (genre !== "all" && genreMap[genre]) {
+          withGenres.push(genreMap[genre]);
+        }
+        if (withGenres.length) params.set("with_genres", [...new Set(withGenres)].join(","));
+
+        const res = await fetch(`https://api.themoviedb.org/3/discover/${endpointType}?${params.toString()}`);
+        if (!res.ok) throw new Error(`TMDB ${res.status}`);
+        const data = await res.json();
+        return (data.results || [])
+          .filter(r => r.poster_path)
+          .map(r => this.normalizeTmdbItem(r, endpointType));
+      },
+
+      async fetchDiscover({ category = "all", genre = "all", smart = false, watched = [], page = 1 }) {
         try {
+          // Умный подбор на основе ваших высоких оценок
           if (smart && watched.length > 0) {
-            const top = [...watched].filter(w => getAverageRating(w) >= 7 && w.tmdbId).sort((a, b) => getAverageRating(b) - getAverageRating(a));
+            const top = [...watched]
+              .filter(w => getAverageRating(w) >= 7 && w.tmdbId)
+              .sort((a, b) => getAverageRating(b) - getAverageRating(a));
             if (top.length) {
-              const seed = top[Math.floor(Math.random() * Math.min(3, top.length))];
-              const res = await fetch(`https://api.themoviedb.org/3/${seed.mediaType}/${seed.tmdbId}/recommendations?api_key=${this.apiKey}&language=ru-RU&page=1`);
+              const seed = top[(page - 1) % Math.min(5, top.length)];
+              const res = await fetch(`https://api.themoviedb.org/3/${seed.mediaType}/${seed.tmdbId}/recommendations?api_key=${this.apiKey}&language=ru-RU&page=${Math.min(page, 3)}`);
               if (res.ok) {
                 const data = await res.json();
                 if (data.results?.length) {
-                  let mapped = data.results.map(r => this.normalizeTmdbItem(r, seed.mediaType));
+                  let mapped = data.results.filter(r => r.poster_path).map(r => this.normalizeTmdbItem(r, seed.mediaType));
                   if (category !== "all") mapped = mapped.filter(m => m.category === category);
                   if (mapped.length) return mapped;
                 }
@@ -803,38 +756,47 @@
             }
           }
 
-          const endpointType = category === "tv" ? "tv" : (category === "movie" ? "movie" : (Math.random() > 0.4 ? "movie" : "tv"));
-          const params = new URLSearchParams({
-            api_key: this.apiKey, language: "ru-RU", sort_by: "popularity.desc", "vote_count.gte": "120", page: String(page)
-          });
-          const withGenres = [];
-          if (category === "animation") { withGenres.push(16); params.set("without_original_language", "ja"); }
-          else if (category === "anime") { withGenres.push(16); params.set("with_original_language", "ja"); }
-          if (genre !== "all" && GENRE_NAME_TO_TMDB[genre]) withGenres.push(GENRE_NAME_TO_TMDB[genre]);
-          if (withGenres.length) params.set("with_genres", withGenres.join(","));
+          let results = [];
+          if (category === "movie" || category === "animation") {
+            results = await this.discoverEndpoint("movie", { category, genre, page });
+          } else if (category === "tv" || category === "animation_tv") {
+            results = await this.discoverEndpoint("tv", { category, genre, page });
+          } else if (category === "anime") {
+            const [tvList, mvList] = await Promise.all([
+              this.discoverEndpoint("tv", { category, genre, page }).catch(() => []),
+              this.discoverEndpoint("movie", { category, genre, page }).catch(() => [])
+            ]);
+            results = [...tvList, ...mvList].sort(() => Math.random() - 0.5);
+          } else {
+            const [mvList, tvList] = await Promise.all([
+              this.discoverEndpoint("movie", { category: "all", genre, page }).catch(() => []),
+              this.discoverEndpoint("tv", { category: "all", genre, page }).catch(() => [])
+            ]);
+            results = [...mvList, ...tvList].sort(() => Math.random() - 0.5);
+          }
 
-          const res = await fetch(`https://api.themoviedb.org/3/discover/${endpointType}?${params.toString()}`);
-          if (!res.ok) throw new Error("TMDB API error");
-          const data = await res.json();
-          return (data.results || []).map(r => this.normalizeTmdbItem(r, endpointType));
-        } catch {
-          showToast("Ошибка TMDB API — используется демо-база", "warn");
-          return [...DEMO_CATALOG].sort(() => Math.random() - 0.5);
+          if (results.length) return results;
+          throw new Error("Empty TMDB page");
+        } catch (err) {
+          console.warn("TMDB fallback:", err);
+          let list = [...DEMO_CATALOG];
+          if (category !== "all") list = list.filter(i => i.category === category);
+          if (genre !== "all") list = list.filter(i => i.genres.includes(genre));
+          return (list.length ? list : [...DEMO_CATALOG]).sort(() => Math.random() - 0.5);
         }
       },
 
       async search(query) {
         const q = query.trim();
         if (!q) return [];
-        if (!this.apiKey) {
-          const low = q.toLowerCase();
-          return DEMO_CATALOG.filter(i => i.title.toLowerCase().includes(low) || i.genres.some(g => g.toLowerCase().includes(low)));
-        }
         try {
           const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${this.apiKey}&language=ru-RU&query=${encodeURIComponent(q)}&include_adult=false`);
           if (!res.ok) throw new Error();
           const data = await res.json();
-          return (data.results || []).filter(r => r.media_type === "movie" || r.media_type === "tv").slice(0, 8).map(r => this.normalizeTmdbItem(r));
+          return (data.results || [])
+            .filter(r => r.media_type === "movie" || r.media_type === "tv")
+            .slice(0, 10)
+            .map(r => this.normalizeTmdbItem(r));
         } catch {
           return DEMO_CATALOG.filter(i => i.title.toLowerCase().includes(q.toLowerCase()));
         }
@@ -852,17 +814,18 @@
       watchlistFilter: "all",
       deck: [],
       deckIndex: 0,
+      deckPage: 1,
+      isLoadingMore: false,
       skippedIds: new Set(),
-      myProfile: { name: "Он", avatar: "😎", photoData: null },
+      myProfile: { name: "Игрок", avatar: "😎", photoData: null },
       shared: {
         partners: {
-          p1: { uid: null, name: "Он", avatar: "😎", photoData: null, onlineAt: 0 },
-          p2: { uid: null, name: "Она", avatar: "🥰", photoData: null, onlineAt: 0 }
+          p1: { uid: null, name: "Игрок 1", avatar: "😎", photoData: null, onlineAt: 0 },
+          p2: { uid: null, name: "Игрок 2", avatar: "🍿", photoData: null, onlineAt: 0 }
         },
         watchlist: [
           { ...DEMO_CATALOG[0], likes: { p1: true, p2: true }, addedAt: Date.now() - 50000 },
-          { ...DEMO_CATALOG[7], likes: { p1: true, p2: false }, addedAt: Date.now() - 30000 },
-          { ...DEMO_CATALOG[15], likes: { p1: false, p2: true }, addedAt: Date.now() - 10000 }
+          { ...DEMO_CATALOG[4], likes: { p1: true, p2: false }, addedAt: Date.now() - 30000 }
         ],
         watched: [
           { ...DEMO_CATALOG[3], watchedAt: new Date().toLocaleDateString("ru-RU"), ratings: { p1: 9, p2: 10 } }
@@ -877,7 +840,6 @@
     let userSaveTimer = null;
     const appId = typeof __app_id !== "undefined" ? __app_id : "pchih-couple-app";
 
-    // Преднастроенный конфиг вашего проекта Firebase (для GitHub Pages и быстрого старта)
     const DEFAULT_USER_FIREBASE_CONFIG = {
       apiKey: "AIzaSyC3JM_fJSHFxkDCCFXz27J2pl92b9VeTeA",
       authDomain: "pchih-4b21f.firebaseapp.com",
@@ -888,52 +850,29 @@
       measurementId: "G-MSPPKNHYKP"
     };
 
-    /**
-     * Парсит как чистый JSON, так и сырой JS-фрагмент `const firebaseConfig = { ... };`
-     */
-    function parseFirebaseConfigInput(raw) {
-      const trimmed = raw.trim();
-      try {
-        return JSON.parse(trimmed);
-      } catch {
-        const start = trimmed.indexOf("{");
-        const end = trimmed.lastIndexOf("}");
-        if (start === -1 || end === -1 || end <= start) {
-          throw new Error("Не найден объект с настройками { ... }");
-        }
-        let body = trimmed.slice(start, end + 1);
-        body = body.replace(/\/\/.*$/gm, "");
-        body = body.replace(/([{,]\s*)([a-zA-Z0-9_$]+)\s*:/g, '$1"$2":');
-        body = body.replace(/:\s*'([^']*)'/g, ': "$1"');
-        body = body.replace(/,\s*}/g, "}");
-        return JSON.parse(body);
-      }
+    function isOnlineDualMode() {
+      const otherRole = state.currentRole === "p1" ? "p2" : "p1";
+      const other = state.shared.partners?.[otherRole];
+      return Boolean(state.roomId && other?.uid && other.uid !== fbUser?.uid);
     }
 
-    async function initFirebase(customConfig = null) {
+    async function initFirebase() {
       try {
-        let config = customConfig;
-        if (!config && typeof __firebase_config !== "undefined" && __firebase_config) {
+        let config = null;
+        if (typeof __firebase_config !== "undefined" && __firebase_config) {
           config = JSON.parse(__firebase_config);
         }
-        if (!config) {
-          config = DEFAULT_USER_FIREBASE_CONFIG;
-        }
-        if (!config || !config.apiKey) return { ok: false, error: "Отсутствует apiKey в конфиге" };
+        if (!config) config = DEFAULT_USER_FIREBASE_CONFIG;
+        if (!config?.apiKey) return { ok: false, error: "Нет конфигурации Firebase" };
 
         const sdk = await loadFirebaseSDK();
-        if (!fbApp || customConfig) {
-          const appName = customConfig ? "pchih-custom-" + Date.now() : "pchih-main";
-          try {
-            fbApp = sdk.initializeApp(config, appName);
-          } catch {
-            fbApp = sdk.getApp(appName);
-          }
+        if (!fbApp) {
+          try { fbApp = sdk.initializeApp(config, "pchih-main"); }
+          catch { fbApp = sdk.getApp("pchih-main"); }
           fbAuth = sdk.getAuth(fbApp);
           fbDb = sdk.getFirestore(fbApp);
         }
 
-        // Ждём восстановления сохранённой сессии, чтобы не терять uid после перезагрузки
         const existingUser = await new Promise((resolve) => {
           const unsub = sdk.onAuthStateChanged(fbAuth, (u) => {
             unsub();
@@ -943,34 +882,17 @@
 
         if (existingUser) {
           fbUser = existingUser;
-        } else if (!customConfig && typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+        } else if (typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
           const cred = await sdk.signInWithCustomToken(fbAuth, __initial_auth_token);
           fbUser = cred.user;
         } else {
           const cred = await sdk.signInAnonymously(fbAuth);
           fbUser = cred.user;
         }
-
-        const statusEl = document.getElementById("firebase-status-text");
-        if (statusEl) {
-          statusEl.textContent = `Подключён проект: ${config.projectId || "Firebase"}`;
-          statusEl.className = "text-[11px] text-emerald-400";
-        }
         return { ok: true };
       } catch (err) {
         console.error("Firebase init error:", err);
-        let msg = err?.message || "Ошибка подключения";
-        if (err?.code === "auth/operation-not-allowed" || err?.code === "auth/configuration-not-found") {
-          msg = "Включите Anonymous в Firebase → Authentication → Sign-in method";
-        } else if (err?.code === "auth/api-key-not-valid") {
-          msg = "Неверный apiKey в конфиге Firebase";
-        }
-        const statusEl = document.getElementById("firebase-status-text");
-        if (statusEl) {
-          statusEl.textContent = msg;
-          statusEl.className = "text-[11px] text-rose-400";
-        }
-        return { ok: false, error: msg };
+        return { ok: false, error: err?.message || "Ошибка подключения к облаку" };
       }
     }
 
@@ -987,7 +909,6 @@
       const run = async () => {
         try {
           await fbSdk.setDoc(getUserSettingsDocRef(), {
-            tmdbApiKey: MediaAPI.apiKey || "",
             roomId: state.roomId || null,
             currentRole: state.currentRole,
             myProfileJson: JSON.stringify(state.myProfile),
@@ -1010,22 +931,12 @@
         if (!snap.exists()) return false;
         const data = snap.data();
 
-        if (data.tmdbApiKey) {
-          MediaAPI.apiKey = data.tmdbApiKey;
-          const tmdbInput = document.getElementById("tmdb-key-input");
-          if (tmdbInput) tmdbInput.value = data.tmdbApiKey;
-          const tmdbStatus = document.getElementById("tmdb-status-text");
-          if (tmdbStatus) tmdbStatus.textContent = "Подключён живой TMDB API (ru-RU)";
-        }
-
         if (data.currentRole === "p1" || data.currentRole === "p2") {
           state.currentRole = data.currentRole;
         }
-
         if (data.myProfileJson) {
           try { state.myProfile = { ...state.myProfile, ...JSON.parse(data.myProfileJson) }; } catch {}
         }
-
         if (data.localSharedJson) {
           try { state.shared = { ...state.shared, ...JSON.parse(data.localSharedJson) }; } catch {}
         }
@@ -1056,7 +967,7 @@
       state.shared.partners[state.currentRole] = {
         ...slot,
         uid: fbUser?.uid || slot.uid || "local-user",
-        name: state.myProfile.name || (state.currentRole === "p1" ? "Он" : "Она"),
+        name: state.myProfile.name || "Игрок",
         avatar: state.myProfile.avatar || "😎",
         photoData: state.myProfile.photoData || null,
         onlineAt: Date.now()
@@ -1065,25 +976,14 @@
 
     function formatFirestoreError(err) {
       const code = err?.code || "";
-      let msg = err?.message || "Ошибка подключения к базе";
-      if (code === "permission-denied") {
-        msg = "Нет прав доступа к Firestore (проверьте вкладку Rules в Firebase)";
-      } else if (code === "unavailable" || code === "failed-precondition" || code === "not-found") {
-        msg = "База Firestore не создана или недоступна";
-      } else if (code === "unauthenticated") {
-        msg = "Включите Anonymous в Authentication → Sign-in method";
-      }
-      const statusEl = document.getElementById("firebase-status-text");
-      if (statusEl) {
-        statusEl.textContent = msg;
-        statusEl.className = "text-[11px] text-rose-400";
-      }
-      return msg;
+      if (code === "permission-denied") return "Нет прав доступа к базе комнаты";
+      if (code === "unavailable" || code === "not-found") return "Сервер комнаты временно недоступен";
+      return err?.message || "Ошибка синхронизации";
     }
 
     async function pushSharedState() {
       saveUserSettings();
-      if (!state.roomId || !fbDb || !fbUser || !fbSdk) return { ok: false, error: "Firebase не инициализирован" };
+      if (!state.roomId || !fbDb || !fbUser || !fbSdk) return { ok: false, error: "Локальный режим" };
       try {
         await fbSdk.setDoc(getRoomDocRef(state.roomId), {
           sharedJson: JSON.stringify(state.shared),
@@ -1094,6 +994,28 @@
         console.error("Sync error:", err);
         return { ok: false, error: formatFirestoreError(err) };
       }
+    }
+
+    // Безопасное обновление только своего результата в баттле, чтобы не затереть очки партнёра
+    async function pushBattleScoreSafe(role, score) {
+      if (state.roomId && fbDb && fbUser && fbSdk) {
+        try {
+          const snap = await fbSdk.getDoc(getRoomDocRef(state.roomId));
+          if (snap.exists() && snap.data().sharedJson) {
+            const latest = JSON.parse(snap.data().sharedJson);
+            if (latest.battle && latest.battle.phase === "math") {
+              latest.battle.data.scores = latest.battle.data.scores || { p1: null, p2: null };
+              latest.battle.data.scores[role] = score;
+              state.shared = { ...state.shared, ...latest };
+            }
+          }
+        } catch {}
+      }
+      if (state.shared.battle?.data) {
+        state.shared.battle.data.scores = state.shared.battle.data.scores || { p1: null, p2: null };
+        state.shared.battle.data.scores[role] = score;
+      }
+      await pushSharedState();
     }
 
     function subscribeToRoom(roomId) {
@@ -1111,7 +1033,6 @@
 
               state.shared = { ...state.shared, ...incoming };
 
-              // Уведомляем, когда второй участник подключается к комнате
               if (nextOther?.uid && nextOther.uid !== fbUser?.uid) {
                 const partnerKey = `${roomId}:${nextOther.uid}`;
                 const wasDisconnected = !prevOther?.uid || prevOther.uid !== nextOther.uid;
@@ -1122,8 +1043,16 @@
                 }
               }
 
+              // Проверяем завершение синхронного математического спринта
+              BattleEngine.checkOnlineMathCompletion();
+
               renderAll();
-              if (!document.getElementById("battle-modal").classList.contains("hidden")) BattleEngine.render();
+              if (!document.getElementById("battle-modal").classList.contains("hidden")) {
+                // Не перерисовываем экран, если игрок прямо сейчас решает примеры на таймере
+                if (!BattleEngine.localMath.playing) {
+                  BattleEngine.render();
+                }
+              }
             } catch {}
           }
         },
@@ -1138,15 +1067,10 @@
 
       if (!fbDb || !fbUser) {
         const res = await initFirebase();
-        if (!res.ok) {
-          state.roomId = code;
-          updateRoomUI();
-          showToast(res.error || `Комната ${code} создана (локально)`, "warn");
-          return;
-        }
+        if (!res.ok) return showToast(res.error, "warn");
       }
       state.currentRole = "p1";
-      state.shared.partners.p2 = { uid: null, name: "Ожидание...", avatar: "🥰", photoData: null, onlineAt: 0 };
+      state.shared.partners.p2 = { uid: null, name: "Ожидание партнёра", avatar: "🍿", photoData: null, onlineAt: 0 };
       syncMyProfileToSlot();
       state.roomId = code;
       lastNotifiedPartnerKey = null;
@@ -1155,8 +1079,7 @@
       if (!saved.ok) {
         state.roomId = null;
         updateRoomUI();
-        showToast(saved.error, "warn");
-        return;
+        return showToast(saved.error, "warn");
       }
       saveUserSettings(true);
       subscribeToRoom(code);
@@ -1170,7 +1093,7 @@
       if (code.length < 4) return showToast("Введите 6-значный код", "warn");
       if (!fbDb || !fbUser) {
         const res = await initFirebase();
-        if (!res.ok) return showToast(res.error || "Добавьте Firebase Config в настройках", "warn");
+        if (!res.ok) return showToast(res.error, "warn");
       }
       try {
         const snap = await fbSdk.getDoc(getRoomDocRef(code));
@@ -1178,7 +1101,6 @@
         if (snap.data().sharedJson) {
           state.shared = { ...state.shared, ...JSON.parse(snap.data().sharedJson) };
         }
-        // Автоматически определяем свободный слот для вошедшего пользователя
         const p1Uid = state.shared.partners?.p1?.uid;
         if (p1Uid && p1Uid === fbUser?.uid) state.currentRole = "p1";
         else state.currentRole = "p2";
@@ -1213,7 +1135,7 @@
     function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch {} }
 
     function setBodyScrollLock() {
-      const ids = ["rating-modal", "match-modal", "battle-modal", "guide-modal"];
+      const ids = ["rating-modal", "match-modal", "battle-modal"];
       const anyOpen = ids.some(id => !document.getElementById(id)?.classList.contains("hidden"));
       document.body.classList.toggle("modal-open", anyOpen);
     }
@@ -1226,6 +1148,19 @@
     function closeModalEl(id) {
       document.getElementById(id)?.classList.add("hidden");
       setBodyScrollLock();
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.add("hidden"));
+      document.getElementById(`view-${tab}`).classList.remove("hidden");
+      document.querySelectorAll(".nav-tab").forEach(t => {
+        const act = t.dataset.tab === tab;
+        t.classList.toggle("bg-white", act);
+        t.classList.toggle("text-[#0A0B0E]", act);
+        t.classList.toggle("text-zinc-400", !act);
+      });
+      vibrate(10);
     }
 
     function renderAvatarHTML(profile, sizeClass = "w-5 h-5 text-xs") {
@@ -1319,9 +1254,11 @@
       })();
     }
 
-    /* ---------- BATTLE ENGINE (3 MINI-GAMES) ---------- */
+    /* ---------- REAL-TIME BATTLE ENGINE (3 MINI-GAMES) ---------- */
     const BattleEngine = {
       timerInterval: null,
+      localMath: { playing: false, score: 0, timeLeft: 15, question: null, role: "p1" },
+
       open() {
         openModalEl("battle-modal");
         if (!state.shared.battle || state.shared.battle.phase === "winner") {
@@ -1330,31 +1267,53 @@
             phase: "setup",
             p1MovieId: wl[0]?.id || DEMO_CATALOG[0].id,
             p2MovieId: wl[1]?.id || wl[0]?.id || DEMO_CATALOG[1].id,
-            gameType: null, winner: null, data: {}
+            gameType: null,
+            winner: null,
+            data: {}
           };
           pushSharedState();
         }
         this.render();
       },
+
       close() {
         this.clearTimer();
+        this.localMath.playing = false;
         closeModalEl("battle-modal");
       },
-      clearTimer() { if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; } },
+
+      clearTimer() {
+        if (this.timerInterval) {
+          clearInterval(this.timerInterval);
+          this.timerInterval = null;
+        }
+      },
+
       getCandidateList() {
         const map = new Map();
         state.shared.watchlist.forEach(m => map.set(m.id, m));
         if (map.size < 2) DEMO_CATALOG.slice(0, 6).forEach(m => map.set(m.id, m));
         return Array.from(map.values());
       },
-      getMovieById(id) { return this.getCandidateList().find(m => m.id === id) || DEMO_CATALOG[0]; },
+
+      getMovieById(id) {
+        return this.getCandidateList().find(m => m.id === id) || DEMO_CATALOG[0];
+      },
 
       startGame(type) {
+        this.clearTimer();
+        this.localMath.playing = false;
         const b = state.shared.battle;
-        b.gameType = type; b.winner = null;
+        b.gameType = type;
+        b.winner = null;
+
         if (type === "math") {
           b.phase = "math";
-          b.data = { activePlayer: "p1", status: "ready", scores: { p1: null, p2: null }, currentScore: 0, timeLeft: 15, question: this.generateMathQ() };
+          b.data = {
+            mode: isOnlineDualMode() ? "online" : "local",
+            activePlayer: "p1",
+            scores: { p1: null, p2: null }
+          };
         } else if (type === "ttt") {
           b.phase = "ttt";
           b.data = { size: 3, board: Array(9).fill(null), turn: "p1", winLine: null, draw: false };
@@ -1366,10 +1325,27 @@
         this.render();
       },
 
+      checkOnlineMathCompletion() {
+        const b = state.shared.battle;
+        if (!b || b.phase !== "math" || b.data?.mode !== "online") return;
+        const s = b.data.scores;
+        if (s && s.p1 !== null && s.p2 !== null) {
+          if (s.p1 > s.p2) this.finishBattle("p1");
+          else if (s.p2 > s.p1) this.finishBattle("p2");
+          else if (state.currentRole === "p1") {
+            showToast(`Ничья (${s.p1}:${s.p2}) — новый раунд!`, "info");
+            this.startGame("math");
+          }
+        }
+      },
+
       finishBattle(winnerRole) {
         this.clearTimer();
+        this.localMath.playing = false;
         const b = state.shared.battle;
-        b.phase = "winner"; b.winner = winnerRole;
+        if (!b || b.phase === "winner") return;
+        b.phase = "winner";
+        b.winner = winnerRole;
         const winMovie = this.getMovieById(winnerRole === "p1" ? b.p1MovieId : b.p2MovieId);
         state.shared.tonightMovie = { ...winMovie, wonBy: winnerRole, pinnedAt: Date.now() };
         pushSharedState();
@@ -1394,31 +1370,83 @@
         return { text: `${a} ${op} ${b}`, ans, choices: Array.from(choices).sort(() => Math.random() - 0.5) };
       },
 
+      startLocalMathRound(role) {
+        this.clearTimer();
+        this.localMath = {
+          playing: true,
+          role,
+          score: 0,
+          timeLeft: 15,
+          question: this.generateMathQ()
+        };
+        this.render();
+        this.timerInterval = setInterval(async () => {
+          this.localMath.timeLeft--;
+          const el = document.getElementById("math-timer-val");
+          if (el) el.textContent = this.localMath.timeLeft;
+
+          if (this.localMath.timeLeft <= 0) {
+            this.clearTimer();
+            const finalScore = this.localMath.score;
+            const playedRole = this.localMath.role;
+            this.localMath.playing = false;
+
+            const b = state.shared.battle;
+            if (!b || b.phase !== "math") return;
+
+            if (b.data.mode === "online") {
+              await pushBattleScoreSafe(playedRole, finalScore);
+              this.checkOnlineMathCompletion();
+              this.render();
+            } else {
+              b.data.scores[playedRole] = finalScore;
+              if (playedRole === "p1") {
+                b.data.activePlayer = "p2";
+                pushSharedState();
+                this.render();
+              } else {
+                const s = b.data.scores;
+                if (s.p1 > s.p2) this.finishBattle("p1");
+                else if (s.p2 > s.p1) this.finishBattle("p2");
+                else {
+                  showToast(`Ничья (${s.p1}:${s.p2}) — переигровка`, "info");
+                  this.startGame("math");
+                }
+              }
+            }
+          }
+        }, 1000);
+      },
+
       render() {
         const container = document.getElementById("battle-content");
         const b = state.shared.battle;
         if (!b) return;
         const p1 = state.shared.partners.p1;
         const p2 = state.shared.partners.p2;
+        const online = isOnlineDualMode();
 
         if (b.phase === "setup") {
           const candidates = this.getCandidateList();
           const opts = (sel) => candidates.map(m => `<option value="${m.id}" ${m.id === sel ? "selected" : ""}>${m.title} (${m.year})</option>`).join("");
+          const disableP1 = online && state.currentRole !== "p1";
+          const disableP2 = online && state.currentRole !== "p2";
+
           container.innerHTML = `
             <div class="space-y-5 view-animate">
               <div class="text-center space-y-1">
                 <h3 class="text-xl font-bold text-white">Ставки на вечер</h3>
-                <p class="text-xs text-zinc-400">Победитель забирает право выбора фильма</p>
+                <p class="text-xs text-zinc-400">${online ? "Онлайн-дуэль: каждый ставит свой фильм" : "Победитель забирает право выбора фильма"}</p>
               </div>
 
               <div class="space-y-2.5">
                 <div class="surface-card rounded-2xl p-3.5 space-y-2">
                   <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p1, "w-5 h-5 text-sm")} <span>${p1.name} выбирает</span></div>
-                  <select id="battle-p1-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${opts(b.p1MovieId)}</select>
+                  <select id="battle-p1-select" ${disableP1 ? "disabled" : ""} class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-60">${opts(b.p1MovieId)}</select>
                 </div>
                 <div class="surface-card rounded-2xl p-3.5 space-y-2">
                   <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p2, "w-5 h-5 text-sm")} <span>${p2.name} выбирает</span></div>
-                  <select id="battle-p2-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${opts(b.p2MovieId)}</select>
+                  <select id="battle-p2-select" ${disableP2 ? "disabled" : ""} class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-60">${opts(b.p2MovieId)}</select>
                 </div>
               </div>
 
@@ -1427,7 +1455,7 @@
                 <button data-game="math" class="start-game-btn w-full surface-card rounded-2xl p-4 flex items-center justify-between text-left active:scale-[0.98] transition hover:border-white/20">
                   <div>
                     <div class="text-sm font-bold text-white">Математический спринт</div>
-                    <div class="text-xs text-zinc-400 mt-0.5">Максимум верных ответов за 15 секунд</div>
+                    <div class="text-xs text-zinc-400 mt-0.5">${online ? "Одновременный забег на 15 сек" : "Максимум верных ответов за 15 сек"}</div>
                   </div>
                   <span class="text-zinc-400 text-sm font-bold">→</span>
                 </button>
@@ -1456,8 +1484,72 @@
 
         if (b.phase === "math") {
           const d = b.data;
-          const activeP = d.activePlayer === "p1" ? p1 : p2;
-          if (d.status === "ready") {
+          // Активный локальный таймер (не прерывается обновлениями сети)
+          if (this.localMath.playing) {
+            const activeP = this.localMath.role === "p1" ? p1 : p2;
+            container.innerHTML = `
+              <div class="space-y-5">
+                <div class="flex items-center justify-between surface-card rounded-2xl px-4 py-3 text-xs font-semibold">
+                  <span class="text-white flex items-center gap-1.5">${renderAvatarHTML(activeP, "w-5 h-5 text-sm")} ${activeP.name}</span>
+                  <span class="text-emerald-400">Очки: ${this.localMath.score}</span>
+                  <span class="text-[#FF3B5C] font-bold"><span id="math-timer-val">${this.localMath.timeLeft}</span> сек</span>
+                </div>
+                <div class="surface-card rounded-3xl py-12 px-4 text-center">
+                  <div class="text-4xl font-extrabold tracking-tight text-white">${this.localMath.question.text}</div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                  ${this.localMath.question.choices.map(c => `<button data-ans="${c}" class="math-choice-btn surface-card rounded-2xl py-5 text-2xl font-bold text-white active:scale-95 transition hover:bg-white/10">${c}</button>`).join("")}
+                </div>
+              </div>
+            `;
+            container.querySelectorAll(".math-choice-btn").forEach(btn => {
+              btn.onclick = () => {
+                if (Number(btn.dataset.ans) === this.localMath.question.ans) {
+                  this.localMath.score++;
+                  vibrate(20);
+                } else {
+                  vibrate([35, 20, 35]);
+                }
+                this.localMath.question = this.generateMathQ();
+                this.render();
+              };
+            });
+            return;
+          }
+
+          if (d.mode === "online") {
+            const myRole = state.currentRole;
+            const otherRole = myRole === "p1" ? "p2" : "p1";
+            const me = myRole === "p1" ? p1 : p2;
+            const other = otherRole === "p1" ? p1 : p2;
+            const myScore = d.scores?.[myRole];
+            const otherScore = d.scores?.[otherRole];
+
+            if (myScore !== null && myScore !== undefined) {
+              container.innerHTML = `
+                <div class="surface-card rounded-3xl p-6 text-center space-y-4 view-animate">
+                  <div class="text-xs font-semibold uppercase tracking-wider text-emerald-400">Ваш результат записан</div>
+                  <div class="text-5xl font-extrabold text-white">${myScore}</div>
+                  <p class="text-xs text-zinc-400">Ждём, пока ${other.name} закончит свой забег...</p>
+                  <div class="w-6 h-6 mx-auto border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                </div>
+              `;
+            } else {
+              container.innerHTML = `
+                <div class="surface-card rounded-3xl p-6 text-center space-y-5 view-animate">
+                  <div class="w-16 h-16 mx-auto rounded-full overflow-hidden bg-white/8 flex items-center justify-center text-3xl">${renderAvatarHTML(me, "w-16 h-16 text-3xl")}</div>
+                  <div class="space-y-1">
+                    <div class="text-xs font-semibold text-emerald-400">Онлайн-спринт</div>
+                    <h3 class="text-2xl font-bold text-white">${me.name}, готовы?</h3>
+                    <p class="text-xs text-zinc-400">Решите максимум примеров за 15 секунд. ${otherScore !== null && otherScore !== undefined ? `${other.name} уже финишировал!` : "Вы играете одновременно."}</p>
+                  </div>
+                  <button id="math-go-btn" class="w-full btn-primary py-3.5 rounded-2xl text-sm font-bold">Старт (15 сек)</button>
+                </div>
+              `;
+              document.getElementById("math-go-btn").onclick = () => this.startLocalMathRound(myRole);
+            }
+          } else {
+            const activeP = d.activePlayer === "p1" ? p1 : p2;
             container.innerHTML = `
               <div class="surface-card rounded-3xl p-6 text-center space-y-5 view-animate">
                 <div class="w-16 h-16 mx-auto rounded-full overflow-hidden bg-white/8 flex items-center justify-center text-3xl">${renderAvatarHTML(activeP, "w-16 h-16 text-3xl")}</div>
@@ -1470,51 +1562,7 @@
                 <button id="math-go-btn" class="w-full btn-primary py-3.5 rounded-2xl text-sm font-bold">Начать (15 сек)</button>
               </div>
             `;
-            document.getElementById("math-go-btn").onclick = () => {
-              d.status = "playing"; d.currentScore = 0; d.timeLeft = 15; d.question = this.generateMathQ();
-              this.render();
-              this.clearTimer();
-              this.timerInterval = setInterval(() => {
-                d.timeLeft--;
-                const el = document.getElementById("math-timer-val");
-                if (el) el.textContent = d.timeLeft;
-                if (d.timeLeft <= 0) {
-                  this.clearTimer();
-                  d.scores[d.activePlayer] = d.currentScore;
-                  if (d.activePlayer === "p1") {
-                    d.activePlayer = "p2"; d.status = "ready"; pushSharedState(); this.render();
-                  } else {
-                    if (d.scores.p1 > d.scores.p2) this.finishBattle("p1");
-                    else if (d.scores.p2 > d.scores.p1) this.finishBattle("p2");
-                    else { showToast(`Ничья (${d.scores.p1}:${d.scores.p2}) — переигровка`, "info"); this.startGame("math"); }
-                  }
-                }
-              }, 1000);
-            };
-          } else {
-            container.innerHTML = `
-              <div class="space-y-5">
-                <div class="flex items-center justify-between surface-card rounded-2xl px-4 py-3 text-xs font-semibold">
-                  <span class="text-white flex items-center gap-1.5">${renderAvatarHTML(activeP, "w-5 h-5 text-sm")} ${activeP.name}</span>
-                  <span class="text-emerald-400">Очки: ${d.currentScore}</span>
-                  <span class="text-[#FF3B5C] font-bold"><span id="math-timer-val">${d.timeLeft}</span> сек</span>
-                </div>
-                <div class="surface-card rounded-3xl py-12 px-4 text-center">
-                  <div class="text-4xl font-extrabold tracking-tight text-white">${d.question.text}</div>
-                </div>
-                <div class="grid grid-cols-2 gap-2.5">
-                  ${d.question.choices.map(c => `<button data-ans="${c}" class="math-choice-btn surface-card rounded-2xl py-5 text-2xl font-bold text-white active:scale-95 transition hover:bg-white/10">${c}</button>`).join("")}
-                </div>
-              </div>
-            `;
-            container.querySelectorAll(".math-choice-btn").forEach(btn => {
-              btn.onclick = () => {
-                if (Number(btn.dataset.ans) === d.question.ans) { d.currentScore++; vibrate(20); }
-                else vibrate([35, 20, 35]);
-                d.question = this.generateMathQ();
-                this.render();
-              };
-            });
+            document.getElementById("math-go-btn").onclick = () => this.startLocalMathRound(d.activePlayer);
           }
           return;
         }
@@ -1522,20 +1570,22 @@
         if (b.phase === "ttt") {
           const d = b.data;
           const turnP = d.turn === "p1" ? p1 : p2;
+          const isMyTurn = !online || d.turn === state.currentRole;
+
           container.innerHTML = `
             <div class="space-y-5 view-animate">
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-2">
                 <div class="surface-card rounded-full px-3.5 py-2 text-xs font-semibold text-white flex items-center gap-2">
-                  <span class="text-zinc-400">Ходит</span>
+                  <span class="${isMyTurn ? "text-emerald-400" : "text-zinc-400"}">${isMyTurn ? "Ваш ход" : "Ждём"}</span>
                   <span class="${d.turn === "p1" ? "mark-x" : "mark-o"} font-extrabold">${d.turn === "p1" ? "X" : "O"}</span>
                   <span class="flex items-center gap-1">${renderAvatarHTML(turnP, "w-4 h-4 text-xs")} ${turnP.name}</span>
                 </div>
                 <button id="ttt-toggle-size" class="surface-card rounded-full px-3.5 py-2 text-xs font-semibold text-zinc-300">Поле ${d.size}×${d.size}</button>
               </div>
 
-              <div class="grid ${d.size === 4 ? "grid-cols-4" : "grid-cols-3"} gap-2.5 aspect-square w-full max-w-[320px] mx-auto">
+              <div class="grid ${d.size === 4 ? "grid-cols-4" : "grid-cols-3"} gap-2.5 aspect-square w-full max-w-[320px] mx-auto ${!isMyTurn ? "opacity-75" : ""}">
                 ${d.board.map((cell, idx) => `
-                  <button data-idx="${idx}" class="ttt-cell surface-card rounded-2xl flex items-center justify-center ${d.size === 4 ? "text-3xl" : "text-5xl"} font-extrabold active:scale-95 transition ${d.winLine?.includes(idx) ? "win-cell" : ""}">
+                  <button data-idx="${idx}" ${!isMyTurn ? "disabled" : ""} class="ttt-cell surface-card rounded-2xl flex items-center justify-center ${d.size === 4 ? "text-3xl" : "text-5xl"} font-extrabold active:scale-95 transition ${d.winLine?.includes(idx) ? "win-cell" : ""}">
                     ${cell === "p1" ? '<span class="mark-x">✕</span>' : cell === "p2" ? '<span class="mark-o">○</span>' : ""}
                   </button>
                 `).join("")}
@@ -1550,19 +1600,29 @@
             </div>
           `;
           document.getElementById("ttt-toggle-size").onclick = () => {
-            d.size = d.size === 3 ? 4 : 3; d.board = Array(d.size * d.size).fill(null); d.turn = "p1"; d.winLine = null; d.draw = false;
+            d.size = d.size === 3 ? 4 : 3;
+            d.board = Array(d.size * d.size).fill(null);
+            d.turn = "p1"; d.winLine = null; d.draw = false;
             pushSharedState(); this.render();
           };
           const resetBtn = document.getElementById("ttt-reset-btn");
-          if (resetBtn) resetBtn.onclick = () => { d.board = Array(d.size * d.size).fill(null); d.turn = "p1"; d.winLine = null; d.draw = false; pushSharedState(); this.render(); };
+          if (resetBtn) resetBtn.onclick = () => {
+            d.board = Array(d.size * d.size).fill(null);
+            d.turn = "p1"; d.winLine = null; d.draw = false;
+            pushSharedState(); this.render();
+          };
           container.querySelectorAll(".ttt-cell").forEach(btn => {
             btn.onclick = () => {
+              if (!isMyTurn) return;
               const idx = Number(btn.dataset.idx);
               if (d.board[idx] || d.winLine || d.draw) return;
-              d.board[idx] = d.turn; vibrate(20);
+              d.board[idx] = d.turn;
+              vibrate(20);
               const winLine = this.checkTTTWin(d.board, d.size);
               if (winLine) {
-                d.winLine = winLine; const winner = d.turn; pushSharedState(); this.render();
+                d.winLine = winLine;
+                const winner = d.turn;
+                pushSharedState(); this.render();
                 setTimeout(() => this.finishBattle(winner), 600);
                 return;
               }
@@ -1577,12 +1637,18 @@
         if (b.phase === "guess") {
           const d = b.data;
           const turnP = d.turn === "p1" ? p1 : p2;
+          const isMyTurn = !online || d.turn === state.currentRole;
           const roundNum = Math.min(d.maxTurnsPerPlayer, Math.floor(d.history.length / 2) + 1);
+
           container.innerHTML = `
             <div class="space-y-4 view-animate">
               <div class="surface-card rounded-3xl p-5 text-center space-y-2.5">
                 <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Раунд ${roundNum} из ${d.maxTurnsPerPlayer}</div>
-                <h3 class="text-lg font-bold text-white flex items-center justify-center gap-2"><span>Ходит:</span> ${renderAvatarHTML(turnP, "w-6 h-6 text-base")} <span>${turnP.name}</span></h3>
+                <h3 class="text-lg font-bold text-white flex items-center justify-center gap-2">
+                  <span>${isMyTurn ? "Ходит:" : "Ждём ход:"}</span>
+                  ${renderAvatarHTML(turnP, "w-6 h-6 text-base")}
+                  <span>${turnP.name}</span>
+                </h3>
                 <div class="text-3xl font-extrabold text-white tracking-tight">${d.minBound} — ${d.maxBound}</div>
                 <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden relative">
                   <div class="h-full bg-white absolute rounded-full" style="left:${d.minBound - 1}%; width:${Math.max(2, d.maxBound - d.minBound + 1)}%"></div>
@@ -1590,9 +1656,9 @@
               </div>
 
               <div class="flex gap-2">
-                <input id="guess-input" type="number" min="1" max="100" inputmode="numeric" placeholder="Число 1–100"
-                  class="flex-1 rounded-2xl bg-[#14161C] border border-white/15 px-4 py-3.5 text-lg font-bold text-center text-white focus:outline-none focus:border-white/40" />
-                <button id="guess-submit-btn" class="btn-primary px-6 rounded-2xl text-sm font-bold">Угадать</button>
+                <input id="guess-input" type="number" min="1" max="100" inputmode="numeric" ${!isMyTurn ? "disabled" : ""} placeholder="${isMyTurn ? "Число 1–100" : "Ожидание партнёра..."}"
+                  class="flex-1 rounded-2xl bg-[#14161C] border border-white/15 px-4 py-3.5 text-lg font-bold text-center text-white focus:outline-none focus:border-white/40 disabled:opacity-45" />
+                <button id="guess-submit-btn" ${!isMyTurn ? "disabled" : ""} class="btn-primary px-6 rounded-2xl text-sm font-bold disabled:opacity-45">Угадать</button>
               </div>
 
               <div class="space-y-1.5 max-h-48 overflow-y-auto">
@@ -1606,11 +1672,16 @@
               </div>
             </div>
           `;
+
           const submitGuess = () => {
+            if (!isMyTurn) return;
             const val = parseInt(document.getElementById("guess-input").value, 10);
             if (isNaN(val) || val < 1 || val > 100) return showToast("Введите число от 1 до 100", "warn");
             vibrate(25);
-            if (val === d.secret) { showToast(`Точно в цель! Число: ${d.secret}`, "success"); return this.finishBattle(d.turn); }
+            if (val === d.secret) {
+              showToast(`Точно в цель! Число: ${d.secret}`, "success");
+              return this.finishBattle(d.turn);
+            }
             const hint = val < d.secret ? "Больше" : "Меньше";
             if (val < d.secret) d.minBound = Math.max(d.minBound, val + 1);
             else d.maxBound = Math.min(d.maxBound, val - 1);
@@ -1671,17 +1742,47 @@
       }
     };
 
-    /* ---------- DISCOVER DECK & AMBIENT BACKDROP ---------- */
+    /* ---------- DISCOVER DECK (INFINITE TMDB PAGINATION) ---------- */
     async function loadDeck() {
+      state.deckPage = 1;
+      state.isLoadingMore = false;
       document.getElementById("discover-card-mount").innerHTML = `<div class="w-full h-[min(450px,56dvh)] min-h-[380px] rounded-[28px] skeleton border border-white/8"></div>`;
       const raw = await MediaAPI.fetchDiscover({
-        category: state.filters.category, genre: state.filters.genre, smart: state.filters.smart, watched: state.shared.watched
+        category: state.filters.category,
+        genre: state.filters.genre,
+        smart: state.filters.smart,
+        watched: state.shared.watched,
+        page: 1
       });
       const watchedIds = new Set(state.shared.watched.map(w => w.id));
       const filtered = raw.filter(i => !watchedIds.has(i.id) && !state.skippedIds.has(i.id));
       state.deck = filtered.length ? filtered : raw;
       state.deckIndex = 0;
       renderDiscoverCard();
+    }
+
+    async function loadMoreDeck() {
+      if (state.isLoadingMore) return;
+      state.isLoadingMore = true;
+      state.deckPage++;
+      try {
+        const raw = await MediaAPI.fetchDiscover({
+          category: state.filters.category,
+          genre: state.filters.genre,
+          smart: state.filters.smart,
+          watched: state.shared.watched,
+          page: state.deckPage
+        });
+        const existingIds = new Set([
+          ...state.deck.map(d => d.id),
+          ...state.shared.watched.map(w => w.id),
+          ...state.skippedIds
+        ]);
+        const fresh = raw.filter(i => !existingIds.has(i.id));
+        if (fresh.length) state.deck.push(...fresh);
+      } finally {
+        state.isLoadingMore = false;
+      }
     }
 
     function getCurrentCardItem() {
@@ -1709,7 +1810,7 @@
 
       ambient.style.backgroundImage = `url('${item.poster}')`;
       const fallbackPoster = `https://placehold.co/500x750/14161C/ffffff?text=${encodeURIComponent(item.title.slice(0, 16))}`;
-      const catLabels = { movie: "Фильм", tv: "Сериал", animation: "Мультфильм", anime: "Аниме" };
+      const catLabels = { movie: "Фильм", tv: "Сериал", animation: "Мультфильм", animation_tv: "Мультсериал", anime: "Аниме" };
 
       mount.innerHTML = `
         <article id="active-swipe-card" class="swipe-card relative w-full h-[min(450px,56dvh)] min-h-[380px] rounded-[28px] overflow-hidden border border-white/12 shadow-2xl bg-[#14161C]">
@@ -1718,7 +1819,6 @@
             class="absolute inset-0 w-full h-full object-cover" />
           <div class="absolute inset-0 poster-vignette"></div>
 
-          <!-- Top Metadata Bar -->
           <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
             <span class="px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-md text-[11px] font-semibold text-zinc-200 border border-white/10">
               ${catLabels[item.category] || "Кино"}
@@ -1729,7 +1829,6 @@
             </span>
           </div>
 
-          <!-- Bottom Editorial Info -->
           <div class="absolute bottom-0 left-0 right-0 p-5 space-y-2.5">
             <div>
               <h2 class="text-2xl font-extrabold tracking-tight text-white leading-tight">${item.title}</h2>
@@ -1766,24 +1865,15 @@
       const likeBadge = document.getElementById("swipe-badge-like");
       const skipBadge = document.getElementById("swipe-badge-skip");
 
-      const start = (x, y) => {
-        startX = x; startY = y; currentX = 0; dragging = true; lockAxis = null;
-      };
+      const start = (x, y) => { startX = x; startY = y; currentX = 0; dragging = true; lockAxis = null; };
       const move = (x, y) => {
         if (!dragging) return;
         const dx = x - startX;
         const dy = y - startY;
         if (!lockAxis) {
-          if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) {
-            lockAxis = "y"; // Отдаём жест вертикальному скроллу страницы
-            return;
-          }
-          if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-            lockAxis = "x";
-            card.classList.add("dragging");
-          } else {
-            return;
-          }
+          if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) { lockAxis = "y"; return; }
+          if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) { lockAxis = "x"; card.classList.add("dragging"); }
+          else return;
         }
         if (lockAxis !== "x") return;
         currentX = dx;
@@ -1836,6 +1926,9 @@
 
     function advanceDeck() {
       state.deckIndex++;
+      if (state.deck.length - state.deckIndex <= 5) {
+        loadMoreDeck();
+      }
       renderDiscoverCard();
     }
 
@@ -1934,7 +2027,6 @@
       const item = pendingRateItem;
       const role = state.currentRole;
 
-      // Убираем из списка желаемого и из закреплённого фильма вечера
       state.shared.watchlist = state.shared.watchlist.filter(w => w.id !== item.id);
       if (state.shared.tonightMovie?.id === item.id) state.shared.tonightMovie = null;
 
@@ -1968,6 +2060,28 @@
       const badge = document.getElementById("nav-watchlist-badge");
       badge.textContent = state.shared.watchlist.length;
       badge.classList.toggle("hidden", state.shared.watchlist.length === 0);
+
+      // Живой баннер активного баттла
+      const liveBanner = document.getElementById("live-battle-banner");
+      const b = state.shared.battle;
+      if (isOnlineDualMode() && b && b.phase && b.phase !== "winner") {
+        liveBanner.classList.remove("hidden");
+        liveBanner.innerHTML = `
+          <div class="surface-card rounded-2xl p-3.5 border-[#FF3B5C]/40 bg-gradient-to-r from-[#FF3B5C]/15 to-transparent flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-[#FF3B5C] animate-pulse"></span>
+                Идёт баттл за пульт!
+              </div>
+              <div class="text-[11px] text-zinc-300 truncate mt-0.5">Партнёр уже на арене — присоединяйтесь</div>
+            </div>
+            <button id="join-live-battle-btn" class="btn-love px-3.5 py-2 rounded-full text-xs font-bold shrink-0">Играть</button>
+          </div>
+        `;
+        document.getElementById("join-live-battle-btn").onclick = () => BattleEngine.open();
+      } else {
+        liveBanner.classList.add("hidden");
+      }
 
       const tonightBox = document.getElementById("tonight-movie-banner");
       const tm = state.shared.tonightMovie;
@@ -2087,18 +2201,15 @@
     }
 
     function updateHeaderAndProfiles() {
-      const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2;
       const myRole = state.currentRole;
       const otherRole = myRole === "p1" ? "p2" : "p1";
       const me = state.shared.partners[myRole];
       const other = state.shared.partners[otherRole];
 
-      // Header: мой профиль
-      renderAvatarInto(document.getElementById("header-partner-avatar"), me);
-      document.getElementById("header-partner-name").textContent = me.name;
+      renderAvatarInto(document.getElementById("header-partner-avatar"), state.myProfile);
+      document.getElementById("header-partner-name").textContent = state.myProfile.name || me.name;
 
-      // Header: подключённый партнёр рядом с Live
-      const isOtherConnected = Boolean(state.roomId && other?.uid && other.uid !== fbUser?.uid);
+      const isOtherConnected = isOnlineDualMode();
       const headerOther = document.getElementById("header-other-partner");
       headerOther.classList.toggle("hidden", !isOtherConnected);
       headerOther.classList.toggle("inline-flex", isOtherConnected);
@@ -2107,14 +2218,11 @@
         document.getElementById("header-other-name").textContent = other.name;
       }
 
-      // Settings: мой профиль
-      document.getElementById("my-role-label").textContent = myRole === "p1" ? "Партнёр 1" : "Партнёр 2";
       renderAvatarInto(document.getElementById("my-profile-avatar-preview"), state.myProfile);
       const myNameInp = document.getElementById("my-name-input");
-      if (document.activeElement !== myNameInp) myNameInp.value = state.myProfile.name || me.name;
+      if (document.activeElement !== myNameInp) myNameInp.value = state.myProfile.name || "Игрок";
       document.getElementById("remove-photo-btn").classList.toggle("hidden", !state.myProfile.photoData);
 
-      // Emoji picker
       const picker = document.getElementById("emoji-picker-grid");
       picker.innerHTML = AVATARS.map(em => {
         const active = !state.myProfile.photoData && state.myProfile.avatar === em;
@@ -2131,9 +2239,8 @@
         };
       });
 
-      // Settings: карточка второго участника
       renderAvatarInto(document.getElementById("other-partner-avatar"), other);
-      document.getElementById("other-partner-name").textContent = isOtherConnected ? other.name : (other?.name || "Ожидание...");
+      document.getElementById("other-partner-name").textContent = isOtherConnected ? other.name : "Ожидание партнёра";
       const statusBadge = document.getElementById("other-partner-status");
       const subText = document.getElementById("other-partner-sub");
       if (isOtherConnected) {
@@ -2149,16 +2256,6 @@
         statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-zinc-400";
         subText.textContent = "Создайте комнату или введите код выше";
       }
-
-      document.querySelectorAll(".role-select-btn").forEach(btn => {
-        const role = btn.dataset.setrole;
-        const isMe = role === state.currentRole;
-        const label = role === "p1" ? (p1.name || "Слот 1") : (p2.name || "Слот 2");
-        btn.className = isMe
-          ? "role-select-btn py-2 rounded-xl text-[11px] font-bold bg-white text-[#0A0B0E]"
-          : "role-select-btn py-2 rounded-xl text-[11px] font-semibold bg-white/6 text-zinc-400";
-        btn.textContent = isMe ? `Вы: ${label}` : `Переключить: ${label}`;
-      });
     }
 
     function updateRoomUI() {
@@ -2185,29 +2282,10 @@
     /* ---------- EVENT BINDINGS ---------- */
     function bindEvents() {
       document.querySelectorAll(".nav-tab").forEach(btn => {
-        btn.onclick = () => {
-          const tab = btn.dataset.tab;
-          state.activeTab = tab;
-          document.querySelectorAll(".view-section").forEach(sec => sec.classList.add("hidden"));
-          document.getElementById(`view-${tab}`).classList.remove("hidden");
-          document.querySelectorAll(".nav-tab").forEach(t => {
-            const act = t.dataset.tab === tab;
-            t.classList.toggle("bg-white", act);
-            t.classList.toggle("text-[#0A0B0E]", act);
-            t.classList.toggle("text-zinc-400", !act);
-          });
-          vibrate(10);
-        };
+        btn.onclick = () => switchTab(btn.dataset.tab);
       });
 
-      document.getElementById("partner-switcher-btn").onclick = () => {
-        state.currentRole = state.currentRole === "p1" ? "p2" : "p1";
-        const slot = state.shared.partners[state.currentRole];
-        state.myProfile = { name: slot.name, avatar: slot.avatar, photoData: slot.photoData || null };
-        saveUserSettings();
-        renderAll();
-        showToast(`Профиль: ${slot.name}`, "info");
-      };
+      document.getElementById("my-profile-header-btn").onclick = () => switchTab("settings");
 
       document.querySelectorAll(".cat-pill").forEach(btn => {
         btn.onclick = () => {
@@ -2313,9 +2391,7 @@
       // Room controls
       document.getElementById("create-room-btn").onclick = createRoom;
       document.getElementById("join-room-btn").onclick = () => joinRoom(document.getElementById("room-code-input").value);
-      document.getElementById("room-code-input").onkeydown = (e) => {
-        if (e.key === "Enter") joinRoom(e.target.value);
-      };
+      document.getElementById("room-code-input").onkeydown = (e) => { if (e.key === "Enter") joinRoom(e.target.value); };
       document.getElementById("leave-room-btn").onclick = leaveRoom;
       document.getElementById("copy-room-code-btn").onclick = () => {
         if (!state.roomId) return;
@@ -2334,9 +2410,9 @@
         document.body.removeChild(ta);
       };
 
-      // Profile controls
+      // Self Profile controls
       document.getElementById("my-name-input").oninput = (e) => {
-        state.myProfile.name = e.target.value.trim() || (state.currentRole === "p1" ? "Он" : "Она");
+        state.myProfile.name = e.target.value.trim() || "Игрок";
         syncMyProfileToSlot();
         renderAll();
         pushSharedState();
@@ -2366,63 +2442,16 @@
         pushSharedState();
         showToast("Фото удалено", "info");
       };
-
-      document.querySelectorAll(".role-select-btn").forEach(btn => {
-        btn.onclick = () => {
-          state.currentRole = btn.dataset.setrole;
-          const slot = state.shared.partners[state.currentRole];
-          state.myProfile = { name: slot.name, avatar: slot.avatar, photoData: slot.photoData || null };
-          saveUserSettings();
-          renderAll();
-          showToast(`Активный профиль: ${slot.name}`, "info");
-        };
-      });
-
-      // TMDB & Firebase config
-      document.getElementById("save-tmdb-key-btn").onclick = () => {
-        const key = document.getElementById("tmdb-key-input").value.trim();
-        MediaAPI.apiKey = key;
-        document.getElementById("tmdb-status-text").textContent = key ? "Подключён живой TMDB API (ru-RU)" : "Активна встроенная демо-база (18 тайтлов)";
-        saveUserSettings(true);
-        showToast(key ? "Ключ TMDB сохранён" : "Включена демо-база", "success");
-        loadDeck();
-      };
-
-      document.getElementById("save-firebase-btn").onclick = async () => {
-        const raw = document.getElementById("firebase-config-input").value.trim();
-        if (!raw) return showToast("Вставьте Firebase Config", "warn");
-        try {
-          const parsed = parseFirebaseConfigInput(raw);
-          const res = await initFirebase(parsed);
-          if (res.ok) {
-            showToast("Firebase подключён", "success");
-            const restored = await loadUserSettings();
-            renderAll();
-            if (restored && MediaAPI.apiKey) loadDeck();
-          } else {
-            showToast(res.error || "Ошибка подключения Firebase", "warn");
-          }
-        } catch (err) {
-          showToast(err.message || "Неверный формат Firebase Config", "warn");
-        }
-      };
-
-      document.getElementById("open-guide-btn").onclick = () => openModalEl("guide-modal");
-      document.getElementById("close-guide-modal").onclick = () => closeModalEl("guide-modal");
-      document.getElementById("guide-ok-btn").onclick = () => closeModalEl("guide-modal");
     }
 
     async function bootApp() {
       bindEvents();
-      const fbInput = document.getElementById("firebase-config-input");
-      if (fbInput) fbInput.value = JSON.stringify(DEFAULT_USER_FIREBASE_CONFIG, null, 2);
       renderAll();
       loadDeck();
       const fbRes = await initFirebase();
       if (fbRes.ok) {
-        const restored = await loadUserSettings();
+        await loadUserSettings();
         renderAll();
-        if (restored && MediaAPI.apiKey) loadDeck();
       } else {
         updateRoomUI();
       }

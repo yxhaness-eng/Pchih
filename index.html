@@ -86,7 +86,6 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Dynamic Ambient Backdrop (mirrors current movie poster color) */
     #ambient-backdrop {
       position: fixed;
       top: -10%;
@@ -104,7 +103,6 @@
       -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
     }
 
-    /* Refined Surface Materials */
     .surface-card {
       background: rgba(22, 24, 31, 0.76);
       backdrop-filter: blur(24px);
@@ -113,7 +111,7 @@
     }
 
     .surface-dock {
-      background: rgba(18, 20, 26, 0.86);
+      background: rgba(18, 20, 26, 0.88);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
       border: 1px solid var(--hairline-strong);
@@ -142,7 +140,6 @@
     .pb-dock { padding-bottom: calc(var(--safe-bottom) + 104px); }
     .bottom-dock-safe { bottom: calc(var(--safe-bottom) + 14px); }
 
-    /* Skeleton Loader */
     @keyframes shimmer {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
@@ -153,7 +150,6 @@
       animation: shimmer 1.5s infinite linear;
     }
 
-    /* Subtle View Transition */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -162,7 +158,6 @@
       animation: fadeUp 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    /* Swipe Card Physics */
     .swipe-card {
       touch-action: pan-y;
       user-select: none;
@@ -171,7 +166,6 @@
     }
     .swipe-card.dragging { transition: none !important; }
 
-    /* Poster Vignette */
     .poster-vignette {
       background: linear-gradient(
         to top,
@@ -182,7 +176,6 @@
       );
     }
 
-    /* Tic-Tac-Toe Accents */
     .mark-x { color: #60A5FA; text-shadow: 0 0 18px rgba(96, 165, 250, 0.45); }
     .mark-o { color: #FF3B5C; text-shadow: 0 0 18px rgba(255, 59, 92, 0.45); }
     .win-cell {
@@ -207,39 +200,33 @@
   </style>
 </head>
 <body class="selection:bg-white/20">
-  <!-- Dynamic Ambient Movie Glow -->
   <div id="ambient-backdrop"></div>
-  <!-- Confetti Layer -->
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- Mobile-First App Shell -->
   <div id="app-shell" class="relative z-10 max-w-md mx-auto min-h-[100dvh] flex flex-col">
 
     <!-- ==================== HEADER ==================== -->
-    <header class="sticky top-0 z-30 px-4 pt-safe pb-3 flex items-center justify-between bg-gradient-to-b from-[#0A0B0E] via-[#0A0B0E]/90 to-transparent">
-      <div class="flex items-center gap-2.5 min-w-0">
+    <header class="sticky top-0 z-30 px-4 pt-safe pb-3 flex items-center justify-between gap-2 bg-gradient-to-b from-[#0A0B0E] via-[#0A0B0E]/90 to-transparent">
+      <div class="flex items-center gap-2 min-w-0">
         <div class="w-8 h-8 rounded-[10px] bg-white text-[#0A0B0E] flex items-center justify-center shadow-md shrink-0">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/>
           </svg>
         </div>
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-1.5 min-w-0">
           <h1 class="text-[17px] font-extrabold tracking-tight text-white leading-none shrink-0">ПЧиХ</h1>
-          <span id="room-badge-header" class="hidden items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 shrink-0">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            Live
-          </span>
-          <div id="header-other-partner" class="hidden items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-white/6 border border-white/10 min-w-0">
-            <span id="header-other-avatar" class="w-4 h-4 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-[10px] shrink-0"></span>
-            <span id="header-other-name" class="text-[10px] font-semibold text-zinc-200 max-w-[68px] truncate"></span>
-          </div>
+          <button id="room-badge-header" class="hidden items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 shrink-0 max-w-[115px]">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span id="header-room-label" class="truncate">Live</span>
+          </button>
+          <div id="header-members-stack" class="hidden items-center -space-x-1.5 shrink-0"></div>
         </div>
       </div>
 
-      <!-- My Profile Pill (opens Profile/Room tab) -->
+      <!-- My Profile Pill -->
       <button id="my-profile-header-btn" class="surface-card rounded-full pl-1.5 pr-3 py-1 flex items-center gap-2 active:scale-95 transition shrink-0" title="Мой профиль">
         <span id="header-partner-avatar" class="w-6 h-6 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-xs shrink-0">😎</span>
-        <span id="header-partner-name" class="text-xs font-semibold text-white max-w-[84px] truncate">Игрок</span>
+        <span id="header-partner-name" class="text-xs font-semibold text-white max-w-[78px] truncate">Игрок</span>
       </button>
     </header>
 
@@ -250,7 +237,6 @@
            SCREEN 1: ПОДБОР (СВАЙПЫ И РУЛЕТКА)
            ============================================================ -->
       <section id="view-discover" class="view-section view-animate space-y-3">
-        <!-- Clean Filter Bar -->
         <div class="space-y-2">
           <div id="category-pills" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             <button data-cat="all" class="cat-pill active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition bg-white text-[#0A0B0E]">Все</button>
@@ -286,13 +272,11 @@
           </div>
         </div>
 
-        <!-- Smart Recommendations Status -->
         <div id="smart-mode-banner" class="hidden rounded-xl px-3 py-2 bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200 flex items-center justify-between">
           <span>Подборка по вашим высоким оценкам</span>
           <button id="smart-refresh-btn" class="font-semibold text-amber-300 underline underline-offset-2">Обновить</button>
         </div>
 
-        <!-- Editorial Poster Card Stage -->
         <div id="card-stage" class="relative w-full min-h-[400px] flex items-center justify-center">
           <div id="swipe-badge-like" class="pointer-events-none opacity-0 absolute top-6 left-5 z-20 px-3.5 py-1 rounded-full bg-emerald-500 text-white font-bold text-xs tracking-wide uppercase shadow-lg -rotate-6 transition-opacity">
             Хочу посмотреть
@@ -304,7 +288,6 @@
           <div id="discover-card-mount" class="w-full"></div>
         </div>
 
-        <!-- Tactile Action Dock -->
         <div class="flex items-center justify-between gap-2.5 pt-1 px-1">
           <button id="btn-skip" class="surface-card w-14 h-14 rounded-full flex items-center justify-center text-zinc-300 hover:text-white active:scale-90 transition" title="Пропустить">
             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -316,7 +299,7 @@
             <svg class="w-4 h-4 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 6L9 17l-5-5"/>
             </svg>
-            <span>Смотрели</span>
+            <span>Смотрел(а)</span>
           </button>
 
           <button id="btn-lucky" class="surface-card w-12 h-12 rounded-2xl flex items-center justify-center text-amber-300 hover:bg-white/10 active:scale-90 transition" title="Случайный выбор">
@@ -337,45 +320,35 @@
            SCREEN 2: НАШ СПИСОК И БАТТЛ ЗА ПУЛЬТ
            ============================================================ -->
       <section id="view-watchlist" class="view-section hidden view-animate space-y-4">
-        <!-- Live Active Battle Invitation Banner -->
         <div id="live-battle-banner" class="hidden"></div>
-
-        <!-- Tonight's Winner Banner -->
         <div id="tonight-movie-banner" class="hidden"></div>
 
-        <!-- Header & Battle CTA -->
-        <div class="flex items-end justify-between pt-1">
-          <div>
-            <h2 class="text-xl font-bold tracking-tight text-white">Наш список</h2>
+        <div class="flex items-end justify-between pt-1 gap-2">
+          <div class="min-w-0">
+            <h2 id="watchlist-room-title" class="text-xl font-bold tracking-tight text-white truncate">Наш список</h2>
             <p id="watchlist-stats" class="text-xs text-zinc-400 mt-0.5">0 кандидатов • 0 совпадений</p>
           </div>
-          <button id="open-battle-btn" class="btn-primary px-3.5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg">
+          <button id="open-battle-btn" class="btn-primary px-3.5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg shrink-0">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/>
             </svg>
-            <span>Баттл за пульт</span>
+            <span>Баттл</span>
           </button>
         </div>
 
-        <!-- Watchlist Filters -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          <button data-wlfilter="all" class="wl-filter-btn active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-[#0A0B0E]">Все</button>
-          <button data-wlfilter="matches" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Совпадения</button>
-          <button data-wlfilter="p1" id="wl-filter-p1" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Игрок 1</button>
-          <button data-wlfilter="p2" id="wl-filter-p2" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300">Игрок 2</button>
-        </div>
+        <!-- Dynamic Watchlist Filters (up to 6 members) -->
+        <div id="watchlist-filters-bar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
 
-        <!-- List -->
         <div id="watchlist-container" class="space-y-2.5"></div>
       </section>
 
       <!-- ============================================================
-           SCREEN 3: ИСТОРИЯ ПРОСМОТРОВ И ПОИСК
+           SCREEN 3: ИСТОРИЯ ПРОСМОТРОВ (МОЯ + ОБЩАЯ В КОМНАТЕ)
            ============================================================ -->
       <section id="view-watched" class="view-section hidden view-animate space-y-4">
         <div class="pt-1">
           <h2 class="text-xl font-bold tracking-tight text-white">Просмотрено</h2>
-          <p class="text-xs text-zinc-400 mt-0.5">Ваши оценки обучают персональные рекомендации</p>
+          <p class="text-xs text-zinc-400 mt-0.5">Личная история, общие фильмы и рекомендации друзьям</p>
         </div>
 
         <!-- Live Search Input -->
@@ -384,7 +357,7 @@
             <svg class="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
-            <input id="watched-search-input" type="text" placeholder="Найти и оценить фильм, сериал, аниме..."
+            <input id="watched-search-input" type="text" placeholder="Найти и добавить в просмотренное..."
               class="w-full rounded-2xl bg-[#14161C] border border-white/10 pl-10 pr-9 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-white/30 transition" />
             <button id="watched-search-clear" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white p-1">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
@@ -393,101 +366,178 @@
           <div id="watched-search-results" class="hidden surface-card rounded-2xl p-2 space-y-1.5 max-h-64 overflow-y-auto"></div>
         </div>
 
-        <div class="flex items-center justify-between pt-1">
-          <span class="text-xs font-semibold text-zinc-400">История пары</span>
-          <span id="watched-count-badge" class="text-xs font-semibold text-zinc-300">0 тайтлов</span>
+        <!-- Personal vs Common Watched Switcher -->
+        <div class="surface-card rounded-2xl p-1 grid grid-cols-2 gap-1">
+          <button id="watched-tab-mine" class="py-2 rounded-xl text-xs font-bold bg-white text-[#0A0B0E] transition">
+            Моя история <span id="watched-mine-count" class="opacity-65 ml-1">0</span>
+          </button>
+          <button id="watched-tab-common" class="py-2 rounded-xl text-xs font-semibold text-zinc-400 transition">
+            Общие в комнате <span id="watched-common-count" class="ml-1 px-1.5 py-0.5 rounded-full bg-white/10 text-[10px]">0</span>
+          </button>
         </div>
+
         <div id="watched-container" class="space-y-2.5"></div>
       </section>
 
       <!-- ============================================================
-           SCREEN 4: КОМНАТА И ПРОФИЛЬ
+           SCREEN 4: КОМНАТЫ, ДРУЗЬЯ И ПРОФИЛЬ
            ============================================================ -->
       <section id="view-settings" class="view-section hidden view-animate space-y-4">
         <div class="pt-1">
-          <h2 class="text-xl font-bold tracking-tight text-white">Комната и профиль</h2>
-          <p class="text-xs text-zinc-400 mt-0.5">Синхронизация двух смартфонов в реальном времени</p>
+          <h2 class="text-xl font-bold tracking-tight text-white">Хаб и профиль</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">Комнаты до 6 человек, друзья и личные настройки</p>
         </div>
 
-        <!-- Room Sync Card -->
-        <div class="surface-card rounded-3xl p-4 space-y-3.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-white">Общая комната</h3>
-            <span id="sync-status-pill" class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10">Локально</span>
-          </div>
-
-          <!-- Active Room Display -->
-          <div id="active-room-box" class="hidden space-y-3">
-            <div class="rounded-2xl bg-black/35 border border-white/10 p-3.5 flex items-center justify-between">
-              <div>
-                <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Код комнаты</div>
-                <div id="active-room-code" class="text-2xl font-extrabold tracking-[0.22em] text-white mt-0.5">------</div>
-              </div>
-              <button id="copy-room-code-btn" class="px-3.5 py-2 rounded-xl bg-white text-[#0A0B0E] text-xs font-bold active:scale-95 transition">
-                Копировать
-              </button>
-            </div>
-            <button id="leave-room-btn" class="w-full py-2.5 rounded-xl bg-rose-500/15 text-rose-300 text-xs font-semibold active:scale-95 transition">
-              Выйти из комнаты
-            </button>
-          </div>
-
-          <!-- Create / Join Room Controls -->
-          <div id="room-join-controls" class="space-y-2.5">
-            <button id="create-room-btn" class="w-full btn-primary py-3 rounded-2xl text-xs font-bold">
-              Создать новую комнату
-            </button>
-            <div class="flex gap-2">
-              <input id="room-code-input" type="text" maxlength="6" placeholder="Код комнаты (6 симв.)"
-                class="flex-1 rounded-xl bg-black/35 border border-white/10 px-3 py-2.5 text-xs font-bold uppercase tracking-widest text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
-              <button id="join-room-btn" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white active:scale-95 transition">
-                Войти
-              </button>
-            </div>
-          </div>
+        <!-- Sub-navigation inside Settings -->
+        <div class="surface-card rounded-2xl p-1 grid grid-cols-3 gap-1">
+          <button data-subtab="rooms" class="settings-subtab py-2 rounded-xl text-xs font-bold bg-white text-[#0A0B0E] transition">Комнаты</button>
+          <button data-subtab="friends" class="settings-subtab py-2 rounded-xl text-xs font-semibold text-zinc-400 transition">Друзья</button>
+          <button data-subtab="profile" class="settings-subtab py-2 rounded-xl text-xs font-semibold text-zinc-400 transition">Профиль</button>
         </div>
 
-        <!-- Self Profile + Connected Partner -->
-        <div class="surface-card rounded-3xl p-4 space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-white">Мой профиль</h3>
-            <span class="text-[11px] font-medium text-zinc-400">Виден партнёру</span>
-          </div>
+        <!-- SUBTAB 1: ROOMS (Up to 6 members + Saved Rooms) -->
+        <div id="subtab-rooms" class="space-y-4">
+          <!-- Active Room Card -->
+          <div class="surface-card rounded-3xl p-4 space-y-3.5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white">Текущая комната</h3>
+              <span id="sync-status-pill" class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10">Локально</span>
+            </div>
 
-          <div class="flex items-center gap-3.5">
-            <div id="my-profile-avatar-preview" class="w-16 h-16 rounded-full overflow-hidden bg-white/8 border border-white/15 flex items-center justify-center text-3xl shrink-0">😎</div>
-            <div class="flex-1 min-w-0 space-y-2">
-              <input id="my-name-input" type="text" value="Игрок" maxlength="20" placeholder="Ваше имя..."
-                class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-sm font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+            <div id="active-room-box" class="hidden space-y-3">
+              <!-- Room Name + Favorite Star -->
               <div class="flex items-center gap-2">
-                <label for="my-photo-input" class="cursor-pointer px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[11px] font-semibold text-white active:scale-95 transition">
-                  Загрузить фото
-                </label>
-                <input id="my-photo-input" type="file" accept="image/*" class="hidden" />
-                <button id="remove-photo-btn" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-500/15 text-rose-300 text-[11px] font-semibold active:scale-95 transition">
-                  Убрать
+                <input id="active-room-name-input" type="text" maxlength="26" placeholder="Название (напр. С девушкой)"
+                  class="flex-1 rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-xs font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+                <button id="toggle-room-fav-btn" class="w-9 h-9 rounded-xl bg-white/8 flex items-center justify-center text-zinc-400 active:scale-90 transition shrink-0" title="В избранное">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </button>
+              </div>
+
+              <!-- Room Code -->
+              <div class="rounded-2xl bg-black/35 border border-white/10 p-3.5 flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Код комнаты (до 6 чел.)</div>
+                  <div id="active-room-code" class="text-2xl font-extrabold tracking-[0.22em] text-white mt-0.5">------</div>
+                </div>
+                <button id="copy-room-code-btn" class="px-3.5 py-2 rounded-xl bg-white text-[#0A0B0E] text-xs font-bold active:scale-95 transition">
+                  Копировать
+                </button>
+              </div>
+
+              <!-- Room Members List (up to 6) -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-semibold text-zinc-300">Участники комнаты</span>
+                  <span id="room-members-count" class="font-bold text-emerald-400">1 / 6</span>
+                </div>
+                <div id="room-members-list" class="grid grid-cols-2 gap-2"></div>
+              </div>
+
+              <button id="leave-room-btn" class="w-full py-2.5 rounded-xl bg-rose-500/15 text-rose-300 text-xs font-semibold active:scale-95 transition">
+                Отключиться от комнаты
+              </button>
+            </div>
+
+            <!-- Create / Join Controls -->
+            <div id="room-join-controls" class="space-y-2.5">
+              <input id="new-room-name-input" type="text" maxlength="26" placeholder="Название новой комнаты (напр. С девушкой)"
+                class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2.5 text-xs font-medium text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+              <button id="create-room-btn" class="w-full btn-primary py-3 rounded-2xl text-xs font-bold">
+                Создать комнату (до 6 человек)
+              </button>
+              <div class="flex gap-2">
+                <input id="room-code-input" type="text" maxlength="6" placeholder="Код комнаты (6 симв.)"
+                  class="flex-1 rounded-xl bg-black/35 border border-white/10 px-3 py-2.5 text-xs font-bold uppercase tracking-widest text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+                <button id="join-room-btn" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white active:scale-95 transition">
+                  Войти
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Emoji Picker -->
-          <div class="space-y-1.5">
-            <div class="text-[11px] font-medium text-zinc-400">Или выберите эмодзи</div>
-            <div id="emoji-picker-grid" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
+          <!-- Saved & Favorite Rooms -->
+          <div class="surface-card rounded-3xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white">Сохранённые комнаты</h3>
+              <span id="saved-rooms-count" class="text-[11px] font-semibold text-zinc-400">0</span>
+            </div>
+            <div id="saved-rooms-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- SUBTAB 2: FRIENDS & RECOMMENDATIONS -->
+        <div id="subtab-friends" class="hidden space-y-4">
+          <!-- My Friend Code Card -->
+          <div class="surface-card rounded-3xl p-4 space-y-3">
+            <div>
+              <h3 class="text-sm font-bold text-white">Ваш код друга</h3>
+              <p class="text-[11px] text-zinc-400 mt-0.5">Поделитесь им, чтобы друзья видели фильмы, которые вы рекомендуете</p>
+            </div>
+            <div class="rounded-2xl bg-black/35 border border-white/10 p-3 flex items-center justify-between">
+              <div id="my-friend-code-display" class="text-xl font-extrabold tracking-[0.2em] text-white">------</div>
+              <button id="copy-friend-code-btn" class="px-3.5 py-2 rounded-xl bg-white text-[#0A0B0E] text-xs font-bold active:scale-95 transition">
+                Копировать
+              </button>
+            </div>
+
+            <div class="flex gap-2 pt-1">
+              <input id="add-friend-code-input" type="text" maxlength="6" placeholder="Код друга (6 симв.)"
+                class="flex-1 rounded-xl bg-black/35 border border-white/10 px-3 py-2.5 text-xs font-bold uppercase tracking-widest text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+              <button id="add-friend-btn" class="px-4 py-2.5 rounded-xl btn-primary text-xs font-bold shrink-0">
+                Добавить
+              </button>
+            </div>
           </div>
 
-          <!-- Connected Partner Card -->
-          <div class="pt-3 border-t border-white/8 space-y-2.5">
+          <!-- Friends List -->
+          <div class="surface-card rounded-3xl p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-white">Второй участник</span>
-              <span id="other-partner-status" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-zinc-400">Не подключён</span>
+              <h3 class="text-sm font-bold text-white">Мои друзья</h3>
+              <button id="refresh-friends-btn" class="text-[11px] font-semibold text-zinc-400 hover:text-white">Обновить</button>
             </div>
-            <div class="rounded-2xl bg-black/30 border border-white/6 p-3 flex items-center gap-3">
-              <div id="other-partner-avatar" class="w-11 h-11 rounded-full overflow-hidden bg-white/8 border border-white/10 flex items-center justify-center text-xl shrink-0">🍿</div>
-              <div class="flex-1 min-w-0">
-                <div id="other-partner-name" class="text-sm font-bold text-white truncate">Ожидание партнёра</div>
-                <div id="other-partner-sub" class="text-[11px] text-zinc-400 truncate">Поделитесь кодом комнаты, чтобы подключить партнёра</div>
+            <div id="friends-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- SUBTAB 3: MY PROFILE -->
+        <div id="subtab-profile" class="hidden space-y-4">
+          <div class="surface-card rounded-3xl p-4 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white">Мой профиль</h3>
+              <span class="text-[11px] font-medium text-zinc-400">Виден в комнатах и друзьям</span>
+            </div>
+
+            <div class="flex items-center gap-3.5">
+              <div id="my-profile-avatar-preview" class="w-16 h-16 rounded-full overflow-hidden bg-white/8 border border-white/15 flex items-center justify-center text-3xl shrink-0">😎</div>
+              <div class="flex-1 min-w-0 space-y-2">
+                <input id="my-name-input" type="text" value="Игрок" maxlength="20" placeholder="Ваше имя..."
+                  class="w-full rounded-xl bg-black/35 border border-white/10 px-3 py-2 text-sm font-semibold text-white placeholder-zinc-500 focus:outline-none focus:border-white/30" />
+                <div class="flex items-center gap-2">
+                  <label for="my-photo-input" class="cursor-pointer px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[11px] font-semibold text-white active:scale-95 transition">
+                    Загрузить фото
+                  </label>
+                  <input id="my-photo-input" type="file" accept="image/*" class="hidden" />
+                  <button id="remove-photo-btn" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-500/15 text-rose-300 text-[11px] font-semibold active:scale-95 transition">
+                    Убрать
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-medium text-zinc-400">Или выберите эмодзи</div>
+              <div id="emoji-picker-grid" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-white/8">
+              <div class="rounded-2xl bg-black/30 p-3 text-center">
+                <div id="profile-stat-watched" class="text-xl font-extrabold text-white">0</div>
+                <div class="text-[11px] text-zinc-400 mt-0.5">Просмотрено</div>
+              </div>
+              <div class="rounded-2xl bg-black/30 p-3 text-center">
+                <div id="profile-stat-recs" class="text-xl font-extrabold text-emerald-400">0</div>
+                <div class="text-[11px] text-zinc-400 mt-0.5">Рекомендую друзьям</div>
               </div>
             </div>
           </div>
@@ -522,9 +572,9 @@
 
         <button data-tab="settings" class="nav-tab flex flex-col items-center justify-center gap-0.5 py-2 rounded-full text-zinc-400 transition">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
-          <span class="text-[10px] font-semibold">Комната</span>
+          <span class="text-[10px] font-semibold">Хаб</span>
         </button>
       </div>
     </nav>
@@ -532,9 +582,9 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- 1. Rating Sheet -->
+  <!-- 1. Rating & Recommend Sheet -->
   <div id="rating-modal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-end sm:items-center justify-center p-4">
-    <div class="surface-card w-full max-w-sm rounded-3xl p-5 space-y-5 border-white/15 view-animate bg-[#14161C]">
+    <div class="surface-card w-full max-w-sm rounded-3xl p-5 space-y-4 border-white/15 view-animate bg-[#14161C]">
       <div class="flex items-start justify-between gap-3">
         <div>
           <span class="text-[11px] font-semibold text-zinc-400">Оценить просмотренное</span>
@@ -545,15 +595,26 @@
         </button>
       </div>
 
-      <div class="flex items-baseline justify-center gap-1 py-1">
+      <div class="flex items-baseline justify-center gap-1 py-0.5">
         <span id="rating-value-display" class="text-5xl font-extrabold text-white tracking-tight">8</span>
         <span class="text-lg font-semibold text-zinc-500">/ 10</span>
       </div>
 
       <div id="rating-grid" class="grid grid-cols-5 gap-2"></div>
 
+      <!-- Independent Recommend to Friends Toggle -->
+      <button id="rating-recommend-toggle" type="button" class="w-full rounded-2xl px-4 py-3 border flex items-center justify-between transition active:scale-[0.98] bg-white/5 border-white/10 text-zinc-300">
+        <div class="text-left">
+          <div class="text-xs font-bold">Рекомендовать друзьям</div>
+          <div class="text-[10px] opacity-75">Появится в вашей полке рекомендаций</div>
+        </div>
+        <span id="rating-recommend-pill" class="w-10 h-6 rounded-full bg-white/15 p-0.5 transition flex items-center">
+          <span class="w-5 h-5 rounded-full bg-white transition-transform"></span>
+        </span>
+      </button>
+
       <button id="confirm-rating-btn" class="w-full btn-primary py-3.5 rounded-2xl text-sm font-bold">
-        Сохранить оценку
+        Сохранить в мою историю
       </button>
     </div>
   </div>
@@ -562,10 +623,10 @@
   <div id="match-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-lg flex items-center justify-center p-5">
     <div class="surface-card w-full max-w-sm rounded-3xl p-6 text-center space-y-5 border-white/15 view-animate bg-[#14161C]">
       <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FF3B5C]/15 border border-[#FF3B5C]/30 text-[#FF3B5C] text-[11px] font-bold uppercase tracking-wider">
-        100% Совпадение
+        Совпадение в комнате!
       </div>
       <div class="space-y-1">
-        <h3 class="text-xl font-bold text-white">Вы оба хотите это посмотреть</h3>
+        <h3 id="match-modal-heading" class="text-xl font-bold text-white">Вы хотите это посмотреть</h3>
         <p id="match-modal-title" class="text-sm font-medium text-zinc-300"></p>
       </div>
       <div class="w-36 aspect-[2/3] mx-auto rounded-2xl overflow-hidden shadow-2xl border border-white/15">
@@ -578,7 +639,24 @@
     </div>
   </div>
 
-  <!-- 3. Battle Arena Modal -->
+  <!-- 3. Friend Recommendations Modal -->
+  <div id="friend-recs-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-xl overflow-y-auto modal-scroll">
+    <div class="max-w-md mx-auto min-h-[100dvh] p-4 pt-safe pb-8 flex flex-col">
+      <div class="flex items-center justify-between pb-3.5 border-b border-white/10">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div id="friend-modal-avatar" class="w-9 h-9 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-lg shrink-0"></div>
+          <div class="min-w-0">
+            <h2 id="friend-modal-name" class="text-base font-bold text-white truncate">Рекомендации</h2>
+            <p class="text-[11px] text-zinc-400">Советует посмотреть</p>
+          </div>
+        </div>
+        <button id="close-friend-recs-modal" class="px-3 py-1.5 rounded-full bg-white/8 text-xs font-semibold text-zinc-300 hover:text-white">Закрыть</button>
+      </div>
+      <div id="friend-recs-content" class="flex-1 py-4 space-y-2.5"></div>
+    </div>
+  </div>
+
+  <!-- 4. Battle Arena Modal -->
   <div id="battle-modal" class="hidden fixed inset-0 z-50 bg-[#0A0B0E]/96 backdrop-blur-xl overflow-y-auto modal-scroll">
     <div class="max-w-md mx-auto min-h-[100dvh] p-4 pt-safe pb-8 flex flex-col">
       <div class="flex items-center justify-between pb-3.5 border-b border-white/10">
@@ -589,12 +667,10 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-[70] w-[90%] max-w-sm pointer-events-none space-y-2"></div>
 
   <!-- ==================== APPLICATION LOGIC ==================== -->
   <script type="module">
-    /* Ленивая загрузка Firebase SDK, чтобы интерфейс открывался мгновенно */
     let fbSdk = null;
     async function loadFirebaseSDK() {
       if (fbSdk) return fbSdk;
@@ -607,7 +683,6 @@
       return fbSdk;
     }
 
-    /* ---------- PWA MANIFEST ---------- */
     (function injectManifest() {
       try {
         const manifest = {
@@ -628,7 +703,7 @@
       } catch {}
     })();
 
-    /* ---------- DEMO CATALOG & LIVE TMDB API ---------- */
+    /* ---------- DEMO CATALOG & TMDB API ---------- */
     const DEMO_CATALOG = [
       { id: "movie-157336", tmdbId: 157336, mediaType: "movie", category: "movie", title: "Интерстеллар", year: "2014", rating: 8.4, runtime: "2 ч 49 м", genres: ["Фантастика", "Драма"], poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", overview: "Когда засуха, пыльные бури и вымирание растений приводят человечество к продовольственному кризису, коллектив исследователей отправляется сквозь червоточину в путешествие, чтобы найти новую планету." },
       { id: "movie-693134", tmdbId: 693134, mediaType: "movie", category: "movie", title: "Дюна: Часть вторая", year: "2024", rating: 8.2, runtime: "2 ч 46 м", genres: ["Фантастика", "Боевик", "Фэнтези"], poster: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg", overview: "Пол Атрейдес объединяется с Чани и фрименами, чтобы отомстить заговорщикам, уничтожившим его семью, и предотвратить ужасное будущее, которое видит лишь он." },
@@ -648,8 +723,6 @@
       18: "Драма", 14: "Фэнтези", 27: "Ужасы", 9648: "Триллер", 10749: "Романтика",
       878: "Фантастика", 53: "Триллер", 10759: "Боевик", 10765: "Фантастика", 10751: "Семейный"
     };
-
-    // Отдельные ID жанров TMDB для фильмов и для сериалов (иначе сериалы возвращают пустой список)
     const MOVIE_GENRE_TO_TMDB = {
       "Комедия": 35, "Фантастика": 878, "Триллер": 53, "Драма": 18,
       "Романтика": 10749, "Фэнтези": 14, "Боевик": 28, "Ужасы": 27
@@ -722,9 +795,7 @@
         }
 
         const genreMap = endpointType === "tv" ? TV_GENRE_TO_TMDB : MOVIE_GENRE_TO_TMDB;
-        if (genre !== "all" && genreMap[genre]) {
-          withGenres.push(genreMap[genre]);
-        }
+        if (genre !== "all" && genreMap[genre]) withGenres.push(genreMap[genre]);
         if (withGenres.length) params.set("with_genres", [...new Set(withGenres)].join(","));
 
         const res = await fetch(`https://api.themoviedb.org/3/discover/${endpointType}?${params.toString()}`);
@@ -737,11 +808,10 @@
 
       async fetchDiscover({ category = "all", genre = "all", smart = false, watched = [], page = 1 }) {
         try {
-          // Умный подбор на основе ваших высоких оценок
           if (smart && watched.length > 0) {
             const top = [...watched]
-              .filter(w => getAverageRating(w) >= 7 && w.tmdbId)
-              .sort((a, b) => getAverageRating(b) - getAverageRating(a));
+              .filter(w => (w.myRating || 0) >= 7 && w.tmdbId)
+              .sort((a, b) => (b.myRating || 0) - (a.myRating || 0));
             if (top.length) {
               const seed = top[(page - 1) % Math.min(5, top.length)];
               const res = await fetch(`https://api.themoviedb.org/3/${seed.mediaType}/${seed.tmdbId}/recommendations?api_key=${this.apiKey}&language=ru-RU&page=${Math.min(page, 3)}`);
@@ -803,32 +873,42 @@
       }
     };
 
-    /* ---------- STATE & FIREBASE ROOM SYNC ---------- */
+    /* ---------- STATE & MULTI-ROOM (UP TO 6) + FRIENDS ARCHITECTURE ---------- */
+    const MAX_ROOM_MEMBERS = 6;
     const AVATARS = ["😎", "🥰", "🦊", "🐱", "🐼", "🦄", "🦁", "👾", "🎬", "👑", "🔥", "🌙"];
+
+    function genShortCode(len = 6) {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < len; i++) code += chars[Math.floor(Math.random() * chars.length)];
+      return code;
+    }
 
     const state = {
       activeTab: "discover",
-      currentRole: "p1",
+      activeSettingsSubtab: "rooms",
+      watchedView: "mine", // "mine" | "common"
+      myUid: "local-me",
+      myFriendCode: genShortCode(6),
       roomId: null,
       filters: { category: "all", genre: "all", smart: false },
-      watchlistFilter: "all",
+      watchlistFilter: "all", // "all" | "matches" | <uid>
       deck: [],
       deckIndex: 0,
       deckPage: 1,
       isLoadingMore: false,
       skippedIds: new Set(),
       myProfile: { name: "Игрок", avatar: "😎", photoData: null },
+      myWatched: [
+        { ...DEMO_CATALOG[3], watchedAt: new Date().toLocaleDateString("ru-RU"), myRating: 9, recommended: true }
+      ],
+      savedRooms: [], // [{ id, name, favorite, lastVisited }]
+      friends: [],    // [{ code, uid, name, avatar, photoData, recsCount }]
       shared: {
-        partners: {
-          p1: { uid: null, name: "Игрок 1", avatar: "😎", photoData: null, onlineAt: 0 },
-          p2: { uid: null, name: "Игрок 2", avatar: "🍿", photoData: null, onlineAt: 0 }
-        },
+        roomName: "Наш список",
+        members: {},  // { [uid]: { uid, friendCode, name, avatar, photoData, onlineAt, watched: [...] } }
         watchlist: [
-          { ...DEMO_CATALOG[0], likes: { p1: true, p2: true }, addedAt: Date.now() - 50000 },
-          { ...DEMO_CATALOG[4], likes: { p1: true, p2: false }, addedAt: Date.now() - 30000 }
-        ],
-        watched: [
-          { ...DEMO_CATALOG[3], watchedAt: new Date().toLocaleDateString("ru-RU"), ratings: { p1: 9, p2: 10 } }
+          { ...DEMO_CATALOG[0], likes: { "local-me": true }, rewatch: false, addedAt: Date.now() - 50000 }
         ],
         tonightMovie: null,
         battle: null
@@ -836,8 +916,9 @@
     };
 
     let fbApp = null, fbAuth = null, fbDb = null, fbUser = null, roomUnsubscribe = null;
-    let lastNotifiedPartnerKey = null;
+    let knownMemberUids = new Set();
     let userSaveTimer = null;
+    let publicProfileTimer = null;
     const appId = typeof __app_id !== "undefined" ? __app_id : "pchih-couple-app";
 
     const DEFAULT_USER_FIREBASE_CONFIG = {
@@ -850,12 +931,74 @@
       measurementId: "G-MSPPKNHYKP"
     };
 
-    function isOnlineDualMode() {
-      const otherRole = state.currentRole === "p1" ? "p2" : "p1";
-      const other = state.shared.partners?.[otherRole];
-      return Boolean(state.roomId && other?.uid && other.uid !== fbUser?.uid);
+    function getCompactWatchedForSync() {
+      return state.myWatched.slice(0, 180).map(w => ({
+        id: w.id, tmdbId: w.tmdbId, mediaType: w.mediaType, category: w.category,
+        title: w.title, year: w.year, rating: w.rating, runtime: w.runtime,
+        genres: (w.genres || []).slice(0, 2), poster: w.poster,
+        myRating: w.myRating, recommended: Boolean(w.recommended), watchedAt: w.watchedAt
+      }));
     }
 
+    function getRoomMembersArray() {
+      const members = state.shared.members || {};
+      const list = Object.values(members).filter(m => m && m.uid);
+      if (!list.length) {
+        return [{ uid: state.myUid, ...state.myProfile, watched: state.myWatched }];
+      }
+      return list.sort((a, b) => (a.uid === state.myUid ? -1 : b.uid === state.myUid ? 1 : (a.joinedAt || 0) - (b.joinedAt || 0)));
+    }
+
+    function getMemberByUid(uid) {
+      if (state.shared.members?.[uid]) return state.shared.members[uid];
+      if (uid === state.myUid) return { uid: state.myUid, ...state.myProfile };
+      if (uid === "local-bot") return { uid: "local-bot", name: "Партнёр", avatar: "🍿", photoData: null };
+      return { uid, name: "Участник", avatar: "🎬", photoData: null };
+    }
+
+    function isOnlineMultiMode() {
+      return Boolean(state.roomId && getRoomMembersArray().length >= 2);
+    }
+
+    function syncMeIntoRoomMembers() {
+      if (!state.shared.members) state.shared.members = {};
+      const prev = state.shared.members[state.myUid] || {};
+      state.shared.members[state.myUid] = {
+        uid: state.myUid,
+        friendCode: state.myFriendCode,
+        name: state.myProfile.name || "Игрок",
+        avatar: state.myProfile.avatar || "😎",
+        photoData: state.myProfile.photoData || null,
+        joinedAt: prev.joinedAt || Date.now(),
+        onlineAt: Date.now(),
+        watched: getCompactWatchedForSync()
+      };
+    }
+
+    // Migrate old p1/p2 rooms seamlessly if user joins an older room
+    function normalizeIncomingRoom(incoming) {
+      const normalized = {
+        roomName: incoming.roomName || "Общая комната",
+        members: incoming.members || {},
+        watchlist: incoming.watchlist || [],
+        tonightMovie: incoming.tonightMovie || null,
+        battle: incoming.battle || null
+      };
+      if (!Object.keys(normalized.members).length && incoming.partners) {
+        ["p1", "p2"].forEach(slot => {
+          const p = incoming.partners[slot];
+          if (p?.uid) {
+            normalized.members[p.uid] = {
+              uid: p.uid, name: p.name, avatar: p.avatar, photoData: p.photoData || null,
+              joinedAt: p.onlineAt || Date.now(), onlineAt: p.onlineAt || Date.now(), watched: []
+            };
+          }
+        });
+      }
+      return normalized;
+    }
+
+    /* ---------- FIREBASE INIT & PERSISTENCE ---------- */
     async function initFirebase() {
       try {
         let config = null;
@@ -874,10 +1017,7 @@
         }
 
         const existingUser = await new Promise((resolve) => {
-          const unsub = sdk.onAuthStateChanged(fbAuth, (u) => {
-            unsub();
-            resolve(u);
-          });
+          const unsub = sdk.onAuthStateChanged(fbAuth, (u) => { unsub(); resolve(u); });
         });
 
         if (existingUser) {
@@ -889,6 +1029,20 @@
           const cred = await sdk.signInAnonymously(fbAuth);
           fbUser = cred.user;
         }
+
+        // Remap local-me likes to real uid if needed
+        const prevUid = state.myUid;
+        state.myUid = fbUser.uid;
+        if (prevUid !== state.myUid) {
+          state.shared.watchlist.forEach(item => {
+            if (item.likes?.[prevUid]) {
+              item.likes[state.myUid] = true;
+              delete item.likes[prevUid];
+            }
+          });
+          if (state.shared.members[prevUid]) delete state.shared.members[prevUid];
+        }
+        syncMeIntoRoomMembers();
         return { ok: true };
       } catch (err) {
         console.error("Firebase init error:", err);
@@ -898,6 +1052,10 @@
 
     function getRoomDocRef(roomId) {
       return fbSdk.doc(fbDb, "artifacts", appId, "public", "data", "pchih_rooms", roomId);
+    }
+
+    function getPublicUserDocRef(friendCode) {
+      return fbSdk.doc(fbDb, "artifacts", appId, "public", "data", "pchih_users", friendCode);
     }
 
     function getUserSettingsDocRef() {
@@ -910,8 +1068,11 @@
         try {
           await fbSdk.setDoc(getUserSettingsDocRef(), {
             roomId: state.roomId || null,
-            currentRole: state.currentRole,
+            myFriendCode: state.myFriendCode,
             myProfileJson: JSON.stringify(state.myProfile),
+            myWatchedJson: JSON.stringify(state.myWatched),
+            savedRoomsJson: JSON.stringify(state.savedRooms),
+            friendsJson: JSON.stringify(state.friends),
             localSharedJson: JSON.stringify(state.shared),
             updatedAt: Date.now()
           }, { merge: true });
@@ -924,37 +1085,78 @@
       userSaveTimer = setTimeout(run, 350);
     }
 
+    function syncPublicFriendProfile(immediate = false) {
+      if (!fbDb || !fbUser || !fbSdk || !state.myFriendCode) return;
+      const run = async () => {
+        try {
+          const recs = state.myWatched
+            .filter(w => w.recommended)
+            .slice(0, 120)
+            .map(w => ({
+              id: w.id, tmdbId: w.tmdbId, mediaType: w.mediaType, category: w.category,
+              title: w.title, year: w.year, rating: w.rating, runtime: w.runtime,
+              genres: (w.genres || []).slice(0, 3), poster: w.poster,
+              overview: (w.overview || "").slice(0, 220), myRating: w.myRating
+            }));
+          await fbSdk.setDoc(getPublicUserDocRef(state.myFriendCode), {
+            uid: fbUser.uid,
+            friendCode: state.myFriendCode,
+            name: state.myProfile.name || "Игрок",
+            avatar: state.myProfile.avatar || "😎",
+            photoData: state.myProfile.photoData || null,
+            recsJson: JSON.stringify(recs),
+            recsCount: recs.length,
+            updatedAt: Date.now()
+          }, { merge: true });
+        } catch (err) {
+          console.error("Public profile sync error:", err);
+        }
+      };
+      if (immediate) return run();
+      clearTimeout(publicProfileTimer);
+      publicProfileTimer = setTimeout(run, 400);
+    }
+
     async function loadUserSettings() {
       if (!fbDb || !fbUser || !fbSdk) return false;
       try {
         const snap = await fbSdk.getDoc(getUserSettingsDocRef());
-        if (!snap.exists()) return false;
-        const data = snap.data();
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.myFriendCode) state.myFriendCode = data.myFriendCode;
+          if (data.myProfileJson) {
+            try { state.myProfile = { ...state.myProfile, ...JSON.parse(data.myProfileJson) }; } catch {}
+          }
+          if (data.myWatchedJson) {
+            try { state.myWatched = JSON.parse(data.myWatchedJson); } catch {}
+          }
+          if (data.savedRoomsJson) {
+            try { state.savedRooms = JSON.parse(data.savedRoomsJson); } catch {}
+          }
+          if (data.friendsJson) {
+            try { state.friends = JSON.parse(data.friendsJson); } catch {}
+          }
+          if (data.localSharedJson) {
+            try { state.shared = normalizeIncomingRoom(JSON.parse(data.localSharedJson)); } catch {}
+          }
 
-        if (data.currentRole === "p1" || data.currentRole === "p2") {
-          state.currentRole = data.currentRole;
-        }
-        if (data.myProfileJson) {
-          try { state.myProfile = { ...state.myProfile, ...JSON.parse(data.myProfileJson) }; } catch {}
-        }
-        if (data.localSharedJson) {
-          try { state.shared = { ...state.shared, ...JSON.parse(data.localSharedJson) }; } catch {}
-        }
+          syncMeIntoRoomMembers();
 
-        syncMyProfileToSlot();
-
-        if (data.roomId) {
-          const roomSnap = await fbSdk.getDoc(getRoomDocRef(data.roomId));
-          if (roomSnap.exists()) {
-            state.roomId = data.roomId;
-            if (roomSnap.data().sharedJson) {
-              try { state.shared = { ...state.shared, ...JSON.parse(roomSnap.data().sharedJson) }; } catch {}
+          if (data.roomId) {
+            const roomSnap = await fbSdk.getDoc(getRoomDocRef(data.roomId));
+            if (roomSnap.exists() && roomSnap.data().sharedJson) {
+              state.roomId = data.roomId;
+              state.shared = normalizeIncomingRoom(JSON.parse(roomSnap.data().sharedJson));
+              syncMeIntoRoomMembers();
+              knownMemberUids = new Set(Object.keys(state.shared.members || {}));
+              upsertSavedRoom(state.roomId, state.shared.roomName);
+              subscribeToRoom(state.roomId);
+              await pushSharedState();
             }
-            syncMyProfileToSlot();
-            subscribeToRoom(state.roomId);
-            await pushSharedState();
           }
         }
+        syncPublicFriendProfile(true);
+        refreshFriendsMetadata();
         return true;
       } catch (err) {
         console.error("Load settings error:", err);
@@ -962,16 +1164,21 @@
       }
     }
 
-    function syncMyProfileToSlot() {
-      const slot = state.shared.partners[state.currentRole] || {};
-      state.shared.partners[state.currentRole] = {
-        ...slot,
-        uid: fbUser?.uid || slot.uid || "local-user",
-        name: state.myProfile.name || "Игрок",
-        avatar: state.myProfile.avatar || "😎",
-        photoData: state.myProfile.photoData || null,
-        onlineAt: Date.now()
-      };
+    function upsertSavedRoom(id, name) {
+      if (!id) return;
+      const existing = state.savedRooms.find(r => r.id === id);
+      if (existing) {
+        if (name) existing.name = name;
+        existing.lastVisited = Date.now();
+      } else {
+        state.savedRooms.unshift({
+          id,
+          name: name || `Комната ${id}`,
+          favorite: false,
+          lastVisited: Date.now()
+        });
+      }
+      saveUserSettings();
     }
 
     function formatFirestoreError(err) {
@@ -982,6 +1189,7 @@
     }
 
     async function pushSharedState() {
+      syncMeIntoRoomMembers();
       saveUserSettings();
       if (!state.roomId || !fbDb || !fbUser || !fbSdk) return { ok: false, error: "Локальный режим" };
       try {
@@ -996,24 +1204,23 @@
       }
     }
 
-    // Безопасное обновление только своего результата в баттле, чтобы не затереть очки партнёра
-    async function pushBattleScoreSafe(role, score) {
+    async function pushBattleScoreSafe(slotKey, score) {
       if (state.roomId && fbDb && fbUser && fbSdk) {
         try {
           const snap = await fbSdk.getDoc(getRoomDocRef(state.roomId));
           if (snap.exists() && snap.data().sharedJson) {
-            const latest = JSON.parse(snap.data().sharedJson);
+            const latest = normalizeIncomingRoom(JSON.parse(snap.data().sharedJson));
             if (latest.battle && latest.battle.phase === "math") {
               latest.battle.data.scores = latest.battle.data.scores || { p1: null, p2: null };
-              latest.battle.data.scores[role] = score;
-              state.shared = { ...state.shared, ...latest };
+              latest.battle.data.scores[slotKey] = score;
+              state.shared = latest;
             }
           }
         } catch {}
       }
       if (state.shared.battle?.data) {
         state.shared.battle.data.scores = state.shared.battle.data.scores || { p1: null, p2: null };
-        state.shared.battle.data.scores[role] = score;
+        state.shared.battle.data.scores[slotKey] = score;
       }
       await pushSharedState();
     }
@@ -1026,32 +1233,25 @@
         (snap) => {
           if (snap.exists() && snap.data().sharedJson) {
             try {
-              const incoming = JSON.parse(snap.data().sharedJson);
-              const otherRole = state.currentRole === "p1" ? "p2" : "p1";
-              const prevOther = state.shared.partners?.[otherRole];
-              const nextOther = incoming.partners?.[otherRole];
+              const incoming = normalizeIncomingRoom(JSON.parse(snap.data().sharedJson));
+              const incomingMembers = incoming.members || {};
 
-              state.shared = { ...state.shared, ...incoming };
-
-              if (nextOther?.uid && nextOther.uid !== fbUser?.uid) {
-                const partnerKey = `${roomId}:${nextOther.uid}`;
-                const wasDisconnected = !prevOther?.uid || prevOther.uid !== nextOther.uid;
-                if (wasDisconnected && lastNotifiedPartnerKey !== partnerKey) {
-                  lastNotifiedPartnerKey = partnerKey;
+              Object.values(incomingMembers).forEach(m => {
+                if (m.uid && m.uid !== state.myUid && !knownMemberUids.has(m.uid)) {
+                  knownMemberUids.add(m.uid);
                   vibrate([40, 30, 60]);
-                  showToast(`${nextOther.name} подключился к комнате`, "success");
+                  showToast(`${m.name} присоединился к комнате`, "success");
                 }
-              }
+              });
 
-              // Проверяем завершение синхронного математического спринта
+              state.shared = incoming;
+              upsertSavedRoom(roomId, state.shared.roomName);
+
               BattleEngine.checkOnlineMathCompletion();
-
               renderAll();
+
               if (!document.getElementById("battle-modal").classList.contains("hidden")) {
-                // Не перерисовываем экран, если игрок прямо сейчас решает примеры на таймере
-                if (!BattleEngine.localMath.playing) {
-                  BattleEngine.render();
-                }
+                if (!BattleEngine.localMath.playing) BattleEngine.render();
               }
             } catch {}
           }
@@ -1061,31 +1261,38 @@
     }
 
     async function createRoom() {
-      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      let code = "";
-      for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+      const code = genShortCode(6);
+      const customName = document.getElementById("new-room-name-input").value.trim() || `Комната ${code}`;
 
       if (!fbDb || !fbUser) {
         const res = await initFirebase();
         if (!res.ok) return showToast(res.error, "warn");
       }
-      state.currentRole = "p1";
-      state.shared.partners.p2 = { uid: null, name: "Ожидание партнёра", avatar: "🍿", photoData: null, onlineAt: 0 };
-      syncMyProfileToSlot();
+
       state.roomId = code;
-      lastNotifiedPartnerKey = null;
+      state.shared = {
+        roomName: customName,
+        members: {},
+        watchlist: [],
+        tonightMovie: null,
+        battle: null
+      };
+      syncMeIntoRoomMembers();
+      knownMemberUids = new Set([state.myUid]);
 
       const saved = await pushSharedState();
       if (!saved.ok) {
         state.roomId = null;
-        updateRoomUI();
+        renderAll();
         return showToast(saved.error, "warn");
       }
+      document.getElementById("new-room-name-input").value = "";
+      upsertSavedRoom(code, customName);
       saveUserSettings(true);
       subscribeToRoom(code);
       renderAll();
       vibrate([40, 30, 60]);
-      showToast(`Комната ${code} создана`, "success");
+      showToast(`Комната «${customName}» создана`, "success");
     }
 
     async function joinRoom(codeRaw) {
@@ -1097,24 +1304,27 @@
       }
       try {
         const snap = await fbSdk.getDoc(getRoomDocRef(code));
-        if (!snap.exists()) return showToast("Комната с таким кодом не найдена", "warn");
-        if (snap.data().sharedJson) {
-          state.shared = { ...state.shared, ...JSON.parse(snap.data().sharedJson) };
+        if (!snap.exists() || !snap.data().sharedJson) {
+          return showToast("Комната с таким кодом не найдена", "warn");
         }
-        const p1Uid = state.shared.partners?.p1?.uid;
-        if (p1Uid && p1Uid === fbUser?.uid) state.currentRole = "p1";
-        else state.currentRole = "p2";
+        const incoming = normalizeIncomingRoom(JSON.parse(snap.data().sharedJson));
+        const memberUids = Object.keys(incoming.members || {});
+        if (!memberUids.includes(state.myUid) && memberUids.length >= MAX_ROOM_MEMBERS) {
+          return showToast(`В комнате уже максимум (${MAX_ROOM_MEMBERS} человек)`, "warn");
+        }
 
-        syncMyProfileToSlot();
+        state.shared = incoming;
         state.roomId = code;
-        lastNotifiedPartnerKey = null;
+        syncMeIntoRoomMembers();
+        knownMemberUids = new Set(Object.keys(state.shared.members || {}));
+        upsertSavedRoom(code, state.shared.roomName);
+
         await pushSharedState();
         saveUserSettings(true);
         subscribeToRoom(code);
         renderAll();
         vibrate([50, 40, 80]);
-        const other = state.shared.partners[state.currentRole === "p1" ? "p2" : "p1"];
-        showToast(other?.uid ? `Вы в комнате с ${other.name}` : `Подключено к комнате ${code}`, "success");
+        showToast(`Вы в комнате «${state.shared.roomName}»`, "success");
       } catch (err) {
         console.error("Join room error:", err);
         showToast(formatFirestoreError(err), "warn");
@@ -1125,30 +1335,155 @@
       if (roomUnsubscribe) roomUnsubscribe();
       roomUnsubscribe = null;
       state.roomId = null;
-      lastNotifiedPartnerKey = null;
+      state.watchlistFilter = "all";
+      knownMemberUids = new Set([state.myUid]);
+      state.shared = {
+        roomName: "Мой список",
+        members: {},
+        watchlist: [],
+        tonightMovie: null,
+        battle: null
+      };
+      syncMeIntoRoomMembers();
       saveUserSettings(true);
       renderAll();
-      showToast("Вы вышли из комнаты", "info");
+      showToast("Вы отключились от комнаты", "info");
+    }
+
+    /* ---------- FRIENDS LOGIC ---------- */
+    async function addFriendByCode(codeRaw) {
+      const code = codeRaw.trim().toUpperCase();
+      if (code.length < 4) return showToast("Введите код друга (6 симв.)", "warn");
+      if (code === state.myFriendCode) return showToast("Это ваш собственный код", "warn");
+      if (state.friends.some(f => f.code === code)) return showToast("Этот друг уже в вашем списке", "info");
+
+      if (!fbDb || !fbUser) {
+        const res = await initFirebase();
+        if (!res.ok) return showToast(res.error, "warn");
+      }
+      try {
+        const snap = await fbSdk.getDoc(getPublicUserDocRef(code));
+        if (!snap.exists()) return showToast("Пользователь с таким кодом не найден", "warn");
+        const d = snap.data();
+        state.friends.unshift({
+          code,
+          uid: d.uid,
+          name: d.name || "Друг",
+          avatar: d.avatar || "😎",
+          photoData: d.photoData || null,
+          recsCount: d.recsCount || 0
+        });
+        saveUserSettings(true);
+        renderFriends();
+        vibrate([30, 30, 50]);
+        showToast(`${d.name || "Друг"} добавлен в друзья!`, "success");
+      } catch (err) {
+        showToast(formatFirestoreError(err), "warn");
+      }
+    }
+
+    async function refreshFriendsMetadata() {
+      if (!fbDb || !fbUser || !fbSdk || !state.friends.length) return;
+      let changed = false;
+      await Promise.all(state.friends.map(async (f) => {
+        try {
+          const snap = await fbSdk.getDoc(getPublicUserDocRef(f.code));
+          if (snap.exists()) {
+            const d = snap.data();
+            f.name = d.name || f.name;
+            f.avatar = d.avatar || f.avatar;
+            f.photoData = d.photoData || null;
+            f.recsCount = d.recsCount || 0;
+            changed = true;
+          }
+        } catch {}
+      }));
+      if (changed) {
+        saveUserSettings();
+        renderFriends();
+      }
+    }
+
+    async function openFriendRecommendations(friendCode) {
+      if (!fbDb || !fbUser) {
+        const res = await initFirebase();
+        if (!res.ok) return showToast(res.error, "warn");
+      }
+      const friend = state.friends.find(f => f.code === friendCode);
+      if (!friend) return;
+
+      renderAvatarInto(document.getElementById("friend-modal-avatar"), friend);
+      document.getElementById("friend-modal-name").textContent = friend.name;
+      const content = document.getElementById("friend-recs-content");
+      content.innerHTML = `<div class="surface-card rounded-2xl p-6 text-center text-xs text-zinc-400">Загрузка рекомендаций...</div>`;
+      openModalEl("friend-recs-modal");
+
+      try {
+        const snap = await fbSdk.getDoc(getPublicUserDocRef(friendCode));
+        const d = snap.exists() ? snap.data() : null;
+        const recs = d?.recsJson ? JSON.parse(d.recsJson) : [];
+        if (d) {
+          friend.name = d.name || friend.name;
+          friend.avatar = d.avatar || friend.avatar;
+          friend.photoData = d.photoData || null;
+          friend.recsCount = recs.length;
+          renderFriends();
+        }
+
+        if (!recs.length) {
+          content.innerHTML = `
+            <div class="surface-card rounded-3xl p-8 text-center space-y-1.5">
+              <div class="text-sm font-bold text-white">Пока нет рекомендаций</div>
+              <p class="text-xs text-zinc-400">${friend.name} ещё не отметил фильмы кнопкой «Рекомендую друзьям»</p>
+            </div>
+          `;
+          return;
+        }
+
+        content.innerHTML = recs.map(item => `
+          <div class="surface-card rounded-2xl p-3 flex gap-3 items-center">
+            <img src="${item.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-14 aspect-[2/3] rounded-xl object-cover shrink-0" />
+            <div class="flex-1 min-w-0 space-y-1">
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="text-sm font-bold text-white truncate">${item.title}</h4>
+                <span class="text-[11px] font-bold text-emerald-400 shrink-0">Советует</span>
+              </div>
+              <div class="text-[11px] text-zinc-400">${item.year} · ${(item.genres || []).slice(0, 2).join(", ")}${item.myRating ? ` · Оценка: ${item.myRating}/10` : ""}</div>
+              <div class="pt-1">
+                <button data-addrec="${item.id}" class="add-friend-rec-btn px-3 py-1.5 rounded-full bg-white text-[#0A0B0E] text-[10px] font-bold active:scale-95 transition">
+                  + В список комнаты
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join("");
+
+        content.querySelectorAll(".add-friend-rec-btn").forEach(btn => {
+          btn.onclick = () => {
+            const movie = recs.find(r => r.id === btn.dataset.addrec);
+            if (movie) {
+              addMovieToRoomWatchlist(movie, false);
+              btn.textContent = "Добавлено ✓";
+              btn.disabled = true;
+              btn.classList.add("opacity-60");
+            }
+          };
+        });
+      } catch (err) {
+        content.innerHTML = `<div class="surface-card rounded-2xl p-6 text-center text-xs text-rose-300">${formatFirestoreError(err)}</div>`;
+      }
     }
 
     /* ---------- HELPERS ---------- */
     function vibrate(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch {} }
 
     function setBodyScrollLock() {
-      const ids = ["rating-modal", "match-modal", "battle-modal"];
+      const ids = ["rating-modal", "match-modal", "battle-modal", "friend-recs-modal"];
       const anyOpen = ids.some(id => !document.getElementById(id)?.classList.contains("hidden"));
       document.body.classList.toggle("modal-open", anyOpen);
     }
-
-    function openModalEl(id) {
-      document.getElementById(id)?.classList.remove("hidden");
-      setBodyScrollLock();
-    }
-
-    function closeModalEl(id) {
-      document.getElementById(id)?.classList.add("hidden");
-      setBodyScrollLock();
-    }
+    function openModalEl(id) { document.getElementById(id)?.classList.remove("hidden"); setBodyScrollLock(); }
+    function closeModalEl(id) { document.getElementById(id)?.classList.add("hidden"); setBodyScrollLock(); }
 
     function switchTab(tab) {
       state.activeTab = tab;
@@ -1161,6 +1496,20 @@
         t.classList.toggle("text-zinc-400", !act);
       });
       vibrate(10);
+    }
+
+    function switchSettingsSubtab(sub) {
+      state.activeSettingsSubtab = sub;
+      ["rooms", "friends", "profile"].forEach(s => {
+        document.getElementById(`subtab-${s}`).classList.toggle("hidden", s !== sub);
+      });
+      document.querySelectorAll(".settings-subtab").forEach(btn => {
+        const act = btn.dataset.subtab === sub;
+        btn.className = act
+          ? "settings-subtab py-2 rounded-xl text-xs font-bold bg-white text-[#0A0B0E] transition"
+          : "settings-subtab py-2 rounded-xl text-xs font-semibold text-zinc-400 transition";
+      });
+      if (sub === "friends") refreshFriendsMetadata();
     }
 
     function renderAvatarHTML(profile, sizeClass = "w-5 h-5 text-xs") {
@@ -1179,13 +1528,29 @@
       }
     }
 
+    function copyTextSafe(text, label) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        showToast(`${label} ${text} скопирован`, "success");
+      } catch {
+        showToast(`${label}: ${text}`, "info");
+      }
+      document.body.removeChild(ta);
+    }
+
     function compressImageToDataUrl(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onerror = () => reject(new Error("Ошибка чтения файла"));
         reader.onload = () => {
           const img = new Image();
-          img.onerror = () => reject(new Error("Неподдерживаемый формат изображения"));
+          img.onerror = () => reject(new Error("Неподдерживаемый формат"));
           img.onload = () => {
             const size = 160;
             const canvas = document.createElement("canvas");
@@ -1193,9 +1558,7 @@
             canvas.height = size;
             const ctx = canvas.getContext("2d");
             const minSide = Math.min(img.width, img.height);
-            const sx = (img.width - minSide) / 2;
-            const sy = (img.height - minSide) / 2;
-            ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+            ctx.drawImage(img, (img.width - minSide) / 2, (img.height - minSide) / 2, minSide, minSide, 0, 0, size, size);
             resolve(canvas.toDataURL("image/jpeg", 0.72));
           };
           img.src = reader.result;
@@ -1219,12 +1582,7 @@
         el.style.opacity = "0";
         el.style.transform = "translateY(-6px)";
         setTimeout(() => el.remove(), 260);
-      }, 2200);
-    }
-
-    function getAverageRating(item) {
-      const vals = Object.values(item.ratings || {}).filter(v => typeof v === "number");
-      return vals.length ? Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)) : 0;
+      }, 2300);
     }
 
     function launchConfetti() {
@@ -1254,21 +1612,39 @@
       })();
     }
 
-    /* ---------- REAL-TIME BATTLE ENGINE (3 MINI-GAMES) ---------- */
+    /* ---------- REAL-TIME BATTLE ENGINE (WORKS FOR 2 TO 6 ROOM MEMBERS) ---------- */
     const BattleEngine = {
       timerInterval: null,
-      localMath: { playing: false, score: 0, timeLeft: 15, question: null, role: "p1" },
+      localMath: { playing: false, score: 0, timeLeft: 15, question: null, slotKey: "p1" },
+
+      getFighters(b) {
+        const p1 = getMemberByUid(b.p1Uid);
+        const p2 = getMemberByUid(b.p2Uid);
+        return { p1, p2 };
+      },
+
+      getMyBattleSlot(b) {
+        if (!b) return null;
+        if (b.p1Uid === state.myUid) return "p1";
+        if (b.p2Uid === state.myUid) return "p2";
+        return null;
+      },
 
       open() {
         openModalEl("battle-modal");
         if (!state.shared.battle || state.shared.battle.phase === "winner") {
           const wl = state.shared.watchlist;
+          const members = getRoomMembersArray();
+          const p1Uid = members[0]?.uid || state.myUid;
+          const p2Uid = members[1]?.uid || "local-bot";
           state.shared.battle = {
             phase: "setup",
+            p1Uid,
+            p2Uid,
             p1MovieId: wl[0]?.id || DEMO_CATALOG[0].id,
             p2MovieId: wl[1]?.id || wl[0]?.id || DEMO_CATALOG[1].id,
             gameType: null,
-            winner: null,
+            winnerSlot: null,
             data: {}
           };
           pushSharedState();
@@ -1305,15 +1681,12 @@
         this.localMath.playing = false;
         const b = state.shared.battle;
         b.gameType = type;
-        b.winner = null;
+        b.winnerSlot = null;
+        const onlineDuel = Boolean(state.roomId && b.p1Uid !== b.p2Uid && b.p2Uid !== "local-bot");
 
         if (type === "math") {
           b.phase = "math";
-          b.data = {
-            mode: isOnlineDualMode() ? "online" : "local",
-            activePlayer: "p1",
-            scores: { p1: null, p2: null }
-          };
+          b.data = { mode: onlineDuel ? "online" : "local", activePlayer: "p1", scores: { p1: null, p2: null } };
         } else if (type === "ttt") {
           b.phase = "ttt";
           b.data = { size: 3, board: Array(9).fill(null), turn: "p1", winLine: null, draw: false };
@@ -1332,22 +1705,22 @@
         if (s && s.p1 !== null && s.p2 !== null) {
           if (s.p1 > s.p2) this.finishBattle("p1");
           else if (s.p2 > s.p1) this.finishBattle("p2");
-          else if (state.currentRole === "p1") {
+          else if (this.getMyBattleSlot(b) === "p1") {
             showToast(`Ничья (${s.p1}:${s.p2}) — новый раунд!`, "info");
             this.startGame("math");
           }
         }
       },
 
-      finishBattle(winnerRole) {
+      finishBattle(winnerSlot) {
         this.clearTimer();
         this.localMath.playing = false;
         const b = state.shared.battle;
         if (!b || b.phase === "winner") return;
         b.phase = "winner";
-        b.winner = winnerRole;
-        const winMovie = this.getMovieById(winnerRole === "p1" ? b.p1MovieId : b.p2MovieId);
-        state.shared.tonightMovie = { ...winMovie, wonBy: winnerRole, pinnedAt: Date.now() };
+        b.winnerSlot = winnerSlot;
+        const winMovie = this.getMovieById(winnerSlot === "p1" ? b.p1MovieId : b.p2MovieId);
+        state.shared.tonightMovie = { ...winMovie, wonByUid: winnerSlot === "p1" ? b.p1Uid : b.p2Uid, pinnedAt: Date.now() };
         pushSharedState();
         vibrate([80, 50, 120, 50, 180]);
         launchConfetti();
@@ -1370,15 +1743,9 @@
         return { text: `${a} ${op} ${b}`, ans, choices: Array.from(choices).sort(() => Math.random() - 0.5) };
       },
 
-      startLocalMathRound(role) {
+      startLocalMathRound(slotKey) {
         this.clearTimer();
-        this.localMath = {
-          playing: true,
-          role,
-          score: 0,
-          timeLeft: 15,
-          question: this.generateMathQ()
-        };
+        this.localMath = { playing: true, slotKey, score: 0, timeLeft: 15, question: this.generateMathQ() };
         this.render();
         this.timerInterval = setInterval(async () => {
           this.localMath.timeLeft--;
@@ -1388,19 +1755,19 @@
           if (this.localMath.timeLeft <= 0) {
             this.clearTimer();
             const finalScore = this.localMath.score;
-            const playedRole = this.localMath.role;
+            const playedSlot = this.localMath.slotKey;
             this.localMath.playing = false;
 
             const b = state.shared.battle;
             if (!b || b.phase !== "math") return;
 
             if (b.data.mode === "online") {
-              await pushBattleScoreSafe(playedRole, finalScore);
+              await pushBattleScoreSafe(playedSlot, finalScore);
               this.checkOnlineMathCompletion();
               this.render();
             } else {
-              b.data.scores[playedRole] = finalScore;
-              if (playedRole === "p1") {
+              b.data.scores[playedSlot] = finalScore;
+              if (playedSlot === "p1") {
                 b.data.activePlayer = "p2";
                 pushSharedState();
                 this.render();
@@ -1422,31 +1789,38 @@
         const container = document.getElementById("battle-content");
         const b = state.shared.battle;
         if (!b) return;
-        const p1 = state.shared.partners.p1;
-        const p2 = state.shared.partners.p2;
-        const online = isOnlineDualMode();
+        const { p1, p2 } = this.getFighters(b);
+        const members = getRoomMembersArray();
+        const onlineDuel = Boolean(state.roomId && b.p1Uid !== b.p2Uid && b.p2Uid !== "local-bot");
+        const mySlot = this.getMyBattleSlot(b);
 
         if (b.phase === "setup") {
           const candidates = this.getCandidateList();
-          const opts = (sel) => candidates.map(m => `<option value="${m.id}" ${m.id === sel ? "selected" : ""}>${m.title} (${m.year})</option>`).join("");
-          const disableP1 = online && state.currentRole !== "p1";
-          const disableP2 = online && state.currentRole !== "p2";
+          const movieOpts = (sel) => candidates.map(m => `<option value="${m.id}" ${m.id === sel ? "selected" : ""}>${m.title} (${m.year})</option>`).join("");
+          const memberOpts = (sel) => members.map(m => `<option value="${m.uid}" ${m.uid === sel ? "selected" : ""}>${m.name}</option>`).join("");
 
           container.innerHTML = `
             <div class="space-y-5 view-animate">
               <div class="text-center space-y-1">
                 <h3 class="text-xl font-bold text-white">Ставки на вечер</h3>
-                <p class="text-xs text-zinc-400">${online ? "Онлайн-дуэль: каждый ставит свой фильм" : "Победитель забирает право выбора фильма"}</p>
+                <p class="text-xs text-zinc-400">${members.length > 2 ? "Выберите двух дуэлянтов и их фильмы" : "Победитель забирает право выбора фильма"}</p>
               </div>
 
               <div class="space-y-2.5">
                 <div class="surface-card rounded-2xl p-3.5 space-y-2">
-                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p1, "w-5 h-5 text-sm")} <span>${p1.name} выбирает</span></div>
-                  <select id="battle-p1-select" ${disableP1 ? "disabled" : ""} class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-60">${opts(b.p1MovieId)}</select>
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p1, "w-5 h-5 text-sm")} <span>${p1.name}</span></div>
+                    ${members.length > 2 ? `<select id="battle-fighter-1" class="rounded-lg bg-white/10 px-2 py-1 text-[11px] font-semibold text-white">${memberOpts(b.p1Uid)}</select>` : ""}
+                  </div>
+                  <select id="battle-p1-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${movieOpts(b.p1MovieId)}</select>
                 </div>
+
                 <div class="surface-card rounded-2xl p-3.5 space-y-2">
-                  <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p2, "w-5 h-5 text-sm")} <span>${p2.name} выбирает</span></div>
-                  <select id="battle-p2-select" ${disableP2 ? "disabled" : ""} class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-60">${opts(b.p2MovieId)}</select>
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">${renderAvatarHTML(p2, "w-5 h-5 text-sm")} <span>${p2.name}</span></div>
+                    ${members.length > 2 ? `<select id="battle-fighter-2" class="rounded-lg bg-white/10 px-2 py-1 text-[11px] font-semibold text-white">${memberOpts(b.p2Uid)}</select>` : ""}
+                  </div>
+                  <select id="battle-p2-select" class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5 text-xs font-semibold text-white">${movieOpts(b.p2MovieId)}</select>
                 </div>
               </div>
 
@@ -1455,7 +1829,7 @@
                 <button data-game="math" class="start-game-btn w-full surface-card rounded-2xl p-4 flex items-center justify-between text-left active:scale-[0.98] transition hover:border-white/20">
                   <div>
                     <div class="text-sm font-bold text-white">Математический спринт</div>
-                    <div class="text-xs text-zinc-400 mt-0.5">${online ? "Одновременный забег на 15 сек" : "Максимум верных ответов за 15 сек"}</div>
+                    <div class="text-xs text-zinc-400 mt-0.5">${onlineDuel ? "Одновременный забег на 15 сек" : "Максимум верных ответов за 15 сек"}</div>
                   </div>
                   <span class="text-zinc-400 text-sm font-bold">→</span>
                 </button>
@@ -1476,6 +1850,10 @@
               </div>
             </div>
           `;
+          const f1 = document.getElementById("battle-fighter-1");
+          const f2 = document.getElementById("battle-fighter-2");
+          if (f1) f1.onchange = (e) => { b.p1Uid = e.target.value; pushSharedState(); this.render(); };
+          if (f2) f2.onchange = (e) => { b.p2Uid = e.target.value; pushSharedState(); this.render(); };
           document.getElementById("battle-p1-select").onchange = (e) => { b.p1MovieId = e.target.value; pushSharedState(); };
           document.getElementById("battle-p2-select").onchange = (e) => { b.p2MovieId = e.target.value; pushSharedState(); };
           container.querySelectorAll(".start-game-btn").forEach(btn => btn.onclick = () => this.startGame(btn.dataset.game));
@@ -1484,9 +1862,8 @@
 
         if (b.phase === "math") {
           const d = b.data;
-          // Активный локальный таймер (не прерывается обновлениями сети)
           if (this.localMath.playing) {
-            const activeP = this.localMath.role === "p1" ? p1 : p2;
+            const activeP = this.localMath.slotKey === "p1" ? p1 : p2;
             container.innerHTML = `
               <div class="space-y-5">
                 <div class="flex items-center justify-between surface-card rounded-2xl px-4 py-3 text-xs font-semibold">
@@ -1504,12 +1881,8 @@
             `;
             container.querySelectorAll(".math-choice-btn").forEach(btn => {
               btn.onclick = () => {
-                if (Number(btn.dataset.ans) === this.localMath.question.ans) {
-                  this.localMath.score++;
-                  vibrate(20);
-                } else {
-                  vibrate([35, 20, 35]);
-                }
+                if (Number(btn.dataset.ans) === this.localMath.question.ans) { this.localMath.score++; vibrate(20); }
+                else vibrate([35, 20, 35]);
                 this.localMath.question = this.generateMathQ();
                 this.render();
               };
@@ -1518,12 +1891,21 @@
           }
 
           if (d.mode === "online") {
-            const myRole = state.currentRole;
-            const otherRole = myRole === "p1" ? "p2" : "p1";
-            const me = myRole === "p1" ? p1 : p2;
-            const other = otherRole === "p1" ? p1 : p2;
-            const myScore = d.scores?.[myRole];
-            const otherScore = d.scores?.[otherRole];
+            if (!mySlot) {
+              container.innerHTML = `
+                <div class="surface-card rounded-3xl p-6 text-center space-y-3 view-animate">
+                  <div class="text-xs font-semibold text-amber-400">Режим зрителя</div>
+                  <h3 class="text-lg font-bold text-white">Идёт дуэль: ${p1.name} vs ${p2.name}</h3>
+                  <p class="text-xs text-zinc-400">Очки: ${p1.name} (${d.scores?.p1 ?? "..."}) · ${p2.name} (${d.scores?.p2 ?? "..."})</p>
+                </div>
+              `;
+              return;
+            }
+            const otherSlot = mySlot === "p1" ? "p2" : "p1";
+            const me = mySlot === "p1" ? p1 : p2;
+            const other = otherSlot === "p1" ? p1 : p2;
+            const myScore = d.scores?.[mySlot];
+            const otherScore = d.scores?.[otherSlot];
 
             if (myScore !== null && myScore !== undefined) {
               container.innerHTML = `
@@ -1541,12 +1923,12 @@
                   <div class="space-y-1">
                     <div class="text-xs font-semibold text-emerald-400">Онлайн-спринт</div>
                     <h3 class="text-2xl font-bold text-white">${me.name}, готовы?</h3>
-                    <p class="text-xs text-zinc-400">Решите максимум примеров за 15 секунд. ${otherScore !== null && otherScore !== undefined ? `${other.name} уже финишировал!` : "Вы играете одновременно."}</p>
+                    <p class="text-xs text-zinc-400">${otherScore !== null && otherScore !== undefined ? `${other.name} уже финишировал!` : "Решайте примеры одновременно за 15 секунд."}</p>
                   </div>
                   <button id="math-go-btn" class="w-full btn-primary py-3.5 rounded-2xl text-sm font-bold">Старт (15 сек)</button>
                 </div>
               `;
-              document.getElementById("math-go-btn").onclick = () => this.startLocalMathRound(myRole);
+              document.getElementById("math-go-btn").onclick = () => this.startLocalMathRound(mySlot);
             }
           } else {
             const activeP = d.activePlayer === "p1" ? p1 : p2;
@@ -1556,7 +1938,7 @@
                 <div class="space-y-1">
                   <div class="text-xs font-semibold text-zinc-400">Раунд ${d.activePlayer === "p1" ? "1 из 2" : "2 из 2"}</div>
                   <h3 class="text-2xl font-bold text-white">Очередь: ${activeP.name}</h3>
-                  <p class="text-xs text-zinc-400">У вас есть 15 секунд, чтобы решить максимум примеров</p>
+                  <p class="text-xs text-zinc-400">15 секунд на максимум правильных ответов</p>
                 </div>
                 ${d.scores.p1 !== null ? `<div class="rounded-xl bg-white/5 py-2.5 text-xs font-semibold text-zinc-300">Результат ${p1.name}: <b class="text-white">${d.scores.p1}</b></div>` : ""}
                 <button id="math-go-btn" class="w-full btn-primary py-3.5 rounded-2xl text-sm font-bold">Начать (15 сек)</button>
@@ -1570,13 +1952,13 @@
         if (b.phase === "ttt") {
           const d = b.data;
           const turnP = d.turn === "p1" ? p1 : p2;
-          const isMyTurn = !online || d.turn === state.currentRole;
+          const isMyTurn = !onlineDuel || (mySlot && d.turn === mySlot);
 
           container.innerHTML = `
             <div class="space-y-5 view-animate">
               <div class="flex items-center justify-between gap-2">
                 <div class="surface-card rounded-full px-3.5 py-2 text-xs font-semibold text-white flex items-center gap-2">
-                  <span class="${isMyTurn ? "text-emerald-400" : "text-zinc-400"}">${isMyTurn ? "Ваш ход" : "Ждём"}</span>
+                  <span class="${isMyTurn ? "text-emerald-400" : "text-zinc-400"}">${isMyTurn ? "Ваш ход" : "Ход"}</span>
                   <span class="${d.turn === "p1" ? "mark-x" : "mark-o"} font-extrabold">${d.turn === "p1" ? "X" : "O"}</span>
                   <span class="flex items-center gap-1">${renderAvatarHTML(turnP, "w-4 h-4 text-xs")} ${turnP.name}</span>
                 </div>
@@ -1637,7 +2019,7 @@
         if (b.phase === "guess") {
           const d = b.data;
           const turnP = d.turn === "p1" ? p1 : p2;
-          const isMyTurn = !online || d.turn === state.currentRole;
+          const isMyTurn = !onlineDuel || (mySlot && d.turn === mySlot);
           const roundNum = Math.min(d.maxTurnsPerPlayer, Math.floor(d.history.length / 2) + 1);
 
           container.innerHTML = `
@@ -1645,7 +2027,7 @@
               <div class="surface-card rounded-3xl p-5 text-center space-y-2.5">
                 <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Раунд ${roundNum} из ${d.maxTurnsPerPlayer}</div>
                 <h3 class="text-lg font-bold text-white flex items-center justify-center gap-2">
-                  <span>${isMyTurn ? "Ходит:" : "Ждём ход:"}</span>
+                  <span>${isMyTurn ? "Ходит:" : "Ждём:"}</span>
                   ${renderAvatarHTML(turnP, "w-6 h-6 text-base")}
                   <span>${turnP.name}</span>
                 </h3>
@@ -1656,7 +2038,7 @@
               </div>
 
               <div class="flex gap-2">
-                <input id="guess-input" type="number" min="1" max="100" inputmode="numeric" ${!isMyTurn ? "disabled" : ""} placeholder="${isMyTurn ? "Число 1–100" : "Ожидание партнёра..."}"
+                <input id="guess-input" type="number" min="1" max="100" inputmode="numeric" ${!isMyTurn ? "disabled" : ""} placeholder="${isMyTurn ? "Число 1–100" : "Ожидание..."}"
                   class="flex-1 rounded-2xl bg-[#14161C] border border-white/15 px-4 py-3.5 text-lg font-bold text-center text-white focus:outline-none focus:border-white/40 disabled:opacity-45" />
                 <button id="guess-submit-btn" ${!isMyTurn ? "disabled" : ""} class="btn-primary px-6 rounded-2xl text-sm font-bold disabled:opacity-45">Угадать</button>
               </div>
@@ -1701,8 +2083,8 @@
         }
 
         if (b.phase === "winner") {
-          const winP = b.winner === "p1" ? p1 : p2;
-          const winMovie = this.getMovieById(b.winner === "p1" ? b.p1MovieId : b.p2MovieId);
+          const winP = b.winnerSlot === "p1" ? p1 : p2;
+          const winMovie = this.getMovieById(b.winnerSlot === "p1" ? b.p1MovieId : b.p2MovieId);
           container.innerHTML = `
             <div class="surface-card rounded-3xl p-6 text-center space-y-5 view-animate">
               <div class="space-y-1">
@@ -1742,7 +2124,7 @@
       }
     };
 
-    /* ---------- DISCOVER DECK (INFINITE TMDB PAGINATION) ---------- */
+    /* ---------- DISCOVER DECK ---------- */
     async function loadDeck() {
       state.deckPage = 1;
       state.isLoadingMore = false;
@@ -1751,10 +2133,10 @@
         category: state.filters.category,
         genre: state.filters.genre,
         smart: state.filters.smart,
-        watched: state.shared.watched,
+        watched: state.myWatched,
         page: 1
       });
-      const watchedIds = new Set(state.shared.watched.map(w => w.id));
+      const watchedIds = new Set(state.myWatched.map(w => w.id));
       const filtered = raw.filter(i => !watchedIds.has(i.id) && !state.skippedIds.has(i.id));
       state.deck = filtered.length ? filtered : raw;
       state.deckIndex = 0;
@@ -1770,14 +2152,10 @@
           category: state.filters.category,
           genre: state.filters.genre,
           smart: state.filters.smart,
-          watched: state.shared.watched,
+          watched: state.myWatched,
           page: state.deckPage
         });
-        const existingIds = new Set([
-          ...state.deck.map(d => d.id),
-          ...state.shared.watched.map(w => w.id),
-          ...state.skippedIds
-        ]);
+        const existingIds = new Set([...state.deck.map(d => d.id), ...state.myWatched.map(w => w.id), ...state.skippedIds]);
         const fresh = raw.filter(i => !existingIds.has(i.id));
         if (fresh.length) state.deck.push(...fresh);
       } finally {
@@ -1919,16 +2297,15 @@
       });
     }
 
-    /* ---------- DISCOVER ACTIONS, MATCH & RATING ---------- */
+    /* ---------- DISCOVER, WATCHLIST, REWATCH & RATING ACTIONS ---------- */
     let pendingMatchItem = null;
     let pendingRateItem = null;
     let selectedRatingVal = 8;
+    let selectedRecommendVal = false;
 
     function advanceDeck() {
       state.deckIndex++;
-      if (state.deck.length - state.deckIndex <= 5) {
-        loadMoreDeck();
-      }
+      if (state.deck.length - state.deckIndex <= 5) loadMoreDeck();
       renderDiscoverCard();
     }
 
@@ -1940,18 +2317,17 @@
       advanceDeck();
     }
 
-    function handleWantCurrent() {
-      const item = getCurrentCardItem();
-      if (!item) return;
-      const role = state.currentRole;
+    function addMovieToRoomWatchlist(item, isRewatch = false) {
       let existing = state.shared.watchlist.find(w => w.id === item.id);
       if (existing) {
-        existing.likes = existing.likes || { p1: false, p2: false };
-        existing.likes[role] = true;
+        existing.likes = existing.likes || {};
+        existing.likes[state.myUid] = true;
+        if (isRewatch) existing.rewatch = true;
       } else {
         existing = {
           ...item,
-          likes: { p1: role === "p1", p2: role === "p2" },
+          likes: { [state.myUid]: true },
+          rewatch: Boolean(isRewatch),
           addedAt: Date.now()
         };
         state.shared.watchlist.unshift(existing);
@@ -1959,13 +2335,20 @@
       pushSharedState();
       renderWatchlist();
 
-      if (existing.likes.p1 && existing.likes.p2) {
+      const likeCount = Object.values(existing.likes || {}).filter(Boolean).length;
+      if (likeCount >= 2) {
         vibrate([70, 40, 120]);
-        openMatchModal(existing);
+        openMatchModal(existing, likeCount);
       } else {
         vibrate(25);
-        showToast(`Добавлено: «${item.title}»`, "success");
+        showToast(isRewatch ? `В списке на пересмотр: «${item.title}»` : `Добавлено: «${item.title}»`, "success");
       }
+    }
+
+    function handleWantCurrent() {
+      const item = getCurrentCardItem();
+      if (!item) return;
+      addMovieToRoomWatchlist(item, false);
       advanceDeck();
     }
 
@@ -1978,9 +2361,7 @@
         if (card) card.classList.remove("roulette-spinning");
         if (state.deck.length > 1) {
           let nextIdx = state.deckIndex;
-          while (nextIdx === state.deckIndex) {
-            nextIdx = Math.floor(Math.random() * state.deck.length);
-          }
+          while (nextIdx === state.deckIndex) nextIdx = Math.floor(Math.random() * state.deck.length);
           state.deckIndex = nextIdx;
           renderDiscoverCard();
           const chosen = getCurrentCardItem();
@@ -1989,19 +2370,40 @@
       }, 450);
     }
 
-    function openMatchModal(item) {
+    function openMatchModal(item, likeCount) {
       pendingMatchItem = item;
+      const total = getRoomMembersArray().length;
+      document.getElementById("match-modal-heading").textContent =
+        likeCount >= total && total >= 2 ? "Единогласный выбор!" : `Хотят посмотреть: ${likeCount} из ${total}`;
       document.getElementById("match-modal-poster").src = item.poster;
       document.getElementById("match-modal-title").textContent = item.title;
       openModalEl("match-modal");
       launchConfetti();
     }
 
+    function updateRecommendToggleUI() {
+      const btn = document.getElementById("rating-recommend-toggle");
+      const pill = document.getElementById("rating-recommend-pill");
+      const knob = pill.firstElementChild;
+      if (selectedRecommendVal) {
+        btn.className = "w-full rounded-2xl px-4 py-3 border flex items-center justify-between transition active:scale-[0.98] bg-emerald-500/15 border-emerald-500/35 text-emerald-200";
+        pill.className = "w-10 h-6 rounded-full bg-emerald-500 p-0.5 transition flex items-center";
+        knob.style.transform = "translateX(16px)";
+      } else {
+        btn.className = "w-full rounded-2xl px-4 py-3 border flex items-center justify-between transition active:scale-[0.98] bg-white/5 border-white/10 text-zinc-300";
+        pill.className = "w-10 h-6 rounded-full bg-white/15 p-0.5 transition flex items-center";
+        knob.style.transform = "translateX(0px)";
+      }
+    }
+
     function openRatingModal(item) {
       pendingRateItem = item;
-      selectedRatingVal = (item.ratings && item.ratings[state.currentRole]) || 8;
+      const mine = state.myWatched.find(w => w.id === item.id);
+      selectedRatingVal = mine?.myRating || 8;
+      selectedRecommendVal = Boolean(mine?.recommended);
       document.getElementById("rating-modal-title").textContent = item.title;
       renderRatingGrid();
+      updateRecommendToggleUI();
       openModalEl("rating-modal");
     }
 
@@ -2025,20 +2427,21 @@
     function savePendingRating() {
       if (!pendingRateItem) return;
       const item = pendingRateItem;
-      const role = state.currentRole;
 
+      // Remove from current room watchlist if present
       state.shared.watchlist = state.shared.watchlist.filter(w => w.id !== item.id);
       if (state.shared.tonightMovie?.id === item.id) state.shared.tonightMovie = null;
 
-      let existing = state.shared.watched.find(w => w.id === item.id);
+      let existing = state.myWatched.find(w => w.id === item.id);
       if (existing) {
-        existing.ratings = existing.ratings || {};
-        existing.ratings[role] = selectedRatingVal;
+        existing.myRating = selectedRatingVal;
+        existing.recommended = selectedRecommendVal;
       } else {
-        state.shared.watched.unshift({
+        state.myWatched.unshift({
           ...item,
           watchedAt: new Date().toLocaleDateString("ru-RU"),
-          ratings: { [role]: selectedRatingVal }
+          myRating: selectedRatingVal,
+          recommended: selectedRecommendVal
         });
       }
 
@@ -2046,25 +2449,59 @@
       pendingRateItem = null;
       closeModalEl("rating-modal");
       pushSharedState();
+      syncPublicFriendProfile();
       renderAll();
       vibrate(30);
-      showToast(`Оценка ${selectedRatingVal}/10 сохранена`, "success");
+      showToast(selectedRecommendVal ? `Сохранено (${selectedRatingVal}/10) и добавлено в рекомендации` : `Оценка ${selectedRatingVal}/10 сохранена`, "success");
     }
 
-    /* ---------- WATCHLIST, WATCHED & PROFILES RENDER ---------- */
-    function renderWatchlist() {
-      const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2;
-      document.getElementById("wl-filter-p1").textContent = p1.name;
-      document.getElementById("wl-filter-p2").textContent = p2.name;
+    /* ---------- COMMON WATCHED INTERSECTION ---------- */
+    function getCommonWatchedItems() {
+      const members = getRoomMembersArray();
+      if (members.length < 2) return [];
+      const map = new Map();
+      members.forEach(m => {
+        (m.watched || []).forEach(w => {
+          if (!map.has(w.id)) {
+            map.set(w.id, { movie: w, entries: [] });
+          }
+          map.get(w.id).entries.push({ member: m, myRating: w.myRating, recommended: w.recommended });
+        });
+      });
+      return Array.from(map.values())
+        .filter(group => group.entries.length >= 2)
+        .sort((a, b) => b.entries.length - a.entries.length);
+    }
 
+    /* ---------- RENDER: WATCHLIST, WATCHED, ROOMS, FRIENDS, PROFILE ---------- */
+    function renderWatchlist() {
+      const members = getRoomMembersArray();
+      const totalMembers = members.length;
+
+      document.getElementById("watchlist-room-title").textContent = state.shared.roomName || "Наш список";
       const badge = document.getElementById("nav-watchlist-badge");
       badge.textContent = state.shared.watchlist.length;
       badge.classList.toggle("hidden", state.shared.watchlist.length === 0);
 
-      // Живой баннер активного баттла
+      // Dynamic filter pills for up to 6 members
+      const filterBar = document.getElementById("watchlist-filters-bar");
+      const filterPills = [
+        { key: "all", label: "Все" },
+        { key: "matches", label: "Совпадения" },
+        ...members.map(m => ({ key: m.uid, label: m.name }))
+      ];
+      filterBar.innerHTML = filterPills.map(p => {
+        const act = state.watchlistFilter === p.key;
+        return `<button data-wlfilter="${p.key}" class="wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs transition ${act ? "font-semibold bg-white text-[#0A0B0E]" : "font-medium surface-card text-zinc-300"}">${p.label}</button>`;
+      }).join("");
+      filterBar.querySelectorAll(".wl-filter-btn").forEach(btn => {
+        btn.onclick = () => { state.watchlistFilter = btn.dataset.wlfilter; renderWatchlist(); };
+      });
+
+      // Live Battle Banner
       const liveBanner = document.getElementById("live-battle-banner");
       const b = state.shared.battle;
-      if (isOnlineDualMode() && b && b.phase && b.phase !== "winner") {
+      if (isOnlineMultiMode() && b && b.phase && b.phase !== "winner") {
         liveBanner.classList.remove("hidden");
         liveBanner.innerHTML = `
           <div class="surface-card rounded-2xl p-3.5 border-[#FF3B5C]/40 bg-gradient-to-r from-[#FF3B5C]/15 to-transparent flex items-center justify-between gap-3">
@@ -2073,9 +2510,9 @@
                 <span class="w-2 h-2 rounded-full bg-[#FF3B5C] animate-pulse"></span>
                 Идёт баттл за пульт!
               </div>
-              <div class="text-[11px] text-zinc-300 truncate mt-0.5">Партнёр уже на арене — присоединяйтесь</div>
+              <div class="text-[11px] text-zinc-300 truncate mt-0.5">Присоединяйтесь к дуэли или болейте</div>
             </div>
-            <button id="join-live-battle-btn" class="btn-love px-3.5 py-2 rounded-full text-xs font-bold shrink-0">Играть</button>
+            <button id="join-live-battle-btn" class="btn-love px-3.5 py-2 rounded-full text-xs font-bold shrink-0">Открыть</button>
           </div>
         `;
         document.getElementById("join-live-battle-btn").onclick = () => BattleEngine.open();
@@ -2083,6 +2520,7 @@
         liveBanner.classList.add("hidden");
       }
 
+      // Tonight's Movie Banner
       const tonightBox = document.getElementById("tonight-movie-banner");
       const tm = state.shared.tonightMovie;
       if (tm) {
@@ -2109,23 +2547,26 @@
         tonightBox.classList.add("hidden");
       }
 
-      const matchesCount = state.shared.watchlist.filter(i => i.likes?.p1 && i.likes?.p2).length;
+      const getLikeUids = (item) => Object.keys(item.likes || {}).filter(uid => item.likes[uid]);
+      const matchesCount = state.shared.watchlist.filter(i => getLikeUids(i).length >= 2).length;
       document.getElementById("watchlist-stats").textContent = `${state.shared.watchlist.length} в списке • ${matchesCount} совпадений`;
 
-      let items = [...state.shared.watchlist].sort((a, b) => ((b.likes?.p1 && b.likes?.p2) ? 1 : 0) - ((a.likes?.p1 && a.likes?.p2) ? 1 : 0));
-      if (state.watchlistFilter === "matches") items = items.filter(i => i.likes?.p1 && i.likes?.p2);
-      if (state.watchlistFilter === "p1") items = items.filter(i => i.likes?.p1);
-      if (state.watchlistFilter === "p2") items = items.filter(i => i.likes?.p2);
+      let items = [...state.shared.watchlist].sort((a, b) => getLikeUids(b).length - getLikeUids(a).length);
+      if (state.watchlistFilter === "matches") items = items.filter(i => getLikeUids(i).length >= 2);
+      else if (state.watchlistFilter !== "all") items = items.filter(i => i.likes?.[state.watchlistFilter]);
 
       const container = document.getElementById("watchlist-container");
       if (!items.length) {
-        container.innerHTML = `<div class="surface-card rounded-3xl p-8 text-center space-y-1.5"><div class="text-sm font-bold text-white">Список пуст</div><p class="text-xs text-zinc-400">Отмечайте фильмы на экране «Подбор»</p></div>`;
+        container.innerHTML = `<div class="surface-card rounded-3xl p-8 text-center space-y-1.5"><div class="text-sm font-bold text-white">Список пуст</div><p class="text-xs text-zinc-400">Отмечайте фильмы на экране «Подбор» или добавляйте из рекомендаций друзей</p></div>`;
         return;
       }
 
       container.innerHTML = items.map(item => {
-        const isMatch = item.likes?.p1 && item.likes?.p2;
-        const myLiked = item.likes?.[state.currentRole];
+        const likedUids = getLikeUids(item);
+        const isMatch = likedUids.length >= 2;
+        const isFullMatch = isMatch && likedUids.length >= totalMembers;
+        const myLiked = Boolean(item.likes?.[state.myUid]);
+
         return `
           <div class="surface-card rounded-2xl p-3 flex gap-3.5 items-center ${isMatch ? "border-[#FF3B5C]/35" : ""}">
             <img src="${item.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-16 aspect-[2/3] rounded-xl object-cover shrink-0 bg-zinc-900" />
@@ -2136,9 +2577,12 @@
               </div>
               <div class="text-[11px] text-zinc-400">${item.year} · ${(item.genres || []).slice(0, 2).join(", ")}</div>
               <div class="flex flex-wrap items-center gap-1.5">
-                ${isMatch ? `<span class="px-2 py-0.5 rounded-full bg-[#FF3B5C]/15 text-[#FF3B5C] text-[10px] font-bold">Мэтч 100%</span>` : ""}
-                ${item.likes?.p1 ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${renderAvatarHTML(p1, "w-3.5 h-3.5 text-[10px]")} ${p1.name}</span>` : ""}
-                ${item.likes?.p2 ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${renderAvatarHTML(p2, "w-3.5 h-3.5 text-[10px]")} ${p2.name}</span>` : ""}
+                ${item.rewatch ? `<span class="px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 text-[10px] font-bold">Пересмотреть</span>` : ""}
+                ${isMatch ? `<span class="px-2 py-0.5 rounded-full bg-[#FF3B5C]/15 text-[#FF3B5C] text-[10px] font-bold">${isFullMatch ? "Мэтч 100%" : `Совпадение ${likedUids.length}/${totalMembers}`}</span>` : ""}
+                ${likedUids.map(uid => {
+                  const m = getMemberByUid(uid);
+                  return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">${renderAvatarHTML(m, "w-3.5 h-3.5 text-[10px]")} ${m.name}</span>`;
+                }).join("")}
               </div>
               <div class="flex items-center gap-2 pt-1">
                 ${!myLiked ? `<button data-like="${item.id}" class="wl-like-btn px-2.5 py-1 rounded-full bg-[#FF3B5C] text-white text-[10px] font-bold">Тоже хочу</button>` : ""}
@@ -2154,9 +2598,11 @@
         btn.onclick = () => {
           const item = state.shared.watchlist.find(i => i.id === btn.dataset.like);
           if (!item) return;
-          item.likes[state.currentRole] = true;
+          item.likes = item.likes || {};
+          item.likes[state.myUid] = true;
           pushSharedState(); renderWatchlist();
-          if (item.likes.p1 && item.likes.p2) { vibrate([70, 40, 120]); openMatchModal(item); }
+          const count = getLikeUids(item).length;
+          if (count >= 2) { vibrate([70, 40, 120]); openMatchModal(item, count); }
         };
       });
       container.querySelectorAll(".wl-watch-btn").forEach(btn => {
@@ -2168,60 +2614,225 @@
     }
 
     function renderWatched() {
-      const p1 = state.shared.partners.p1, p2 = state.shared.partners.p2, list = state.shared.watched;
-      document.getElementById("watched-count-badge").textContent = `${list.length} тайтлов`;
+      const commonItems = getCommonWatchedItems();
+      document.getElementById("watched-mine-count").textContent = state.myWatched.length;
+      document.getElementById("watched-common-count").textContent = commonItems.length;
+
+      const tabMine = document.getElementById("watched-tab-mine");
+      const tabCommon = document.getElementById("watched-tab-common");
+      const isMine = state.watchedView === "mine";
+      tabMine.className = isMine
+        ? "py-2 rounded-xl text-xs font-bold bg-white text-[#0A0B0E] transition"
+        : "py-2 rounded-xl text-xs font-semibold text-zinc-400 transition";
+      tabCommon.className = !isMine
+        ? "py-2 rounded-xl text-xs font-bold bg-white text-[#0A0B0E] transition"
+        : "py-2 rounded-xl text-xs font-semibold text-zinc-400 transition";
+
       const container = document.getElementById("watched-container");
-      if (!list.length) {
-        container.innerHTML = `<div class="surface-card rounded-3xl p-8 text-center space-y-1.5"><div class="text-sm font-bold text-white">История пуста</div><p class="text-xs text-zinc-400">Найдите любимые фильмы через поиск выше</p></div>`;
-        return;
-      }
-      container.innerHTML = list.map(item => `
-        <div class="surface-card rounded-2xl p-3 flex items-center gap-3.5">
-          <img src="${item.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-12 aspect-[2/3] rounded-lg object-cover shrink-0" />
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between gap-2">
-              <h4 class="text-sm font-bold text-white truncate">${item.title}</h4>
-              <span class="px-2 py-0.5 rounded-full bg-white/10 text-white text-xs font-bold shrink-0">${getAverageRating(item) || "—"}</span>
-            </div>
-            <div class="text-[11px] text-zinc-400 mt-0.5">${item.watchedAt || "Недавно"} · ${(item.genres || []).slice(0, 2).join(", ")}</div>
-            <div class="flex items-center justify-between mt-2">
-              <div class="flex items-center gap-2 text-[11px] font-medium text-zinc-300">
-                <span class="inline-flex items-center gap-1">${renderAvatarHTML(p1, "w-4 h-4 text-xs")} ${item.ratings?.p1 ?? "—"}</span>
-                <span class="text-zinc-600">·</span>
-                <span class="inline-flex items-center gap-1">${renderAvatarHTML(p2, "w-4 h-4 text-xs")} ${item.ratings?.p2 ?? "—"}</span>
+
+      if (isMine) {
+        if (!state.myWatched.length) {
+          container.innerHTML = `<div class="surface-card rounded-3xl p-8 text-center space-y-1.5"><div class="text-sm font-bold text-white">Ваша история пуста</div><p class="text-xs text-zinc-400">Найдите просмотренные фильмы через поиск выше</p></div>`;
+          return;
+        }
+        container.innerHTML = state.myWatched.map(item => `
+          <div class="surface-card rounded-2xl p-3 flex items-center gap-3.5">
+            <img src="${item.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-12 aspect-[2/3] rounded-lg object-cover shrink-0" />
+            <div class="flex-1 min-w-0 space-y-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <h4 class="text-sm font-bold text-white truncate">${item.title}</h4>
+                <span class="px-2 py-0.5 rounded-full bg-white/10 text-white text-xs font-bold shrink-0">${item.myRating || "—"}</span>
               </div>
-              <button data-editrate="${item.id}" class="edit-watched-rate text-[11px] font-semibold text-white/80 hover:text-white">Изменить</button>
+              <div class="text-[11px] text-zinc-400">${item.watchedAt || "Недавно"} · ${(item.genres || []).slice(0, 2).join(", ")}</div>
+              <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <button data-togglerec="${item.id}" class="toggle-rec-btn px-2.5 py-1 rounded-full text-[10px] font-bold transition ${item.recommended ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/35" : "bg-white/6 text-zinc-400"}">
+                  ${item.recommended ? "✓ Рекомендую друзьям" : "+ Рекомендовать"}
+                </button>
+                <button data-rewatch="${item.id}" class="rewatch-btn px-2.5 py-1 rounded-full bg-sky-500/15 text-sky-300 text-[10px] font-bold">
+                  Пересмотреть
+                </button>
+                <button data-editrate="${item.id}" class="edit-watched-rate text-[10px] font-semibold text-zinc-400 hover:text-white ml-auto">Изменить</button>
+              </div>
             </div>
           </div>
+        `).join("");
+
+        container.querySelectorAll(".toggle-rec-btn").forEach(btn => {
+          btn.onclick = () => {
+            const i = state.myWatched.find(w => w.id === btn.dataset.togglerec);
+            if (!i) return;
+            i.recommended = !i.recommended;
+            pushSharedState();
+            syncPublicFriendProfile();
+            renderAll();
+            vibrate(15);
+            showToast(i.recommended ? `«${i.title}» теперь в ваших рекомендациях` : "Убрано из рекомендаций", "info");
+          };
+        });
+        container.querySelectorAll(".rewatch-btn").forEach(btn => {
+          btn.onclick = () => {
+            const i = state.myWatched.find(w => w.id === btn.dataset.rewatch);
+            if (i) addMovieToRoomWatchlist(i, true);
+          };
+        });
+        container.querySelectorAll(".edit-watched-rate").forEach(btn => {
+          btn.onclick = () => { const i = state.myWatched.find(w => w.id === btn.dataset.editrate); if (i) openRatingModal(i); };
+        });
+      } else {
+        // Common Watched in Room
+        if (!commonItems.length) {
+          container.innerHTML = `
+            <div class="surface-card rounded-3xl p-8 text-center space-y-1.5">
+              <div class="text-sm font-bold text-white">Общих просмотренных пока нет</div>
+              <p class="text-xs text-zinc-400">${state.roomId ? "Когда 2 или более участников отметят один и тот же фильм, он появится здесь" : "Войдите в комнату с друзьями, чтобы увидеть пересечение ваших историй"}</p>
+            </div>
+          `;
+          return;
+        }
+        container.innerHTML = commonItems.map(({ movie, entries }) => `
+          <div class="surface-card rounded-2xl p-3 flex items-center gap-3.5 border-sky-400/20">
+            <img src="${movie.poster}" onerror="this.src='https://placehold.co/200x300/14161C/ffffff?text=Film'" class="w-12 aspect-[2/3] rounded-lg object-cover shrink-0" />
+            <div class="flex-1 min-w-0 space-y-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <h4 class="text-sm font-bold text-white truncate">${movie.title}</h4>
+                <span class="px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 text-[10px] font-bold shrink-0">Смотрели: ${entries.length}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                ${entries.map(e => `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/8 text-zinc-200 text-[10px] font-medium">
+                    ${renderAvatarHTML(e.member, "w-3.5 h-3.5 text-[10px]")} ${e.member.name}: <b>${e.myRating ?? "—"}</b>
+                  </span>
+                `).join("")}
+              </div>
+              <div class="pt-0.5">
+                <button data-commonrewatch="${movie.id}" class="common-rewatch-btn px-3 py-1.5 rounded-full bg-white text-[#0A0B0E] text-[10px] font-bold active:scale-95 transition">
+                  Пересмотреть вместе
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join("");
+
+        container.querySelectorAll(".common-rewatch-btn").forEach(btn => {
+          btn.onclick = () => {
+            const found = commonItems.find(c => c.movie.id === btn.dataset.commonrewatch);
+            if (found) addMovieToRoomWatchlist(found.movie, true);
+          };
+        });
+      }
+    }
+
+    function renderSavedRooms() {
+      const list = [...state.savedRooms].sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0) || (b.lastVisited || 0) - (a.lastVisited || 0));
+      document.getElementById("saved-rooms-count").textContent = list.length;
+      const container = document.getElementById("saved-rooms-list");
+
+      if (!list.length) {
+        container.innerHTML = `<div class="text-xs text-zinc-500 text-center py-4">Созданные и посещённые комнаты будут сохраняться здесь</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(r => {
+        const isCurrent = r.id === state.roomId;
+        return `
+          <div class="rounded-2xl bg-black/30 border ${isCurrent ? "border-emerald-500/35" : "border-white/6"} p-3 flex items-center gap-2.5">
+            <button data-favroom="${r.id}" class="fav-room-btn w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition active:scale-90 ${r.favorite ? "bg-amber-400/15 text-amber-400" : "bg-white/5 text-zinc-500"}">
+              <svg class="w-4 h-4 ${r.favorite ? "fill-current" : ""}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </button>
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-bold text-white truncate">${r.name}</div>
+              <div class="text-[10px] text-zinc-400 tracking-wider font-semibold">${r.id}${isCurrent ? " · Активна" : ""}</div>
+            </div>
+            ${!isCurrent ? `<button data-openroom="${r.id}" class="open-saved-room-btn px-3 py-1.5 rounded-xl bg-white text-[#0A0B0E] text-[10px] font-bold shrink-0">Войти</button>` : ""}
+            <button data-delroom="${r.id}" class="del-saved-room-btn text-zinc-500 hover:text-rose-400 p-1.5 text-xs">✕</button>
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll(".fav-room-btn").forEach(btn => {
+        btn.onclick = () => {
+          const r = state.savedRooms.find(x => x.id === btn.dataset.favroom);
+          if (!r) return;
+          r.favorite = !r.favorite;
+          saveUserSettings();
+          renderRoomUI();
+          vibrate(15);
+        };
+      });
+      container.querySelectorAll(".open-saved-room-btn").forEach(btn => {
+        btn.onclick = () => joinRoom(btn.dataset.openroom);
+      });
+      container.querySelectorAll(".del-saved-room-btn").forEach(btn => {
+        btn.onclick = () => {
+          state.savedRooms = state.savedRooms.filter(x => x.id !== btn.dataset.delroom);
+          saveUserSettings();
+          renderSavedRooms();
+        };
+      });
+    }
+
+    function renderFriends() {
+      document.getElementById("my-friend-code-display").textContent = state.myFriendCode;
+      const container = document.getElementById("friends-list");
+
+      if (!state.friends.length) {
+        container.innerHTML = `<div class="text-xs text-zinc-500 text-center py-5">Пока нет друзей. Введите код друга выше, чтобы видеть его рекомендации</div>`;
+        return;
+      }
+
+      container.innerHTML = state.friends.map(f => `
+        <div class="rounded-2xl bg-black/30 border border-white/6 p-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full overflow-hidden bg-white/8 flex items-center justify-center text-lg shrink-0">
+            ${renderAvatarHTML(f, "w-10 h-10 text-lg")}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold text-white truncate">${f.name}</div>
+            <div class="text-[11px] text-emerald-400 font-medium">Рекомендует: ${f.recsCount || 0}</div>
+          </div>
+          <button data-viewfriend="${f.code}" class="view-friend-btn px-3 py-1.5 rounded-xl bg-white text-[#0A0B0E] text-[10px] font-bold shrink-0 active:scale-95">
+            Советы
+          </button>
+          <button data-delfriend="${f.code}" class="del-friend-btn text-zinc-500 hover:text-rose-400 p-1 text-xs">✕</button>
         </div>
       `).join("");
-      container.querySelectorAll(".edit-watched-rate").forEach(btn => {
-        btn.onclick = () => { const i = state.shared.watched.find(w => w.id === btn.dataset.editrate); if (i) openRatingModal(i); };
+
+      container.querySelectorAll(".view-friend-btn").forEach(btn => {
+        btn.onclick = () => openFriendRecommendations(btn.dataset.viewfriend);
+      });
+      container.querySelectorAll(".del-friend-btn").forEach(btn => {
+        btn.onclick = () => {
+          state.friends = state.friends.filter(f => f.code !== btn.dataset.delfriend);
+          saveUserSettings();
+          renderFriends();
+        };
       });
     }
 
     function updateHeaderAndProfiles() {
-      const myRole = state.currentRole;
-      const otherRole = myRole === "p1" ? "p2" : "p1";
-      const me = state.shared.partners[myRole];
-      const other = state.shared.partners[otherRole];
-
       renderAvatarInto(document.getElementById("header-partner-avatar"), state.myProfile);
-      document.getElementById("header-partner-name").textContent = state.myProfile.name || me.name;
+      document.getElementById("header-partner-name").textContent = state.myProfile.name || "Игрок";
 
-      const isOtherConnected = isOnlineDualMode();
-      const headerOther = document.getElementById("header-other-partner");
-      headerOther.classList.toggle("hidden", !isOtherConnected);
-      headerOther.classList.toggle("inline-flex", isOtherConnected);
-      if (isOtherConnected) {
-        renderAvatarInto(document.getElementById("header-other-avatar"), other);
-        document.getElementById("header-other-name").textContent = other.name;
+      const members = getRoomMembersArray();
+      const others = members.filter(m => m.uid !== state.myUid);
+      const stack = document.getElementById("header-members-stack");
+      if (state.roomId && others.length) {
+        stack.classList.remove("hidden");
+        stack.classList.add("flex");
+        stack.innerHTML = others.slice(0, 4).map(m =>
+          `<span class="w-5 h-5 rounded-full overflow-hidden bg-[#1B1E26] border border-[#0A0B0E] flex items-center justify-center text-[10px]" title="${m.name}">${renderAvatarHTML(m, "w-5 h-5 text-[10px]")}</span>`
+        ).join("") + (others.length > 4 ? `<span class="w-5 h-5 rounded-full bg-white/15 text-[9px] font-bold text-white flex items-center justify-center border border-[#0A0B0E]">+${others.length - 4}</span>` : "");
+      } else {
+        stack.classList.add("hidden");
+        stack.classList.remove("flex");
       }
 
+      // Profile subtab
       renderAvatarInto(document.getElementById("my-profile-avatar-preview"), state.myProfile);
       const myNameInp = document.getElementById("my-name-input");
       if (document.activeElement !== myNameInp) myNameInp.value = state.myProfile.name || "Игрок";
       document.getElementById("remove-photo-btn").classList.toggle("hidden", !state.myProfile.photoData);
+      document.getElementById("profile-stat-watched").textContent = state.myWatched.length;
+      document.getElementById("profile-stat-recs").textContent = state.myWatched.filter(w => w.recommended).length;
 
       const picker = document.getElementById("emoji-picker-grid");
       picker.innerHTML = AVATARS.map(em => {
@@ -2232,60 +2843,80 @@
         btn.onclick = () => {
           state.myProfile.avatar = btn.dataset.emoji;
           state.myProfile.photoData = null;
-          syncMyProfileToSlot();
+          syncMeIntoRoomMembers();
           renderAll();
           pushSharedState();
+          syncPublicFriendProfile();
           vibrate(15);
         };
       });
-
-      renderAvatarInto(document.getElementById("other-partner-avatar"), other);
-      document.getElementById("other-partner-name").textContent = isOtherConnected ? other.name : "Ожидание партнёра";
-      const statusBadge = document.getElementById("other-partner-status");
-      const subText = document.getElementById("other-partner-sub");
-      if (isOtherConnected) {
-        statusBadge.textContent = "В сети";
-        statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25";
-        subText.textContent = "Подключён к вашей комнате";
-      } else if (state.roomId) {
-        statusBadge.textContent = "Ожидание";
-        statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300";
-        subText.textContent = `Отправьте код ${state.roomId} второму участнику`;
-      } else {
-        statusBadge.textContent = "Не подключён";
-        statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-zinc-400";
-        subText.textContent = "Создайте комнату или введите код выше";
-      }
     }
 
-    function updateRoomUI() {
+    function renderRoomUI() {
       const hasRoom = Boolean(state.roomId);
       document.getElementById("active-room-box").classList.toggle("hidden", !hasRoom);
       document.getElementById("room-join-controls").classList.toggle("hidden", hasRoom);
+
       const liveBadge = document.getElementById("room-badge-header");
       liveBadge.classList.toggle("hidden", !hasRoom);
       liveBadge.classList.toggle("inline-flex", hasRoom);
+      if (hasRoom) {
+        document.getElementById("header-room-label").textContent = state.shared.roomName || state.roomId;
+      }
 
       const pill = document.getElementById("sync-status-pill");
       if (hasRoom) {
         document.getElementById("active-room-code").textContent = state.roomId;
+        const nameInp = document.getElementById("active-room-name-input");
+        if (document.activeElement !== nameInp) nameInp.value = state.shared.roomName || "";
+
+        const saved = state.savedRooms.find(r => r.id === state.roomId);
+        const favBtn = document.getElementById("toggle-room-fav-btn");
+        const isFav = Boolean(saved?.favorite);
+        favBtn.className = isFav
+          ? "w-9 h-9 rounded-xl bg-amber-400/15 flex items-center justify-center text-amber-400 active:scale-90 transition shrink-0"
+          : "w-9 h-9 rounded-xl bg-white/8 flex items-center justify-center text-zinc-400 active:scale-90 transition shrink-0";
+        favBtn.querySelector("svg").classList.toggle("fill-current", isFav);
+
+        const members = getRoomMembersArray();
+        document.getElementById("room-members-count").textContent = `${members.length} / ${MAX_ROOM_MEMBERS}`;
+        document.getElementById("room-members-list").innerHTML = members.map(m => `
+          <div class="rounded-xl bg-black/30 border border-white/6 p-2.5 flex items-center gap-2 min-w-0">
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex items-center justify-center text-sm shrink-0">${renderAvatarHTML(m, "w-8 h-8 text-sm")}</div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white truncate">${m.name}${m.uid === state.myUid ? " (вы)" : ""}</div>
+              <div class="text-[10px] text-emerald-400">В комнате</div>
+            </div>
+          </div>
+        `).join("");
+
         pill.textContent = fbDb ? "В сети" : "Локально";
         pill.className = "text-[10px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25";
       } else {
         pill.textContent = "Локально";
         pill.className = "text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10";
       }
+
+      renderSavedRooms();
     }
 
-    function renderAll() { updateHeaderAndProfiles(); updateRoomUI(); renderWatchlist(); renderWatched(); }
+    function renderAll() {
+      updateHeaderAndProfiles();
+      renderRoomUI();
+      renderFriends();
+      renderWatchlist();
+      renderWatched();
+    }
 
     /* ---------- EVENT BINDINGS ---------- */
     function bindEvents() {
-      document.querySelectorAll(".nav-tab").forEach(btn => {
-        btn.onclick = () => switchTab(btn.dataset.tab);
-      });
+      document.querySelectorAll(".nav-tab").forEach(btn => { btn.onclick = () => switchTab(btn.dataset.tab); });
+      document.getElementById("my-profile-header-btn").onclick = () => { switchTab("settings"); switchSettingsSubtab("profile"); };
+      document.getElementById("room-badge-header").onclick = () => { switchTab("settings"); switchSettingsSubtab("rooms"); };
 
-      document.getElementById("my-profile-header-btn").onclick = () => switchTab("settings");
+      document.querySelectorAll(".settings-subtab").forEach(btn => {
+        btn.onclick = () => switchSettingsSubtab(btn.dataset.subtab);
+      });
 
       document.querySelectorAll(".cat-pill").forEach(btn => {
         btn.onclick = () => {
@@ -2301,7 +2932,6 @@
       });
 
       document.getElementById("genre-select").onchange = (e) => { state.filters.genre = e.target.value; loadDeck(); };
-
       document.getElementById("smart-mode-btn").onclick = () => {
         state.filters.smart = !state.filters.smart;
         const btn = document.getElementById("smart-mode-btn");
@@ -2318,22 +2948,19 @@
       document.getElementById("btn-lucky").onclick = handleLuckySpin;
       document.getElementById("btn-watched").onclick = () => { const i = getCurrentCardItem(); if (i) openRatingModal(i); };
 
-      document.querySelectorAll(".wl-filter-btn").forEach(btn => {
-        btn.onclick = () => {
-          state.watchlistFilter = btn.dataset.wlfilter;
-          document.querySelectorAll(".wl-filter-btn").forEach(b => {
-            const act = b.dataset.wlfilter === state.watchlistFilter;
-            b.className = act
-              ? "wl-filter-btn active shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white text-[#0A0B0E]"
-              : "wl-filter-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium surface-card text-zinc-300";
-          });
-          renderWatchlist();
-        };
-      });
+      // Watched view switcher
+      document.getElementById("watched-tab-mine").onclick = () => { state.watchedView = "mine"; renderWatched(); };
+      document.getElementById("watched-tab-common").onclick = () => { state.watchedView = "common"; renderWatched(); };
 
+      // Modals
       document.getElementById("open-battle-btn").onclick = () => BattleEngine.open();
       document.getElementById("close-battle-modal").onclick = () => BattleEngine.close();
       document.getElementById("close-rating-modal").onclick = () => closeModalEl("rating-modal");
+      document.getElementById("rating-recommend-toggle").onclick = () => {
+        selectedRecommendVal = !selectedRecommendVal;
+        updateRecommendToggleUI();
+        vibrate(12);
+      };
       document.getElementById("confirm-rating-btn").onclick = savePendingRating;
       document.getElementById("close-match-modal").onclick = () => closeModalEl("match-modal");
       document.getElementById("match-pin-btn").onclick = () => {
@@ -2344,6 +2971,7 @@
         }
         closeModalEl("match-modal");
       };
+      document.getElementById("close-friend-recs-modal").onclick = () => closeModalEl("friend-recs-modal");
 
       // Live Search on Watched tab
       let searchTimer = null;
@@ -2388,45 +3016,64 @@
         searchResults.classList.add("hidden");
       };
 
-      // Room controls
+      // Rooms controls
       document.getElementById("create-room-btn").onclick = createRoom;
       document.getElementById("join-room-btn").onclick = () => joinRoom(document.getElementById("room-code-input").value);
       document.getElementById("room-code-input").onkeydown = (e) => { if (e.key === "Enter") joinRoom(e.target.value); };
       document.getElementById("leave-room-btn").onclick = leaveRoom;
-      document.getElementById("copy-room-code-btn").onclick = () => {
-        if (!state.roomId) return;
-        const ta = document.createElement("textarea");
-        ta.value = state.roomId;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-          document.execCommand("copy");
-          showToast(`Код ${state.roomId} скопирован`, "success");
-        } catch {
-          showToast(`Код комнаты: ${state.roomId}`, "info");
-        }
-        document.body.removeChild(ta);
-      };
+      document.getElementById("copy-room-code-btn").onclick = () => { if (state.roomId) copyTextSafe(state.roomId, "Код комнаты"); };
 
-      // Self Profile controls
-      document.getElementById("my-name-input").oninput = (e) => {
-        state.myProfile.name = e.target.value.trim() || "Игрок";
-        syncMyProfileToSlot();
+      document.getElementById("active-room-name-input").oninput = (e) => {
+        state.shared.roomName = e.target.value.trim() || `Комната ${state.roomId}`;
+        upsertSavedRoom(state.roomId, state.shared.roomName);
         renderAll();
         pushSharedState();
       };
+      document.getElementById("toggle-room-fav-btn").onclick = () => {
+        if (!state.roomId) return;
+        upsertSavedRoom(state.roomId, state.shared.roomName);
+        const r = state.savedRooms.find(x => x.id === state.roomId);
+        if (r) {
+          r.favorite = !r.favorite;
+          saveUserSettings();
+          renderRoomUI();
+          vibrate(15);
+          showToast(r.favorite ? "Комната добавлена в избранное ★" : "Убрано из избранного", "info");
+        }
+      };
 
+      // Friends controls
+      document.getElementById("copy-friend-code-btn").onclick = () => copyTextSafe(state.myFriendCode, "Ваш код друга");
+      document.getElementById("add-friend-btn").onclick = () => {
+        const inp = document.getElementById("add-friend-code-input");
+        addFriendByCode(inp.value);
+        inp.value = "";
+      };
+      document.getElementById("add-friend-code-input").onkeydown = (e) => {
+        if (e.key === "Enter") { addFriendByCode(e.target.value); e.target.value = ""; }
+      };
+      document.getElementById("refresh-friends-btn").onclick = async () => {
+        await refreshFriendsMetadata();
+        showToast("Список друзей обновлён", "info");
+      };
+
+      // Profile controls
+      document.getElementById("my-name-input").oninput = (e) => {
+        state.myProfile.name = e.target.value.trim() || "Игрок";
+        syncMeIntoRoomMembers();
+        renderAll();
+        pushSharedState();
+        syncPublicFriendProfile();
+      };
       document.getElementById("my-photo-input").onchange = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
         try {
-          const dataUrl = await compressImageToDataUrl(file);
-          state.myProfile.photoData = dataUrl;
-          syncMyProfileToSlot();
+          state.myProfile.photoData = await compressImageToDataUrl(file);
+          syncMeIntoRoomMembers();
           renderAll();
           pushSharedState();
+          syncPublicFriendProfile();
           showToast("Фото профиля обновлено", "success");
         } catch (err) {
           showToast(err.message || "Не удалось загрузить фото", "warn");
@@ -2434,17 +3081,18 @@
           e.target.value = "";
         }
       };
-
       document.getElementById("remove-photo-btn").onclick = () => {
         state.myProfile.photoData = null;
-        syncMyProfileToSlot();
+        syncMeIntoRoomMembers();
         renderAll();
         pushSharedState();
+        syncPublicFriendProfile();
         showToast("Фото удалено", "info");
       };
     }
 
     async function bootApp() {
+      syncMeIntoRoomMembers();
       bindEvents();
       renderAll();
       loadDeck();
@@ -2453,7 +3101,7 @@
         await loadUserSettings();
         renderAll();
       } else {
-        updateRoomUI();
+        renderRoomUI();
       }
     }
 
